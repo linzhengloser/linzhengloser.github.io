@@ -174,7 +174,7 @@ public class ViewInjectProcessor extends AbstractProcessor {
 2. 在 getSupportedAnnotationTypes 方法中是用来返回该注解解析器所支持的注解类型。
 3. 具体逻辑就是process方法，下面我们具体分析这个方法
 
-###process方法
+### process方法
 
 process方法的实现主要分为2个部分，首先收集信息，并把信息封装成对象并存起来。然后巡回集合生成对应的java文件。
 
@@ -438,6 +438,6 @@ public class MainActivity$$ViewInject implements ViewInject<com.lz.ioc_apt_demo.
 
 ```
 
-#总结
+# 总结
 
 到此为止，整个代码逻辑就分析完了。总的来说还是很简单，而且这里只实现了最基本的功能，其实还可以对反射生成的类做一个缓冲，避免反复使用反射带来的性能开销，相比较 ButterKnife 大体的实现逻辑就这样的，只不过 ButterKnife 还实现了很多别的注解，有但是实现的原理都是差不多的。
