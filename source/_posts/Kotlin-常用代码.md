@@ -9,6 +9,8 @@ tags: Kotlin
 
 下面例子都来自 Kotlin 的官方文档. http://kotlinlang.org/docs/reference/idioms.html
 
+<!-- more -->
+
 # 创建实体类( JavaBean )
 
 ``` Kotlin
