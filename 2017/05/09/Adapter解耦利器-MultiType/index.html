@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Adapter," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="开始有段时间没写博客。因为最近公司项目比较忙，所以没什么时间写。最近在做公司的新项目的时候，尝试了一些新的第三方库，后来返现这个MultiType是真的好用，可以节约很多代码，并且还能很好的解耦，具体是怎么使用的，下面我们来慢慢分析~。">
+<meta name="keywords" content="Adapter">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Adapter解耦利器-MultiType">
+<meta property="og:url" content="http://yoursite.com/2017/05/09/Adapter解耦利器-MultiType/index.html">
+<meta property="og:site_name" content="linzheng blog">
+<meta property="og:description" content="开始有段时间没写博客。因为最近公司项目比较忙，所以没什么时间写。最近在做公司的新项目的时候，尝试了一些新的第三方库，后来返现这个MultiType是真的好用，可以节约很多代码，并且还能很好的解耦，具体是怎么使用的，下面我们来慢慢分析~。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-01-31T11:22:54.848Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Adapter解耦利器-MultiType">
+<meta name="twitter:description" content="开始有段时间没写博客。因为最近公司项目比较忙，所以没什么时间写。最近在做公司的新项目的时候，尝试了一些新的第三方库，后来返现这个MultiType是真的好用，可以节约很多代码，并且还能很好的解耦，具体是怎么使用的，下面我们来慢慢分析~。">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/05/09/Adapter解耦利器-MultiType/"/>
+
+
+
+
+
+  <title>Adapter解耦利器-MultiType | linzheng blog</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?a47d4a5123200d8170cd198104ba9e50";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">linzheng blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">linzheng blog</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/05/09/Adapter解耦利器-MultiType/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="linzheng">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://ofdvg4c5w.bkt.clouddn.com/%E7%BA%B1%E9%9B%BE.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="linzheng blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Adapter解耦利器-MultiType</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-05-09T16:08:07+08:00">
+                2017-05-09
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2017/05/09/Adapter解耦利器-MultiType/" class="leancloud_visitors" data-flag-title="Adapter解耦利器-MultiType">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="开始"><a href="#开始" class="headerlink" title="开始"></a>开始</h1><p>有段时间没写博客。因为最近公司项目比较忙，所以没什么时间写。最近在做公司的新项目的时候，尝试了一些新的第三方库，后来返现这个MultiType是真的好用，可以节约很多代码，并且还能很好的解耦，具体是怎么使用的，下面我们来慢慢分析~。</p>
+<a id="more"></a>
+<h1 id="基本用法"><a href="#基本用法" class="headerlink" title="基本用法"></a>基本用法</h1><p>这个库的地址是：<a href="https://github.com/drakeet/MultiType" target="_blank" rel="noopener">https://github.com/drakeet/MultiType</a><br>使用Gradle就能依赖，这个库的作者已经把使用方式介绍的很清楚看了，详情可以看该库的Wiki。在这里就只说下最基本的用法。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">//三种不同的类型，用来代表不同类的 Item</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">OneType</span> </span>&#123;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TwoType</span> </span>&#123;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ThreeType</span> </span>&#123;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//编写 ItemViewBinder 类，这里就只写 OneTypeItemViewBinder 其他两种类型的编写方式大同小异。</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">OneTypeItemViewBinder</span> <span class="keyword">extends</span> <span class="title">ItemViewBinder</span>&lt;<span class="title">OneType</span>,<span class="title">OneTypeItemViewBinder</span>.<span class="title">OneTypeViewHolder</span>&gt;</span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@NonNull</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> OneTypeViewHolder <span class="title">onCreateViewHolder</span><span class="params">(@NonNull LayoutInflater inflater, @NonNull ViewGroup parent)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> OneTypeViewHolder(inflater.inflate(R.layout.item_one_type,parent,<span class="keyword">false</span>));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onBindViewHolder</span><span class="params">(@NonNull OneTypeViewHolder holder, @NonNull OneType item)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">OneTypeViewHolder</span> <span class="keyword">extends</span> <span class="title">RecyclerView</span>.<span class="title">ViewHolder</span></span>&#123;</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="title">OneTypeViewHolder</span><span class="params">(View itemView)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">super</span>(itemView);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//最后在 Activity 中使用</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MainActivity</span> <span class="keyword">extends</span> <span class="title">AppCompatActivity</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    RecyclerView rv_main;</span><br><span class="line"></span><br><span class="line">    MultiTypeAdapter mAdapter;</span><br><span class="line"></span><br><span class="line">    Items mItems;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.onCreate(savedInstanceState);</span><br><span class="line">        setContentView(R.layout.activity_main);</span><br><span class="line"></span><br><span class="line">        <span class="comment">//初始化RecyclerView</span></span><br><span class="line">        rv_main = (RecyclerView) findViewById(R.id.rv_main);</span><br><span class="line">        rv_main.setLayoutManager(<span class="keyword">new</span> LinearLayoutManager(<span class="keyword">this</span>));</span><br><span class="line">        rv_main.addItemDecoration(<span class="keyword">new</span> DividerItemDecoration(<span class="keyword">this</span>,DividerItemDecoration.VERTICAL));</span><br><span class="line"></span><br><span class="line">        <span class="comment">//初始化 MultiTypeAdapter 和 Items</span></span><br><span class="line">        mAdapter = <span class="keyword">new</span> MultiTypeAdapter();</span><br><span class="line">        mItems = <span class="keyword">new</span> Items();</span><br><span class="line"></span><br><span class="line">        <span class="comment">//在 Adapter 中注册 ItemViewBInder</span></span><br><span class="line">        mAdapter.register(OneType.class,<span class="keyword">new</span> OneTypeItemViewBinder());</span><br><span class="line">        mAdapter.register(TwoType.class,<span class="keyword">new</span> TwoTypeItemViewBinder());</span><br><span class="line">        mAdapter.register(ThreeType.class,<span class="keyword">new</span> ThreeTypeItemViewBinder());</span><br><span class="line"></span><br><span class="line">        <span class="comment">//setItems</span></span><br><span class="line">        mAdapter.setItems(mItems);</span><br><span class="line">        rv_main.setAdapter(mAdapter);</span><br><span class="line"></span><br><span class="line">        <span class="comment">//添加数据</span></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">100</span>; i++) &#123;</span><br><span class="line">            mItems.add(<span class="keyword">new</span> OneType());</span><br><span class="line">            mItems.add(<span class="keyword">new</span> TwoType());</span><br><span class="line">            mItems.add(<span class="keyword">new</span> ThreeType());</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//刷新 RecyclerView</span></span><br><span class="line">        mAdapter.notifyDataSetChanged();</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>基本用法差不多就是上面那些，这个时候肯定会有人觉得写个Adapter还这么麻烦，还要定义什么ItemViewBinder。其实这里只是一个Demo，虽然代码看上去多了不少，但是可扩展性，复用性大大的提高了，下面我们在用传统的方式实现一个多类型的Adapter，对比对比就知道了。</p>
+</blockquote>
+<h1 id="传统实现-VS-MultiType"><a href="#传统实现-VS-MultiType" class="headerlink" title="传统实现 VS MultiType"></a>传统实现 VS MultiType</h1><p>下面我们用传统的方式(可能还有别的方法实现，这里只是我自己实现多类型的 Adapter 的方式)实现一个多类型的Adapter。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SampleRecyclerViewAdapter</span> <span class="keyword">extends</span> <span class="title">RecyclerView</span>.<span class="title">Adapter</span>&lt;<span class="title">RecyclerView</span>.<span class="title">ViewHolder</span>&gt; </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> ITEM_TYPE_ONE_TYPE = <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> ITEM_TYPE_TWO_TYPE = <span class="number">2</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> ITEM_TYPE_THREE_TYPE = <span class="number">3</span>;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getItemViewType</span><span class="params">(<span class="keyword">int</span> position)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span>(position&gt;<span class="number">0</span> &amp;&amp; position % <span class="number">10</span> == <span class="number">0</span>)&#123;</span><br><span class="line">            <span class="keyword">return</span> ITEM_TYPE_THREE_TYPE;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span>(position % <span class="number">2</span> == <span class="number">0</span>)&#123;</span><br><span class="line">            <span class="comment">//偶数</span></span><br><span class="line">            <span class="keyword">return</span> ITEM_TYPE_ONE_TYPE;</span><br><span class="line">        &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">            <span class="comment">//基数</span></span><br><span class="line">            <span class="keyword">return</span> ITEM_TYPE_TWO_TYPE;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> RecyclerView.<span class="function">ViewHolder <span class="title">onCreateViewHolder</span><span class="params">(ViewGroup parent, <span class="keyword">int</span> viewType)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (viewType == ITEM_TYPE_ONE_TYPE) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">new</span> OneTypeViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_one_type, parent, <span class="keyword">false</span>));</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (viewType == ITEM_TYPE_TWO_TYPE) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">new</span> TwoTypeViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_two_type, parent, <span class="keyword">false</span>));</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (viewType == ITEM_TYPE_THREE_TYPE) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">new</span> ThreeTypeViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_three_type, parent, <span class="keyword">false</span>));</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onBindViewHolder</span><span class="params">(RecyclerView.ViewHolder holder, <span class="keyword">int</span> position)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (holder <span class="keyword">instanceof</span> OneTypeViewHolder) &#123;</span><br><span class="line">            <span class="comment">//绑定数据</span></span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (holder <span class="keyword">instanceof</span> TwoTypeViewHolder) &#123;</span><br><span class="line">            <span class="comment">//绑定数据</span></span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (holder <span class="keyword">instanceof</span> ThreeTypeViewHolder) &#123;</span><br><span class="line">            <span class="comment">//绑定数据</span></span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getItemCount</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">100</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">OneTypeViewHolder</span> <span class="keyword">extends</span> <span class="title">RecyclerView</span>.<span class="title">ViewHolder</span> </span>&#123;</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="title">OneTypeViewHolder</span><span class="params">(View itemView)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">super</span>(itemView);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">TwoTypeViewHolder</span> <span class="keyword">extends</span> <span class="title">RecyclerView</span>.<span class="title">ViewHolder</span> </span>&#123;</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="title">TwoTypeViewHolder</span><span class="params">(View itemView)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">super</span>(itemView);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">ThreeTypeViewHolder</span> <span class="keyword">extends</span> <span class="title">RecyclerView</span>.<span class="title">ViewHolder</span> </span>&#123;</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="title">ThreeTypeViewHolder</span><span class="params">(View itemView)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">super</span>(itemView);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>上面代码也没什么好说的，都是些RecyclerView的基本用法，但是上面的代码有很多弊端(多类型的 Adapter ).</p>
+</blockquote>
+<p>传统实现方式的弊端:</p>
+<ol>
+<li>不利于后期的扩展，我们写代码时应该遵守”开闭原则”(知识点)，如果后期需要添加新的类型的 Item，这个时候我们就不得不修改  getItemType 方法来返回新的类型，并在 onCreateViewHolder 方法中添加对应的返回，最后还需要在 onBindViewHolder 中完成新Item的数据绑定。这里就涉及到几处代码的改动，要知道项目做到后期，尽量少修改原本写好的代码(巨坑)。</li>
+<li>耦合太大，在 onBindViewHolder 方法中每种类型的 ViewHolder 的数据绑定都在里面，完全无法复用。像上面所说的如果一旦我们修改，可能会出来各种莫名其妙的问题。</li>
+</ol>
+<p>MultiType 的作用:</p>
+<ol>
+<li>如果后期需要添加新的类型，只需要实现对应的 ItemViewBinder 并调用 register 方法就可以完成加入。一行代码都不用修改。</li>
+<li>每种类型的 Item 的数据绑定都在对应的 ItemViewBinder 中，这样不同类型就不存耦合的问题，如果别的地方有相同的效果，还能直接复用。</li>
+<li>MultiType 的实现一共只有十几个类,这个库仅仅只帮我们解耦了多类型Adapter的耦合问题。非常的简洁，和项目的耦合几乎为零。</li>
+</ol>
+<p>通过上面的分析,MultiType的优点就体现出来了。</p>
+<h1 id="MultiType的实现原理"><a href="#MultiType的实现原理" class="headerlink" title="MultiType的实现原理"></a>MultiType的实现原理</h1><p>上面我们说到了MultiType的类文件只有十几个，与其说MultiType是一个类库，还不如说MultiType是一个Android平台上多类型Adapter的解决方案(本人觉得很好的一个解决方案)，实现原理非常简单。下面我们就分析下核心的逻辑。</p>
+<p>说到这里就有必要提下一些类似的实现方式，接入过网易云信的同学应该知道其中的消息界面的Adapter的实现方式就和MultiType类似，因为消息界面的消息类型繁多，如果逻辑都放在Adapter中，既不好维护也不好扩展。</p>
+<h2 id="Talk-is-cheap，Show-me-the-code。"><a href="#Talk-is-cheap，Show-me-the-code。" class="headerlink" title="Talk is cheap，Show me the code。"></a>Talk is cheap，Show me the code。</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//代码目录 : MultiTypeAdapter.java</span></span><br><span class="line"><span class="comment">//省略其余代码</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//类型池</span></span><br><span class="line"><span class="keyword">private</span> TypePool typePool;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">int</span> <span class="title">getItemViewType</span><span class="params">(<span class="keyword">int</span> position)</span> </span>&#123;</span><br><span class="line">    <span class="comment">//断言</span></span><br><span class="line">    <span class="keyword">assert</span> items != <span class="keyword">null</span>;</span><br><span class="line">    <span class="comment">//从 items 中取出数据对象</span></span><br><span class="line">    Object item = items.get(position);</span><br><span class="line">    <span class="comment">//通过 indexInTypesOf 方法来返回对应的类型</span></span><br><span class="line">    <span class="keyword">return</span> indexInTypesOf(item);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">final</span> ViewHolder <span class="title">onCreateViewHolder</span><span class="params">(ViewGroup parent, <span class="keyword">int</span> indexViewType)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (inflater == <span class="keyword">null</span>) &#123;</span><br><span class="line">        inflater = LayoutInflater.from(parent.getContext());</span><br><span class="line">    &#125;</span><br><span class="line">    ItemViewBinder&lt;?, ?&gt; binder = typePool.getItemViewBinders().get(indexViewType);</span><br><span class="line">    binder.adapter = <span class="keyword">this</span>;</span><br><span class="line">    <span class="keyword">assert</span> inflater != <span class="keyword">null</span>;</span><br><span class="line">    <span class="comment">//调用对应 ItemViewBinder 类中的onCreateViewHolder</span></span><br><span class="line">    <span class="keyword">return</span> binder.onCreateViewHolder(inflater, parent);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Override</span> <span class="meta">@SuppressWarnings</span>(<span class="string">"unchecked"</span>)</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">void</span> <span class="title">onBindViewHolder</span><span class="params">(ViewHolder holder, <span class="keyword">int</span> position, List&lt;Object&gt; payloads)</span> </span>&#123;</span><br><span class="line">    <span class="comment">//断言</span></span><br><span class="line">    <span class="keyword">assert</span> items != <span class="keyword">null</span>;</span><br><span class="line">    <span class="comment">//获取数据对象</span></span><br><span class="line">    Object item = items.get(position);</span><br><span class="line">    <span class="comment">//获取 ItemViewBinder 对象 并调用 onBindViewHolder 方法来绑定数据</span></span><br><span class="line">    ItemViewBinder binder = typePool.getItemViewBinders().get(holder.getItemViewType());</span><br><span class="line">    binder.onBindViewHolder(holder, item, payloads);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//根据数据对象 获取对应的类型</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">indexInTypesOf</span><span class="params">(@NonNull Object item)</span> <span class="keyword">throws</span> BinderNotFoundException </span>&#123;</span><br><span class="line">    <span class="comment">//获取对应类型的索引</span></span><br><span class="line">    <span class="keyword">int</span> index = typePool.firstIndexOf(item.getClass());</span><br><span class="line">    <span class="keyword">if</span> (index != -<span class="number">1</span>) &#123;</span><br><span class="line">        <span class="meta">@SuppressWarnings</span>(<span class="string">"unchecked"</span>)</span><br><span class="line">        <span class="comment">//通过索引去 TypePool 中获取 Linker。</span></span><br><span class="line">        Linker&lt;Object&gt; linker = (Linker&lt;Object&gt;) typePool.getLinkers().get(index);</span><br><span class="line">        <span class="comment">//默认情况下 index 方法返回0 所以这里直接返回 上面获取到的 index。</span></span><br><span class="line">        <span class="keyword">return</span> index + linker.index(item);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> BinderNotFoundException(item.getClass());</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//注册 ItemViewBinder</span></span><br><span class="line"><span class="keyword">public</span> &lt;T&gt; <span class="function"><span class="keyword">void</span> <span class="title">register</span><span class="params">(@NonNull Class&lt;? extends T&gt; clazz, @NonNull ItemViewBinder&lt;T, ?&gt; binder)</span> </span>&#123;</span><br><span class="line">    <span class="comment">//检测当前TypePool中是否已经有相同类型的，如果有就移除原有的。</span></span><br><span class="line">    checkAndRemoveAllTypesIfNeed(clazz);</span><br><span class="line">    typePool.register(clazz, binder, <span class="keyword">new</span> DefaultLinker&lt;T&gt;());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>核心实现差不多就是上面这些，非常的简洁和简单。</p>
+</blockquote>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>我认为在软件开发中，扩展 &gt; 复用，网上有很多关于Adatper的封装，大部分都是简化代码(通过继承和多态实现)，但是在扩展这块做的还不是很好(个人观点)，所以还不如先解决扩展的问题在去优化重复的代码。当然我相信一个扩展非常好的代码复用也不会差到哪去。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Adapter/" rel="tag"># Adapter</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/04/20/高仿Butterknife的BindView注解/" rel="next" title="高仿Butterknife的BindView注解">
+                <i class="fa fa-chevron-left"></i> 高仿Butterknife的BindView注解
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/05/28/Kotlin-基本语法/" rel="prev" title="Kotlin-基本语法">
+                Kotlin-基本语法 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="http://ofdvg4c5w.bkt.clouddn.com/%E7%BA%B1%E9%9B%BE.jpg"
+                alt="linzheng" />
+            
+              <p class="site-author-name" itemprop="name">linzheng</p>
+              <p class="site-description motion-element" itemprop="description">一枚苦逼的 Android 程序员</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">29</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                
+                  <span class="site-state-item-count">1</span>
+                  <span class="site-state-item-name">分类</span>
+                
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">14</span>
+                  <span class="site-state-item-name">标签</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#开始"><span class="nav-number">1.</span> <span class="nav-text">开始</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#基本用法"><span class="nav-number">2.</span> <span class="nav-text">基本用法</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#传统实现-VS-MultiType"><span class="nav-number">3.</span> <span class="nav-text">传统实现 VS MultiType</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#MultiType的实现原理"><span class="nav-number">4.</span> <span class="nav-text">MultiType的实现原理</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Talk-is-cheap，Show-me-the-code。"><span class="nav-number">4.1.</span> <span class="nav-text">Talk is cheap，Show me the code。</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#总结"><span class="nav-number">5.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">linzheng</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("E2NRFAQwyrEiYK2wzPMwCXOj-gzGzoHsz", "imqxxTrh0lXoz3FtACFo1TIf");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
