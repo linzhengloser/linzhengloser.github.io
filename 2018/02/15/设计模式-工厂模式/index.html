@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="Hexo, NexT" />
+  <meta name="keywords" content="设计模式," />
 
 
 
@@ -79,16 +79,18 @@
 
 
 
-<meta name="description" content="一枚苦逼的 Android 程序员">
-<meta property="og:type" content="website">
-<meta property="og:title" content="linzheng blog">
-<meta property="og:url" content="http://yoursite.com/tags/HTML标签/index.html">
+<meta name="description" content="什么是设计模式无论是什么行业，都分为”理论”和”实践”这两个分支，软件行业也是如此，像数据结构，算法，设计模式等等之类的可以看做是”理论”，而像(拿 Android 举例) Retrofit，RxJava，Glide，等等之类的看做是”实践”。可以把”实践”理解成”理论”的实现，把”理论”理解成”实践”的抽象，像 Retrofit，RxJava 之类的框架使用都很简单，很快就能学会，但是如果说为什">
+<meta name="keywords" content="设计模式">
+<meta property="og:type" content="article">
+<meta property="og:title" content="设计模式-工厂模式">
+<meta property="og:url" content="http://yoursite.com/2018/02/15/设计模式-工厂模式/index.html">
 <meta property="og:site_name" content="linzheng blog">
-<meta property="og:description" content="一枚苦逼的 Android 程序员">
+<meta property="og:description" content="什么是设计模式无论是什么行业，都分为”理论”和”实践”这两个分支，软件行业也是如此，像数据结构，算法，设计模式等等之类的可以看做是”理论”，而像(拿 Android 举例) Retrofit，RxJava，Glide，等等之类的看做是”实践”。可以把”实践”理解成”理论”的实现，把”理论”理解成”实践”的抽象，像 Retrofit，RxJava 之类的框架使用都很简单，很快就能学会，但是如果说为什">
 <meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-02-15T15:35:32.926Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="linzheng blog">
-<meta name="twitter:description" content="一枚苦逼的 Android 程序员">
+<meta name="twitter:title" content="设计模式-工厂模式">
+<meta name="twitter:description" content="什么是设计模式无论是什么行业，都分为”理论”和”实践”这两个分支，软件行业也是如此，像数据结构，算法，设计模式等等之类的可以看做是”理论”，而像(拿 Android 举例) Retrofit，RxJava，Glide，等等之类的看做是”实践”。可以把”实践”理解成”理论”的实现，把”理论”理解成”实践”的抽象，像 Retrofit，RxJava 之类的框架使用都很简单，很快就能学会，但是如果说为什">
 
 
 
@@ -118,13 +120,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/tags/HTML标签/"/>
+  <link rel="canonical" href="http://yoursite.com/2018/02/15/设计模式-工厂模式/"/>
 
 
 
 
 
-  <title>标签: HTML标签 | linzheng blog</title>
+  <title>设计模式-工厂模式 | linzheng blog</title>
   
 
 
@@ -153,7 +155,7 @@
     
   
 
-  <div class="container sidebar-position-left ">
+  <div class="container sidebar-position-left page-post-detail">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -227,110 +229,163 @@
           <div id="content" class="content">
             
 
+  <div id="posts" class="posts-expand">
+    
+
+  
+
   
   
   
-  <div class="post-block tag">
-
-    <div id="posts" class="posts-collapse">
-      <div class="collection-title">
-        <h1>HTML标签<small>标签</small>
-        </h1>
-      </div>
-
-      
-        
 
   <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/02/15/设计模式-工厂模式/">
 
-      <h2 class="post-title">
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="linzheng">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://ofdvg4c5w.bkt.clouddn.com/%E7%BA%B1%E9%9B%BE.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="linzheng blog">
+    </span>
+
+    
+      <header class="post-header">
+
         
-            <a class="post-title-link" href="/2017/03/09/HTML标签-链接标签/" itemprop="url">
-              
-                <span itemprop="name">HTML标签-链接标签</span>
-              
-            </a>
         
-      </h2>
+          <h1 class="post-title" itemprop="name headline">设计模式-工厂模式</h1>
+        
 
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2017-03-09T12:20:03+08:00"
-              content="2017-03-09" >
-          03-09
-        </time>
-      </div>
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-02-15T22:57:20+08:00">
+                2018-02-15
+              </time>
+            
 
-    </header>
-  </article>
+            
 
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2018/02/15/设计模式-工厂模式/" class="leancloud_visitors" data-flag-title="设计模式-工厂模式">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
 
       
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2017/02/27/HTML标签-列表标签/" itemprop="url">
-              
-                <span itemprop="name">HTML标签-列表标签</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2017-02-27T13:04:58+08:00"
-              content="2017-02-27" >
-          02-27
-        </time>
-      </div>
-
-    </header>
-  </article>
-
+      
 
       
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2017/02/21/HTML标签-文本标签/" itemprop="url">
-              
-                <span itemprop="name">HTML标签-文本标签</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2017-02-21T12:24:41+08:00"
-              content="2017-02-21" >
-          02-21
-        </time>
-      </div>
-
-    </header>
-  </article>
-
+        <h1 id="什么是设计模式"><a href="#什么是设计模式" class="headerlink" title="什么是设计模式"></a>什么是设计模式</h1><p>无论是什么行业，都分为”理论”和”实践”这两个分支，软件行业也是如此，像数据结构，算法，设计模式等等之类的可以看做是”理论”，而像(拿 Android 举例) Retrofit，RxJava，Glide，等等之类的看做是”实践”。可以把”实践”理解成”理论”的实现，把”理论”理解成”实践”的抽象，像 Retrofit，RxJava 之类的框架使用都很简单，很快就能学会，但是如果说为什么要这么设计，想必很少有人能回答出来，同理，如果熟读设计模式，算法，设计模式，但是不能设计出像 Retorfit，RxJava，Glide 这类优秀的框架，那等于白学。归根到底无论学什么，思想很重要，而我们学习设计模式，不能单单只学其实现，更要学习其的思想，明白思想之后不论我们用不用某个设计模式，都能设计出优秀的软件。</p>
+<h1 id="什么是工厂模式"><a href="#什么是工厂模式" class="headerlink" title="什么是工厂模式"></a>什么是工厂模式</h1><p>在现实生活中，工厂是用来生成产品用的，比如有富士康的工厂就是用来生产电子设备。那什么是工厂模式呢？我们可以把实际开发中的各种功能</p>
 
       
     </div>
+    
+    
+    
 
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/设计模式/" rel="tag"># 设计模式</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/01/30/Kotlin-函数/" rel="next" title="Kotlin-函数">
+                <i class="fa fa-chevron-left"></i> Kotlin-函数
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/02/24/Kotlin-其他特性-持续更新/" rel="prev" title="Kotlin-其他特性(持续更新)">
+                Kotlin-其他特性(持续更新) <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
   </div>
   
   
   
+  </article>
 
-  
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
 
 
           </div>
@@ -338,6 +393,10 @@
 
 
           
+
+  
+
+
 
         </div>
         
@@ -358,8 +417,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -447,6 +515,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#什么是设计模式"><span class="nav-number">1.</span> <span class="nav-text">什么是设计模式</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#什么是工厂模式"><span class="nav-number">2.</span> <span class="nav-text">什么是工厂模式</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
@@ -587,6 +671,10 @@
 
 
   
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
 
   
 

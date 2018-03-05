@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="View," />
+  <meta name="keywords" content="Kotlin," />
 
 
 
@@ -79,25 +79,18 @@
 
 
 
-<meta name="description" content="概述Android的事件分发机制是一个很重要的知识体系,系统以及帮我们处理好了大部分的情况,但是在日常开发中总是会遇到一些奇葩的需求,这个时候就要对系统的事件分发机制有一定的了解,下面就来分析一下系统的事件分发机制.">
-<meta name="keywords" content="View">
+<meta name="description" content="开始Kotlin 提供了很多特性，可以帮助开发者提高开发效率。本篇博客将介绍这些特性。 下面例子都来自 Kotlin 的官方文档。">
+<meta name="keywords" content="Kotlin">
 <meta property="og:type" content="article">
-<meta property="og:title" content="View的事件分发机制">
-<meta property="og:url" content="http://yoursite.com/2016/12/12/View的事件分发机制/index.html">
+<meta property="og:title" content="Kotlin-其他特性(持续更新)">
+<meta property="og:url" content="http://yoursite.com/2018/02/24/Kotlin-其他特性-持续更新/index.html">
 <meta property="og:site_name" content="linzheng blog">
-<meta property="og:description" content="概述Android的事件分发机制是一个很重要的知识体系,系统以及帮我们处理好了大部分的情况,但是在日常开发中总是会遇到一些奇葩的需求,这个时候就要对系统的事件分发机制有一定的了解,下面就来分析一下系统的事件分发机制.">
+<meta property="og:description" content="开始Kotlin 提供了很多特性，可以帮助开发者提高开发效率。本篇博客将介绍这些特性。 下面例子都来自 Kotlin 的官方文档。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://ofdvg4c5w.bkt.clouddn.com/2016-12-12_105929.png">
-<meta property="og:image" content="http://ofdvg4c5w.bkt.clouddn.com/2016-12-12_140726.png">
-<meta property="og:image" content="http://ofdvg4c5w.bkt.clouddn.com/2016-12-14_145106.png">
-<meta property="og:image" content="http://ofdvg4c5w.bkt.clouddn.com/2016-12-14_150257.png">
-<meta property="og:image" content="http://ofdvg4c5w.bkt.clouddn.com/2016-12-14_150343.png">
-<meta property="og:image" content="http://ofdvg4c5w.bkt.clouddn.com/2016-12-14_150328.png">
-<meta property="og:updated_time" content="2018-01-31T11:22:54.867Z">
+<meta property="og:updated_time" content="2018-03-05T03:43:07.910Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="View的事件分发机制">
-<meta name="twitter:description" content="概述Android的事件分发机制是一个很重要的知识体系,系统以及帮我们处理好了大部分的情况,但是在日常开发中总是会遇到一些奇葩的需求,这个时候就要对系统的事件分发机制有一定的了解,下面就来分析一下系统的事件分发机制.">
-<meta name="twitter:image" content="http://ofdvg4c5w.bkt.clouddn.com/2016-12-12_105929.png">
+<meta name="twitter:title" content="Kotlin-其他特性(持续更新)">
+<meta name="twitter:description" content="开始Kotlin 提供了很多特性，可以帮助开发者提高开发效率。本篇博客将介绍这些特性。 下面例子都来自 Kotlin 的官方文档。">
 
 
 
@@ -127,13 +120,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2016/12/12/View的事件分发机制/"/>
+  <link rel="canonical" href="http://yoursite.com/2018/02/24/Kotlin-其他特性-持续更新/"/>
 
 
 
 
 
-  <title>View的事件分发机制 | linzheng blog</title>
+  <title>Kotlin-其他特性(持续更新) | linzheng blog</title>
   
 
 
@@ -250,7 +243,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/12/12/View的事件分发机制/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/02/24/Kotlin-其他特性-持续更新/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="linzheng">
@@ -267,7 +260,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">View的事件分发机制</h1>
+          <h1 class="post-title" itemprop="name headline">Kotlin-其他特性(持续更新)</h1>
         
 
         <div class="post-meta">
@@ -279,8 +272,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-12-12T10:36:45+08:00">
-                2016-12-12
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-02-24T01:17:19+08:00">
+                2018-02-24
               </time>
             
 
@@ -297,7 +290,7 @@
 
           
           
-             <span id="/2016/12/12/View的事件分发机制/" class="leancloud_visitors" data-flag-title="View的事件分发机制">
+             <span id="/2018/02/24/Kotlin-其他特性-持续更新/" class="leancloud_visitors" data-flag-title="Kotlin-其他特性(持续更新)">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -328,62 +321,25 @@
       
 
       
-        <h1 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h1><p>Android的事件分发机制是一个很重要的知识体系,系统以及帮我们处理好了大部分的情况,但是在日常开发中总是会遇到一些奇葩的需求,这个时候就要对系统的事件分发机制有一定的了解,下面就来分析一下系统的事件分发机制.</p>
+        <h1 id="开始"><a href="#开始" class="headerlink" title="开始"></a>开始</h1><p>Kotlin 提供了很多特性，可以帮助开发者提高开发效率。本篇博客将介绍这些特性。</p>
+<p>下面例子都来自 Kotlin 的官方文档。</p>
 <a id="more"></a>
-<h1 id="什么是事件分发"><a href="#什么是事件分发" class="headerlink" title="什么是事件分发"></a>什么是事件分发</h1><p>顾名思义,就是事件(MotionEvent)在Android中传递的机制,什么时候该拦截事件,什么时候事件归子View处理,如果都不处理等等….很多情况,这个时候就需要对系统在处理事件的机制有一定的了解.</p>
-<h1 id="图解事件分发"><a href="#图解事件分发" class="headerlink" title="图解事件分发"></a>图解事件分发</h1><p><img src="http://ofdvg4c5w.bkt.clouddn.com/2016-12-12_105929.png" alt="图一" title="事件分发机制"></p>
-<p>图片出自:<a href="http://www.jianshu.com/p/e99b5e8bd67b" target="_blank" rel="noopener">http://www.jianshu.com/p/e99b5e8bd67b</a></p>
-<blockquote>
-<ul>
-<li>事件首先到Activity的dispatchTouchEvent方法,无论return true还是false都会消费掉这个事件,如果调用super,事件就会传递给ViewGroup的dispatchEvent方法来处理.</li>
-<li>ViewGroup 的dispatchTouchEvent return true 表示消费事件,调用super 会调用ViewGroup的onInterceptTouchEvent.</li>
-<li>ViewGroup 的onInterceptTouchEvent方法 return true 会调用ViewGroup的onTouchEvent方法,return false 或者调用super的onInterceptTouchEvent方法 会 调用View的dispatchTouchEvent方法.</li>
-<li>View 的 dispatchTouchEvent return true 消费事件,return false 会调用ViewGroup的onTouchEvent 调用super会调用View的OnTouchEvent.</li>
-<li>View 的onTouchEvent 方法return true 消费事件,return false或调用super会调用ViewGroup的onTouchEvent</li>
-<li>ViewGroup 的onTouchEvent return true 消费事件,return false 或调用super 会调用Activity的onTouchEvent,到此处整个事件就结束了.</li>
-</ul>
-</blockquote>
-<p>上面就是整个事件传递的流程,通过上面的分析,如果整个事件传递不被中断,整个事件流向是一个类U型图,如下图</p>
-<p><img src="http://ofdvg4c5w.bkt.clouddn.com/2016-12-12_140726.png" alt="图2" title="事件分发机制"><br>图片出自:<a href="http://www.jianshu.com/p/e99b5e8bd67b" target="_blank" rel="noopener">http://www.jianshu.com/p/e99b5e8bd67b</a></p>
-<p>如果没有对控件里面方法进行重写或更改返回值,而直接用super调用默认实现,那么整个事件的流程就是:Actvitiy —&gt; ViewGroup —&gt; View 从上往下调用dispatchTouchEvent,在有View —&gt; ViewGroup —&gt; Activity 从下往上调用onTouchEvent方法,形成了上面那个U型图.</p>
-<h2 id="事件的传递与分发"><a href="#事件的传递与分发" class="headerlink" title="事件的传递与分发"></a>事件的传递与分发</h2><p>如图一所示,dispatchTouchEvent 和 onTouchEvent方法,如果返回true 表示拦截事件,那么如果事件一旦被拦截,就说明事件到达了终点,没有谁能在收到这个事件,dispatchEvent和onTouchEvent return false 的时候,事件就会回传给父控件的onTouchEvent.对于dispatchTouchEvent返回false,事件就会停止往子View传递和分发,同时开始往父控件回溯(父控件的onTouchEvent开始从下往上回传,直到某个onTouchEvent return true),事件的分发就像递归,return false的意义就是递归停止开始回溯.对于onTouchEvent返回false 就比较简单,他就不消费事件,并让事件继续往父控件从下往上流动.</p>
-<p>dispatchTouchEvent,onTouchEvent,onIntercapterTouchEvent, View 和 ViewGroup的这些方法的默认实现,即使用return super.XXXX(),就会按照图2中的U型图走完整个流程,中间不做任何改动,不回溯,不终止,每个环节都走到.</p>
-<h2 id="onInterceptTouchEvent-的作用"><a href="#onInterceptTouchEvent-的作用" class="headerlink" title="onInterceptTouchEvent 的作用"></a>onInterceptTouchEvent 的作用</h2><p>intercept的意识就是拦截,每个ViewGroup每次在做分发的时候,问一问拦截器,是否需要拦截这个事件,如果要自己拦截和这个事件 就 return true 就会交给自己的onTouchEvent方法处理,如果不拦截就是继续往子View传,默认是不会拦截的,即 return super.onInterceptTouchEvent() 的时候 跟 return false 是一样的,这个时候就会调用View的onDispatchTouchEvent方法.</p>
-<h2 id="View-dispatchTouchEvent-和-ViewGroup-dispatchEvent返回super-dispatchEvent-的时候事件的走向"><a href="#View-dispatchTouchEvent-和-ViewGroup-dispatchEvent返回super-dispatchEvent-的时候事件的走向" class="headerlink" title="View dispatchTouchEvent 和 ViewGroup dispatchEvent返回super.dispatchEvent()的时候事件的走向"></a>View dispatchTouchEvent 和 ViewGroup dispatchEvent返回super.dispatchEvent()的时候事件的走向</h2><p>ViewGroup 的dispatchTouchEvent,上面说道return true 是终结传递,return false 是回溯到父View 的 onTouchEvent,那ViewGroup怎样才能通过dispatchTouchEvent方法把事件分发到自己的onTouchEvent中处理？只能通过onInterceptTouchEvent,所以在super.dispatchTouchEvent方法中默认调用了onIntercaptTouchEvent.</p>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>对于dispatchTouchEvent,onInterceptTouchEvent,onTouchEvent, return true 表示事件终结,return false 表示 回溯到父View的onTouchEvent.<br>ViewGroup要想把事件分发给自己的onTouchEvent,那么需要在onInterceptTouchEvent方法return true 拦截事件.<br>ViewGroup的拦截器onInterceptTouchEvent默认是不拦截的,即return super.onInterceptTouchEvent = return false<br>View没有拦截器,为了让View把可以把事件分发给自己的onTouchEvent,View的dispatchTouchEvent即return super.dispatchTouchEvent() 默认会把事件分发给自己的onTouchEvent.</p>
-<p>ViewGroup和View的dispatchTouchEvent方法是用来做事件分发的,那么这个事件可能分发出去的4个目标:</p>
-<ol>
-<li>return true 事件终结 自己处理.</li>
-<li>调用super.dispatchTouchEvent()系统默认会调用自己onInterceptTouchEvent,在onInterceptTouchEvent return true 的时候会把事件分发给自己的onTouchEvent.</li>
-<li>调用super.dispatchTouchEvent().系统默认会调用自己onInterceptTouchEvent,在onInterceptTouchEvent return false 的时候,这个时候就会把事件传递给子View.</li>
-<li>如果在dispatchTouchEvent() return false,事件终止往下传递,并开始回溯,从父类的onTouchEvent开始,事件从下往上回归执行每个控件的onTouchEvent.</li>
-</ol>
-<p>注:由于View没有子View,所有也就没有onInterceptTouchEvent方法,即在View调用super.dispatchTouchEvent()方法的时候,会把事件传递给自己的onTouchEvent方法,对比ViewGroup的dispatchTouchEvent事件分发,View的事件分发没有上面提到的第3点.</p>
-<p>ViewGroup和View的onTouchEvent方法是用来做事件处理的,那么这个事件只能有2个处理方式:</p>
-<ol>
-<li>return turn 自己消费 事件终结</li>
-<li>继续从下往上传,return false 或 return super.onTouchEvent,让父View的onTouchEvnent收到这个事件.</li>
-</ol>
-<p>ViewGroup的onInterceptTouchEvent对事件有2中处理方式</p>
-<ol>
-<li>return true 给自己的onTouchEvent 处理</li>
-<li>reutnr false 或 return super.onInterceptTouchEvent ,将事件传给子View</li>
-</ol>
-<h2 id="ACTION-MOVE-和-ACTION-UP"><a href="#ACTION-MOVE-和-ACTION-UP" class="headerlink" title="ACTION_MOVE 和 ACTION_UP"></a>ACTION_MOVE 和 ACTION_UP</h2><p>上面的分析都是ACTION_DOWN这个事件,ACTION_MOVE 和 ACTION_UP这事件和ACTION_DOWN有点区别,在执行ACTION_DOWN的时候,return false,后面的一系列其他的action就都不会传递过来.简单的说,就说当dispatchTouchEvent在进行事件分发的时候,只有前一个事件如ACTION_DOWN,返回true,才会收到ACTION_MOVE和ACTION_UP的事件,下面举几个例子.</p>
-<p>下图中,在View的onTouchEvent 中返回true, 红色箭头表示ACTION_DOWN的流向,蓝线表示ACTION_MOVE和ACTION_UP的流向.</p>
-<p><img src="http://ofdvg4c5w.bkt.clouddn.com/2016-12-14_145106.png" alt="图3" title="事件分发机制"></p>
-<p>图片出自:<a href="http://www.jianshu.com/p/e99b5e8bd67b" target="_blank" rel="noopener">http://www.jianshu.com/p/e99b5e8bd67b</a></p>
-<p>下图中,在Activity的onTouchEvent 中返回true<br>红色箭头表示ACTION_DOWN的流向,蓝色表示ACTION_MOVE和ACTION_UP的流向.</p>
-<p><img src="http://ofdvg4c5w.bkt.clouddn.com/2016-12-14_150257.png" alt="图4" title="事件分发机制"></p>
-<p>图片出自:<a href="http://www.jianshu.com/p/e99b5e8bd67b" target="_blank" rel="noopener">http://www.jianshu.com/p/e99b5e8bd67b</a></p>
-<p>下图中在ViewGroup2 的dispatchTouchEvent return true 表示拦截这个事件,但是在ViewGroup1的onTouchEvent中 return true ,红色箭头表示ACTION_DOWN的流向,蓝线表示ACTION_MOVE和ACTION_UP的流向.</p>
-<p><img src="http://ofdvg4c5w.bkt.clouddn.com/2016-12-14_150343.png" alt="图5" title="事件分发机制"></p>
-<p>图片出自:<a href="http://www.jianshu.com/p/e99b5e8bd67b" target="_blank" rel="noopener">http://www.jianshu.com/p/e99b5e8bd67b</a></p>
-<p>下图中View的dispatchTouchEvent return false,这个时候回将事件回溯到父View的onTouch方法,然后在ViewGroup2的onTouch方法return true,红色箭头表示ACTION_DOWN的流向,蓝线表示ACTION_MOVE和ACTION_UP的流向.</p>
-<p><img src="http://ofdvg4c5w.bkt.clouddn.com/2016-12-14_150328.png" alt="图6" title="事件分发机制"></p>
-<p>图片出自:<a href="http://www.jianshu.com/p/e99b5e8bd67b" target="_blank" rel="noopener">http://www.jianshu.com/p/e99b5e8bd67b</a></p>
-<p>总之,在哪个View的onTouchEvent方法返回true即return true,那么ACTION_MOVE和ACTION_UP这两个事件,就会从上往下,传递到这个View 的 onTouchEvent方法,然后就不会在继续传递,换句话说,ACTION_DOWN在哪个View消费了,那么ACTION_MOVE和ACTION_UP就会传递到消费的地方,而且不会在继续往下传,如果ACTION_DOWN在dispatchTouchEvent中消费了,那么事件到此为止就停止传递了,如果ACTION_DOWN在onTouchEvent消费了,那么ACTION_MOVE和ACTION_UP就会传递到消费事件的onTouchEvent,并结束传递.</p>
-
+<h1 id="解构声明"><a href="#解构声明" class="headerlink" title="解构声明"></a>解构声明</h1><p>解构声明，英文叫做 <code>Destructuring Declarations</code>，可以减少我们创建的一些”无意义”的类,从而让我们的代码变得更加简洁。具体使用场景如下：</p>
+<p>当我们需要在类与类之间传递数据的时候，而且数据不止一种类型或者数据不止一个，这个时候我们可以要创建一个类，然后声明对应的属性。某种意义上来说，这个类是多余的，因为它仅仅只是起到了传递的作用。</p>
+<p>于是在 Java 中，系统提供了 <code>Pair&lt;F,S&gt;</code>，这个类的主要作用就是用来存储两个数据，当我们要传递两个数据但是又不想为这两个数据创建一个新的类，这个时候，<code>Pair</code> 类是一个不错的选择，代码如下：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">Pair&lt;Integer,String&gt; pair = Pair.create(<span class="number">1</span>,<span class="string">"壹"</span>);</span><br><span class="line"><span class="comment">//直接传递 pair 对象。</span></span><br></pre></td></tr></table></figure>
+<p>虽然 <code>Pair</code> 类看上去不错，但是也有一些弊端，一是只能传递两个，而是代码可读性不是很好。是用解构声明，就能很轻松的解决这两个问题。代码如下：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">//Person 是一个对象的实例，且不仅仅只有 name 和 age 这两个属性</span></span><br><span class="line"><span class="keyword">val</span> (name, age) = person</span><br><span class="line"></span><br><span class="line"><span class="comment">//编译后的伪代码</span></span><br><span class="line"><span class="keyword">val</span> name = person.component1()</span><br><span class="line"><span class="keyword">val</span> age = person.component2()</span><br><span class="line"></span><br><span class="line"><span class="comment">//分别输出 name 和 age</span></span><br><span class="line">println(name)</span><br><span class="line">println(age)</span><br></pre></td></tr></table></figure>
+<p>从上面的代码中可以看到，解构函数可以将某种类型的对象实例中的某几个属性单独获取出来，获取的策略是使用 <code>componentN()</code> 函数。解构声明不仅可以在变量上声明，还可以在其他地方声明。具体代码如下：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">//在循环中使用解构声明</span></span><br><span class="line"><span class="keyword">for</span> (a, b <span class="keyword">in</span> collection) &#123; ... &#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//在遍历 Map 的时候使用解构声明</span></span><br><span class="line"><span class="keyword">for</span> ((key, value) <span class="keyword">in</span> map) &#123; ... &#125;</span><br></pre></td></tr></table></figure>
+<p>当我们遍历集合的时候使用解构声明，其对应的值是集合中对象所声明的 <code>componentN()</code>，而 Map 不一样，Kotlin 默认帮我们实现了获取 Key 和 Value 的 <code>compentN()</code> 函数，所以我们可以直接遍历一个 Map 的 Key 和 Value。</p>
+<p>通过上面的例子，不难发现，解构函数和 <code>componentN()</code> 函数有分不开的关系，而且和 <code>componentN()</code> 函数声明的顺序也有很大的关系，当我们想绕过某些属性的时候可以使用 <code>_</code> 来实现”占位子”的特性。具体代码如下：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">//假设 Person 类中有 3 个属性分别是: id name age</span></span><br><span class="line"><span class="comment">//我们想拖过解构声明来获取 person 对象中的 name 和 age</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">val</span>(_, name, age) = person</span><br></pre></td></tr></table></figure>
+<p>解构声明还可以在 lambda 表达式中使用，更加进一步的优化我们的代码。具体代码如下：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">//遍历 Map</span></span><br><span class="line">map.mapValues&#123; entry -&gt; <span class="string">"<span class="subst">$&#123;entry.value&#125;</span>！"</span> &#125;</span><br><span class="line">map.mapValues&#123; (key, value) -&gt; <span class="string">"<span class="variable">$value</span>"</span> &#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//声明解构对和声明参数之间的区别</span></span><br><span class="line">&#123; a -&gt; ... &#125; <span class="comment">//一个参数</span></span><br><span class="line">&#123; a, b -&gt; ... &#125; <span class="comment">//两个参数</span></span><br><span class="line">&#123; (a, b) -&gt; ... &#125; <span class="comment">//一个解构对</span></span><br><span class="line">&#123; (a, b), c -&gt; ... &#125; <span class="comment">//一个解构对和一个参数</span></span><br></pre></td></tr></table></figure>
+<h1 id="集合"><a href="#集合" class="headerlink" title="集合"></a>集合</h1><p>和大多数语音不同，Kotlin 提供了可变和不可变的两种结合类型，拿 List 举例，默认情况下 List 类型创建的是一个只读的集合，而 MutableList 类型创建的就是一个可变的集合对象。Map 和 Set 也是一样。</p>
+<p>为了方便我们创建集合，Kotlin 提供了很多有用的方法，具体代码如下：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">//创建一个只读 List</span></span><br><span class="line"><span class="keyword">val</span> readOnlyList = listOf(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">//创建一个可读可写的 List</span></span><br><span class="line"><span class="keyword">val</span> readWriteList = muutableListOf(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">//编译不通过，因为readOnlyList 是只读的所以无法修改其数据</span></span><br><span class="line">readOnlyList.clear()</span><br><span class="line"></span><br><span class="line"><span class="comment">//将一个可变集合 copy 成一个不可变的集合</span></span><br><span class="line"><span class="keyword">val</span> _items = mutableListOf(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>)</span><br><span class="line"><span class="keyword">val</span> items: List&lt;<span class="built_in">Int</span>&gt; = _items.toList()</span><br><span class="line"></span><br><span class="line"><span class="comment">//List 本身还提供了很多有用的方法</span></span><br><span class="line"><span class="keyword">val</span> items = listOf(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>)</span><br><span class="line">items.first()</span><br><span class="line">items.last()</span><br><span class="line">items.filter &#123; it % <span class="number">2</span> == <span class="number">0</span> &#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">val</span> rwList = mutableListOf(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>)</span><br><span class="line">rwList.requireNoNulls()</span><br><span class="line"><span class="keyword">if</span> (rwList.none &#123; it &gt; <span class="number">6</span> &#125;) println(<span class="string">"No items above 6"</span>)</span><br><span class="line"><span class="keyword">val</span> item = rwList.firstOrNull()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">//Map 的一些使用方法</span></span><br></pre></td></tr></table></figure>
       
     </div>
     
@@ -400,7 +356,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/View/" rel="tag"># View</a>
+            <a href="/tags/Kotlin/" rel="tag"># Kotlin</a>
           
         </div>
       
@@ -413,8 +369,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2016/12/08/Android中不能在子线程中更新UI/" rel="next" title="Android中不能在子线程中更新UI?!">
-                <i class="fa fa-chevron-left"></i> Android中不能在子线程中更新UI?!
+              <a href="/2018/02/15/设计模式-工厂模式/" rel="next" title="设计模式-工厂模式">
+                <i class="fa fa-chevron-left"></i> 设计模式-工厂模式
               </a>
             
           </div>
@@ -422,10 +378,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2016/12/21/View-的绘制流程-measure-layout-draw/" rel="prev" title="View 的绘制流程(measure,layout,draw)">
-                View 的绘制流程(measure,layout,draw) <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -585,7 +537,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#概述"><span class="nav-number">1.</span> <span class="nav-text">概述</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#什么是事件分发"><span class="nav-number">2.</span> <span class="nav-text">什么是事件分发</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#图解事件分发"><span class="nav-number">3.</span> <span class="nav-text">图解事件分发</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#事件的传递与分发"><span class="nav-number">3.1.</span> <span class="nav-text">事件的传递与分发</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#onInterceptTouchEvent-的作用"><span class="nav-number">3.2.</span> <span class="nav-text">onInterceptTouchEvent 的作用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#View-dispatchTouchEvent-和-ViewGroup-dispatchEvent返回super-dispatchEvent-的时候事件的走向"><span class="nav-number">3.3.</span> <span class="nav-text">View dispatchTouchEvent 和 ViewGroup dispatchEvent返回super.dispatchEvent()的时候事件的走向</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">3.4.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ACTION-MOVE-和-ACTION-UP"><span class="nav-number">3.5.</span> <span class="nav-text">ACTION_MOVE 和 ACTION_UP</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#开始"><span class="nav-number">1.</span> <span class="nav-text">开始</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#解构声明"><span class="nav-number">2.</span> <span class="nav-text">解构声明</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#集合"><span class="nav-number">3.</span> <span class="nav-text">集合</span></a></li></ol></div>
             
 
           </div>
