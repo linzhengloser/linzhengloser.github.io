@@ -87,7 +87,7 @@
 <meta property="og:site_name" content="linzheng blog">
 <meta property="og:description" content="开始Kotlin 提供了很多特性，可以帮助开发者提高开发效率。本篇博客将介绍这些特性。 下面例子都来自 Kotlin 的官方文档。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-03-05T03:43:07.910Z">
+<meta property="og:updated_time" content="2018-03-24T04:23:05.720Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Kotlin-其他特性(持续更新)">
 <meta name="twitter:description" content="开始Kotlin 提供了很多特性，可以帮助开发者提高开发效率。本篇博客将介绍这些特性。 下面例子都来自 Kotlin 的官方文档。">
@@ -340,6 +340,7 @@
 <h1 id="集合"><a href="#集合" class="headerlink" title="集合"></a>集合</h1><p>和大多数语音不同，Kotlin 提供了可变和不可变的两种结合类型，拿 List 举例，默认情况下 List 类型创建的是一个只读的集合，而 MutableList 类型创建的就是一个可变的集合对象。Map 和 Set 也是一样。</p>
 <p>为了方便我们创建集合，Kotlin 提供了很多有用的方法，具体代码如下：</p>
 <figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">//创建一个只读 List</span></span><br><span class="line"><span class="keyword">val</span> readOnlyList = listOf(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">//创建一个可读可写的 List</span></span><br><span class="line"><span class="keyword">val</span> readWriteList = muutableListOf(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">//编译不通过，因为readOnlyList 是只读的所以无法修改其数据</span></span><br><span class="line">readOnlyList.clear()</span><br><span class="line"></span><br><span class="line"><span class="comment">//将一个可变集合 copy 成一个不可变的集合</span></span><br><span class="line"><span class="keyword">val</span> _items = mutableListOf(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>)</span><br><span class="line"><span class="keyword">val</span> items: List&lt;<span class="built_in">Int</span>&gt; = _items.toList()</span><br><span class="line"></span><br><span class="line"><span class="comment">//List 本身还提供了很多有用的方法</span></span><br><span class="line"><span class="keyword">val</span> items = listOf(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>)</span><br><span class="line">items.first()</span><br><span class="line">items.last()</span><br><span class="line">items.filter &#123; it % <span class="number">2</span> == <span class="number">0</span> &#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">val</span> rwList = mutableListOf(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>)</span><br><span class="line">rwList.requireNoNulls()</span><br><span class="line"><span class="keyword">if</span> (rwList.none &#123; it &gt; <span class="number">6</span> &#125;) println(<span class="string">"No items above 6"</span>)</span><br><span class="line"><span class="keyword">val</span> item = rwList.firstOrNull()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">//Map 的一些使用方法</span></span><br></pre></td></tr></table></figure>
+<h1 id="范围"><a href="#范围" class="headerlink" title="范围"></a>范围</h1>
       
     </div>
     
@@ -378,6 +379,10 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/03/24/Activity启动流程分析/" rel="prev" title="Activity启动流程分析">
+                Activity启动流程分析 <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -458,7 +463,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">29</span>
+                  <span class="site-state-item-count">31</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -537,7 +542,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#开始"><span class="nav-number">1.</span> <span class="nav-text">开始</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#解构声明"><span class="nav-number">2.</span> <span class="nav-text">解构声明</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#集合"><span class="nav-number">3.</span> <span class="nav-text">集合</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#开始"><span class="nav-number">1.</span> <span class="nav-text">开始</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#解构声明"><span class="nav-number">2.</span> <span class="nav-text">解构声明</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#集合"><span class="nav-number">3.</span> <span class="nav-text">集合</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#范围"><span class="nav-number">4.</span> <span class="nav-text">范围</span></a></li></ol></div>
             
 
           </div>

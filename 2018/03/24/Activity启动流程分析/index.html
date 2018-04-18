@@ -1,0 +1,909 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="源码分析," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="开始在面试中，经常会被问到四大组件相关的问题，而在四大组件中问到最多的就是 Activity，如生命周期，启动流程等等。由此我们可以看出 Activity 在 Android 系统中扮演者很重要的角色，对于用户来说操作的基本上都是 Activity，而对于我们开发者来说，在平时的开发中基本上都是在 Activity 的基础之上进行的(应用开发)。下面我们就来分析一下 Activity 的启动流程。">
+<meta name="keywords" content="源码分析">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Activity启动流程分析">
+<meta property="og:url" content="http://yoursite.com/2018/03/24/Activity启动流程分析/index.html">
+<meta property="og:site_name" content="linzheng blog">
+<meta property="og:description" content="开始在面试中，经常会被问到四大组件相关的问题，而在四大组件中问到最多的就是 Activity，如生命周期，启动流程等等。由此我们可以看出 Activity 在 Android 系统中扮演者很重要的角色，对于用户来说操作的基本上都是 Activity，而对于我们开发者来说，在平时的开发中基本上都是在 Activity 的基础之上进行的(应用开发)。下面我们就来分析一下 Activity 的启动流程。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-03-31T10:25:31.318Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Activity启动流程分析">
+<meta name="twitter:description" content="开始在面试中，经常会被问到四大组件相关的问题，而在四大组件中问到最多的就是 Activity，如生命周期，启动流程等等。由此我们可以看出 Activity 在 Android 系统中扮演者很重要的角色，对于用户来说操作的基本上都是 Activity，而对于我们开发者来说，在平时的开发中基本上都是在 Activity 的基础之上进行的(应用开发)。下面我们就来分析一下 Activity 的启动流程。">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/03/24/Activity启动流程分析/"/>
+
+
+
+
+
+  <title>Activity启动流程分析 | linzheng blog</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?a47d4a5123200d8170cd198104ba9e50";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">linzheng blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">linzheng blog</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/03/24/Activity启动流程分析/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="linzheng">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://ofdvg4c5w.bkt.clouddn.com/%E7%BA%B1%E9%9B%BE.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="linzheng blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Activity启动流程分析</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-24T12:21:17+08:00">
+                2018-03-24
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2018/03/24/Activity启动流程分析/" class="leancloud_visitors" data-flag-title="Activity启动流程分析">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="开始"><a href="#开始" class="headerlink" title="开始"></a>开始</h1><p>在面试中，经常会被问到<code>四大组件</code>相关的问题，而在<code>四大组件</code>中问到最多的就是 Activity，如生命周期，启动流程等等。由此我们可以看出 Activity 在 Android 系统中扮演者很重要的角色，对于用户来说操作的基本上都是 Activity，而对于我们开发者来说，在平时的开发中基本上都是在 Activity 的基础之上进行的(应用开发)。下面我们就来分析一下 Activity 的启动流程。</p>
+<a id="more"></a>
+<h1 id="分析之前"><a href="#分析之前" class="headerlink" title="分析之前"></a>分析之前</h1><p>在开始分析之前，我们回顾一下 Activity 的一般用法，Activity 的使用方法虽然简单，那其实因为 Andrid 帮我们实现了大部分的逻辑，但是这不代表一般用法没用，在整个阅读源码的过程中，<code>用法</code>往往是放在第一个位的，从用法中我们可以分析出一个大概的轮廓，比如：</p>
+<p>平时我们都是这么使用 Activity 的</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">//1. 首先我们要在 Manifest 中声明 Activity</span><br><span class="line">&lt;activity name = &quot;.MainActivity&quot;/&gt;</span><br><span class="line"></span><br><span class="line">//2. 我们新建一个类并且继承 Activity</span><br><span class="line">public class MainActivity extends Activity &#123; ... &#125;</span><br><span class="line"></span><br><span class="line">//3. 如果我们想启动这个 Activity</span><br><span class="line">Intent intent = new Intent(this,MainActivity.class);</span><br><span class="line">startActivity(Intent)</span><br></pre></td></tr></table></figure>
+<p>可以看到，我们首先要在 Manifest 中声明 Activity，然后要继承系统的 Activity，最后通过 Intent 加 startActivity 方法启动。那么就有如下几个问题：</p>
+<ol>
+<li>为什么要在 Manifest 中声明 Activity，是不是必须的？</li>
+<li>可不可在不继承 Activity 的情况下实现一个 Activity？</li>
+<li>启动一个 Activity 有没有别的方法？</li>
+</ol>
+<p>下面我们就在源码中找到上面问题的答案。</p>
+<p>下面源码都是基于 Android 26。</p>
+<h1 id="startActivity"><a href="#startActivity" class="headerlink" title="startActivity()"></a>startActivity()</h1><p>我们先看看 startActivity() 这个方法，源码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">startActivity</span><span class="params">(Intent intent)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.startActivity(intent, <span class="keyword">null</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">startActivity</span><span class="params">(Intent intent, @Nullable Bundle options)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (options != <span class="keyword">null</span>) &#123;</span><br><span class="line">        startActivityForResult(intent, -<span class="number">1</span>, options);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        startActivityForResult(intent, -<span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">startActivityForResult</span><span class="params">(@RequiresPermission Intent intent, <span class="keyword">int</span> requestCode)</span> </span>&#123;</span><br><span class="line">    startActivityForResult(intent, requestCode, <span class="keyword">null</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">startActivityForResult</span><span class="params">(@RequiresPermission Intent intent, <span class="keyword">int</span> requestCode,</span></span></span><br><span class="line"><span class="function"><span class="params">        @Nullable Bundle options)</span> </span>&#123;</span><br><span class="line">    <span class="comment">//一般情况下 mParent 都是等于 null 的</span></span><br><span class="line">    <span class="keyword">if</span> (mParent == <span class="keyword">null</span>) &#123;</span><br><span class="line">        options = transferSpringboardActivityOptions(options);</span><br><span class="line">        Instrumentation.ActivityResult ar =</span><br><span class="line">            mInstrumentation.execStartActivity(</span><br><span class="line">                <span class="keyword">this</span>, mMainThread.getApplicationThread(), mToken, <span class="keyword">this</span>,</span><br><span class="line">                intent, requestCode, options);</span><br><span class="line">        <span class="keyword">if</span> (ar != <span class="keyword">null</span>) &#123;</span><br><span class="line">            mMainThread.sendActivityResult(</span><br><span class="line">                mToken, mEmbeddedID, requestCode, ar.getResultCode(),</span><br><span class="line">                ar.getResultData());</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (requestCode &gt;= <span class="number">0</span>) &#123;</span><br><span class="line">            mStartedActivity = <span class="keyword">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        cancelInputsAndStartExitTransition(options);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="comment">//省略部分代码</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>不知道大家有没有发现 startActivity() 这个方法是重写的父类的方法，而 startActivityForResult() 却不是重写的，原因很简单，因为 Activity 的父类其实就 Context，因为 Context 压根就没有 startActivityForResult() 这个方法，所以无法重写，那为什么 Context 没有呢？因为 startActivityForResult() 是 Activity 特有的，换言之 startActivity 并不是非要在 Activity 中调用，只要有 Context 对象就能调用，所以我们就能在 Service 等组件中启动 Activity。</p>
+<p>我们只看最重要的一部分，那就是调用 mInstrumentation 的 execStartActivity() 方法，这个方法的第二参数是一个 IBinder 对象，这个参数非常重要，具体如何重要，我们继续往下看：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> ActivityResult <span class="title">execStartActivity</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">        Context who, IBinder contextThread, IBinder token, Activity target,</span></span></span><br><span class="line"><span class="function"><span class="params">        Intent intent, <span class="keyword">int</span> requestCode, Bundle options)</span> </span>&#123;</span><br><span class="line">    IApplicationThread whoThread = (IApplicationThread) contextThread;</span><br><span class="line">    <span class="comment">// 省略部分代码</span></span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        intent.migrateExtraStreamToClipData();</span><br><span class="line">        intent.prepareToLeaveProcess(who);</span><br><span class="line">        <span class="keyword">int</span> result = ActivityManager.getService()</span><br><span class="line">            .startActivity(whoThread, who.getBasePackageName(), intent,</span><br><span class="line">                    intent.resolveTypeIfNeeded(who.getContentResolver()),</span><br><span class="line">                    token, target != <span class="keyword">null</span> ? target.mEmbeddedID : <span class="keyword">null</span>,</span><br><span class="line">                    requestCode, <span class="number">0</span>, <span class="keyword">null</span>, options);</span><br><span class="line">        checkStartActivityResult(result, intent);</span><br><span class="line">    &#125; <span class="keyword">catch</span> (RemoteException e) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> RuntimeException(<span class="string">"Failure from system"</span>, e);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在上面的方法中，最终调用了 ActivityManager 的 getService() 这个方法，这个方法最终会返回一个 ActivityManagerService(下面简称 AMS)，并调用它的 startActivity() 方法，在分析 AMS 的 startActivity() 方法之前，我们先看看后面那个 checkStartActivityResult() 这个方法，代码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">checkStartActivityResult</span><span class="params">(<span class="keyword">int</span> res, Object intent)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 判断 startActivity 的返回结果是否有异常</span></span><br><span class="line">    <span class="keyword">if</span> (!ActivityManager.isStartResultFatalError(res)) &#123;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">switch</span> (res) &#123;</span><br><span class="line">        <span class="keyword">case</span> ActivityManager.START_INTENT_NOT_RESOLVED:</span><br><span class="line">        <span class="keyword">case</span> ActivityManager.START_CLASS_NOT_FOUND:</span><br><span class="line">            <span class="keyword">if</span> (intent <span class="keyword">instanceof</span> Intent &amp;&amp; ((Intent)intent).getComponent() != <span class="keyword">null</span>)</span><br><span class="line">                <span class="keyword">throw</span> <span class="keyword">new</span> ActivityNotFoundException(</span><br><span class="line">                        <span class="string">"Unable to find explicit activity class "</span></span><br><span class="line">                        + ((Intent)intent).getComponent().toShortString()</span><br><span class="line">                        + <span class="string">"; have you declared this activity in your AndroidManifest.xml?"</span>);</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> ActivityNotFoundException(</span><br><span class="line">                    <span class="string">"No Activity found to handle "</span> + intent);</span><br><span class="line">        <span class="keyword">case</span> ActivityManager.START_PERMISSION_DENIED:</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> SecurityException(<span class="string">"Not allowed to start activity "</span></span><br><span class="line">                    + intent);</span><br><span class="line">        <span class="keyword">case</span> ActivityManager.START_FORWARD_AND_REQUEST_CONFLICT:</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> AndroidRuntimeException(</span><br><span class="line">                    <span class="string">"FORWARD_RESULT_FLAG used while also requesting a result"</span>);</span><br><span class="line">        <span class="keyword">case</span> ActivityManager.START_NOT_ACTIVITY:</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(</span><br><span class="line">                    <span class="string">"PendingIntent is not an activity"</span>);</span><br><span class="line">        <span class="keyword">case</span> ActivityManager.START_NOT_VOICE_COMPATIBLE:</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> SecurityException(</span><br><span class="line">                    <span class="string">"Starting under voice control not allowed for: "</span> + intent);</span><br><span class="line">        <span class="keyword">case</span> ActivityManager.START_VOICE_NOT_ACTIVE_SESSION:</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> IllegalStateException(</span><br><span class="line">                    <span class="string">"Session calling startVoiceActivity does not match active session"</span>);</span><br><span class="line">        <span class="keyword">case</span> ActivityManager.START_VOICE_HIDDEN_SESSION:</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> IllegalStateException(</span><br><span class="line">                    <span class="string">"Cannot start voice activity on a hidden session"</span>);</span><br><span class="line">        <span class="keyword">case</span> ActivityManager.START_ASSISTANT_NOT_ACTIVE_SESSION:</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> IllegalStateException(</span><br><span class="line">                    <span class="string">"Session calling startAssistantActivity does not match active session"</span>);</span><br><span class="line">        <span class="keyword">case</span> ActivityManager.START_ASSISTANT_HIDDEN_SESSION:</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> IllegalStateException(</span><br><span class="line">                    <span class="string">"Cannot start assistant activity on a hidden session"</span>);</span><br><span class="line">        <span class="keyword">case</span> ActivityManager.START_CANCELED:</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> AndroidRuntimeException(<span class="string">"Activity could not be started for "</span></span><br><span class="line">                    + intent);</span><br><span class="line">        <span class="keyword">default</span>:</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> AndroidRuntimeException(<span class="string">"Unknown error code "</span></span><br><span class="line">                    + res + <span class="string">" when starting "</span> + intent);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在上面代码中的过 switch 中，有一个 case 的值是 START_CLASS_NOT_FOUND，这个 case 对应的异常我想大家在日常开发中一定没少遇到，原因就是我们没有在 Manifest 中注册这个 Acitivty，所以就会导致这个异常。</p>
+<h1 id="ActivityThread"><a href="#ActivityThread" class="headerlink" title="ActivityThread"></a>ActivityThread</h1><p>回到 AMS 的 startActivity() 方法，在 AMS 的 startActivity() 方法中又会经过一长窜的调用(这里的调用很长，我们没必要去纠结它是怎么调用的，只需要最终会调用哪个方法即可)，最终来到 ApplicationThread 的 scheduleLaunchActivity()，源码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">void</span> <span class="title">scheduleLaunchActivity</span><span class="params">(Intent intent, IBinder token, <span class="keyword">int</span> ident,</span></span></span><br><span class="line"><span class="function"><span class="params">        ActivityInfo info, Configuration curConfig, Configuration overrideConfig,</span></span></span><br><span class="line"><span class="function"><span class="params">        CompatibilityInfo compatInfo, String referrer, IVoiceInteractor voiceInteractor,</span></span></span><br><span class="line"><span class="function"><span class="params">        <span class="keyword">int</span> procState, Bundle state, PersistableBundle persistentState,</span></span></span><br><span class="line"><span class="function"><span class="params">        List&lt;ResultInfo&gt; pendingResults, List&lt;ReferrerIntent&gt; pendingNewIntents,</span></span></span><br><span class="line"><span class="function"><span class="params">        <span class="keyword">boolean</span> notResumed, <span class="keyword">boolean</span> isForward, ProfilerInfo profilerInfo)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//省略部分代码</span></span><br><span class="line">    sendMessage(H.LAUNCH_ACTIVITY, r);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在上面的代码中，最终调用 sendMessage() 方法，这个方法会向一个名为 mH 的 Handler 发送一个 Message，这个名为 mH 的 Hander 声明在 ActivityThread 类中，而 ApplicationThread 是 ActivityThread 的内部类。</p>
+<p>在 ActivityThread 中，最终会调用 handleLaunchActivity() 方法，源码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">handleLaunchActivity</span><span class="params">(ActivityClientRecord r, Intent customIntent, String reason)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// If we are getting ready to gc after going to the background, well</span></span><br><span class="line">    <span class="comment">// we are back active so skip it.</span></span><br><span class="line">    unscheduleGcIdler();</span><br><span class="line">    mSomeActivitiesChanged = <span class="keyword">true</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (r.profilerInfo != <span class="keyword">null</span>) &#123;</span><br><span class="line">        mProfiler.setProfiler(r.profilerInfo);</span><br><span class="line">        mProfiler.startProfiling();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Make sure we are running with the most recent config.</span></span><br><span class="line">    handleConfigurationChanged(<span class="keyword">null</span>, <span class="keyword">null</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Initialize before creating the activity</span></span><br><span class="line">    WindowManagerGlobal.initialize();</span><br><span class="line"></span><br><span class="line">    <span class="comment">//调用 performLaunchActivity</span></span><br><span class="line">    Activity a = performLaunchActivity(r, customIntent);</span><br><span class="line"></span><br><span class="line">    <span class="comment">//省略部分代码</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> Activity <span class="title">performLaunchActivity</span><span class="params">(ActivityClientRecord r, Intent customIntent)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// System.out.println("##### [" + System.currentTimeMillis() + "] ActivityThread.performLaunchActivity(" + r + ")");</span></span><br><span class="line"></span><br><span class="line">    ActivityInfo aInfo = r.activityInfo;</span><br><span class="line">    <span class="keyword">if</span> (r.packageInfo == <span class="keyword">null</span>) &#123;</span><br><span class="line">        r.packageInfo = getPackageInfo(aInfo.applicationInfo, r.compatInfo,</span><br><span class="line">                Context.CONTEXT_INCLUDE_CODE);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    ComponentName component = r.intent.getComponent();</span><br><span class="line">    <span class="keyword">if</span> (component == <span class="keyword">null</span>) &#123;</span><br><span class="line">        component = r.intent.resolveActivity(</span><br><span class="line">            mInitialApplication.getPackageManager());</span><br><span class="line">        r.intent.setComponent(component);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (r.activityInfo.targetActivity != <span class="keyword">null</span>) &#123;</span><br><span class="line">        component = <span class="keyword">new</span> ComponentName(r.activityInfo.packageName,</span><br><span class="line">                r.activityInfo.targetActivity);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    ContextImpl appContext = createBaseContextForActivity(r);</span><br><span class="line">    Activity activity = <span class="keyword">null</span>;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="comment">//从这里可以看错 Activity 的实例是通过反射创建的</span></span><br><span class="line">        java.lang.ClassLoader cl = appContext.getClassLoader();</span><br><span class="line">        activity = mInstrumentation.newActivity(</span><br><span class="line">                cl, component.getClassName(), r.intent);</span><br><span class="line">        StrictMode.incrementExpectedActivityCount(activity.getClass());</span><br><span class="line">        r.intent.setExtrasClassLoader(cl);</span><br><span class="line">        r.intent.prepareToEnterProcess();</span><br><span class="line">        <span class="keyword">if</span> (r.state != <span class="keyword">null</span>) &#123;</span><br><span class="line">            r.state.setClassLoader(cl);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">        <span class="keyword">if</span> (!mInstrumentation.onException(activity, e)) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> RuntimeException(</span><br><span class="line">                <span class="string">"Unable to instantiate activity "</span> + component</span><br><span class="line">                + <span class="string">": "</span> + e.toString(), e);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//省略部分代码</span></span><br><span class="line">    Application app = r.packageInfo.makeApplication(<span class="keyword">false</span>, mInstrumentation);</span><br><span class="line">    <span class="comment">//省略部分代码</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> activity;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>上面的代码很长，不过流程很清晰，首先我们可以看到，系统通过 Instrumentation 的 newActivity() 方法创建 Activity 对象的实例，其内部其实就是是用了 Java 的反射机制，然后会调用 LoadApk 的 makeApplication() 方法，源码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> Application <span class="title">makeApplication</span><span class="params">(<span class="keyword">boolean</span> forceDefaultAppClass,</span></span></span><br><span class="line"><span class="function"><span class="params">        Instrumentation instrumentation)</span> </span>&#123;</span><br><span class="line">    <span class="comment">//判断 mApplication</span></span><br><span class="line">    <span class="keyword">if</span> (mApplication != <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> mApplication;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    Trace.traceBegin(Trace.TRACE_TAG_ACTIVITY_MANAGER, <span class="string">"makeApplication"</span>);</span><br><span class="line"></span><br><span class="line">    Application app = <span class="keyword">null</span>;</span><br><span class="line"></span><br><span class="line">    String appClass = mApplicationInfo.className;</span><br><span class="line">    <span class="keyword">if</span> (forceDefaultAppClass || (appClass == <span class="keyword">null</span>)) &#123;</span><br><span class="line">        appClass = <span class="string">"android.app.Application"</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        java.lang.ClassLoader cl = getClassLoader();</span><br><span class="line">        <span class="keyword">if</span> (!mPackageName.equals(<span class="string">"android"</span>)) &#123;</span><br><span class="line">            Trace.traceBegin(Trace.TRACE_TAG_ACTIVITY_MANAGER,</span><br><span class="line">                    <span class="string">"initializeJavaContextClassLoader"</span>);</span><br><span class="line">            initializeJavaContextClassLoader();</span><br><span class="line">            Trace.traceEnd(Trace.TRACE_TAG_ACTIVITY_MANAGER);</span><br><span class="line">        &#125;</span><br><span class="line">        ContextImpl appContext = ContextImpl.createAppContext(mActivityThread, <span class="keyword">this</span>);</span><br><span class="line">        app = mActivityThread.mInstrumentation.newApplication(</span><br><span class="line">                cl, appClass, appContext);</span><br><span class="line">        appContext.setOuterContext(app);</span><br><span class="line">    &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">        <span class="keyword">if</span> (!mActivityThread.mInstrumentation.onException(app, e)) &#123;</span><br><span class="line">            Trace.traceEnd(Trace.TRACE_TAG_ACTIVITY_MANAGER);</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> RuntimeException(</span><br><span class="line">                <span class="string">"Unable to instantiate application "</span> + appClass</span><br><span class="line">                + <span class="string">": "</span> + e.toString(), e);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    mActivityThread.mAllApplications.add(app);</span><br><span class="line">    mApplication = app;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (instrumentation != <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            instrumentation.callApplicationOnCreate(app);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            <span class="keyword">if</span> (!instrumentation.onException(app, e)) &#123;</span><br><span class="line">                Trace.traceEnd(Trace.TRACE_TAG_ACTIVITY_MANAGER);</span><br><span class="line">                <span class="keyword">throw</span> <span class="keyword">new</span> RuntimeException(</span><br><span class="line">                    <span class="string">"Unable to create application "</span> + app.getClass().getName()</span><br><span class="line">                    + <span class="string">": "</span> + e.toString(), e);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//省略部分代码</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> app;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在上面的代码中，首先会判断 mApplication 对象是否为空，所以我们可以推断出 mApplication 只会有一个实例，接着如果 mApplication 为空会调用 Instrumentation 的 createAppContext() 方法，这个方法会创建出 ContextImpl 对象，紧接着会调用 Instrumentation 的 createApplication() 方法，源码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">public</span> Application <span class="title">newApplication</span><span class="params">(Class&lt;?&gt; clazz, Context context)</span></span></span><br><span class="line"><span class="function">        <span class="keyword">throws</span> InstantiationException, IllegalAccessException,</span></span><br><span class="line"><span class="function">        ClassNotFoundException </span>&#123;</span><br><span class="line">    Application app = (Application)clazz.newInstance();</span><br><span class="line">    app.attach(context);</span><br><span class="line">    <span class="keyword">return</span> app;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>可以看到，和 Activity 一样会使用反射创建对象，然后调用 attach() 方法，注意那个 context 参数，其实就是我们上面创建的 ContextImpl 对象。</p>
+<p>回到上面的 makeApplication()，当 Application 对象的实例创建完成之后，会将它赋值个 mApplication，最后通过 Instrumentation 的 callApplicationOnCreate() 调用 Application 的 onCreate()。</p>
+<p>到这里 Application 对象创建了，并且它的 onCreate() 也被调用，重新回调用 ActivityThread 类的 performLaunchActivity() 方法，源码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> Activity <span class="title">performLaunchActivity</span><span class="params">(ActivityClientRecord r, Intent customIntent)</span> </span>&#123;</span><br><span class="line">  <span class="comment">//省略部分代码</span></span><br><span class="line">  Application app = r.packageInfo.makeApplication(<span class="keyword">false</span>, mInstrumentation);</span><br><span class="line">  Application app = r.packageInfo.makeApplication(<span class="keyword">false</span>, mInstrumentation);</span><br><span class="line">  CharSequence title = r.activityInfo.loadLabel(appContext.getPackageManager());</span><br><span class="line">  Configuration config = <span class="keyword">new</span> Configuration(mCompatConfiguration);</span><br><span class="line">  <span class="keyword">if</span> (r.overrideConfig != <span class="keyword">null</span>) &#123;</span><br><span class="line">      config.updateFrom(r.overrideConfig);</span><br><span class="line">  &#125;</span><br><span class="line">  Window window = <span class="keyword">null</span>;</span><br><span class="line">  <span class="keyword">if</span> (r.mPendingRemoveWindow != <span class="keyword">null</span> &amp;&amp; r.mPreserveWindow) &#123;</span><br><span class="line">      window = r.mPendingRemoveWindow;</span><br><span class="line">      r.mPendingRemoveWindow = <span class="keyword">null</span>;</span><br><span class="line">      r.mPendingRemoveWindowManager = <span class="keyword">null</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  appContext.setOuterContext(activity);</span><br><span class="line">  <span class="comment">//activity 对象已经在上面创建了</span></span><br><span class="line">  activity.attach(appContext, <span class="keyword">this</span>, getInstrumentation(), r.token,</span><br><span class="line">          r.ident, app, r.intent, r.activityInfo, title, r.parent,</span><br><span class="line">          r.embeddedID, r.lastNonConfigurationInstances, config,</span><br><span class="line">          r.referrer, r.voiceInteractor, window, r.configCallback);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (r.isPersistable()) &#123;</span><br><span class="line">        mInstrumentation.callActivityOnCreate(activity, r.state, r.persistentState);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        mInstrumentation.callActivityOnCreate(activity, r.state);</span><br><span class="line">    &#125;</span><br><span class="line">  <span class="keyword">return</span> activity;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>可以看到在 performLaunchActivity() 方法中，创建完 Activity 对象之后，会调用它的 attach() 方法，这个方法主要是用来初始化 Activity 的一些属性的，其中包括 Window，ApplicationContext 等等。之后会调用 Intrumentation 的 callActivityOnCreate() 方法，在这个方法会调用 Activity 的 onCreate()。</p>
+<p>分析到这里，Activity 对象就被成功创建出来了，我们回到开始的几个问题，看看有没有找到答案。</p>
+<ol>
+<li>Activity 在一般情况下必须在 Manifest 中注册，为什么说是一般情况下，因为我们可以通过一些特殊手段来欺瞒系统，从而让系统不抛出 ActivityNotFoundException 这个异常。</li>
+<li>必须要继承系统的 Activity，因为在 Instrumentation 中的 newActivity 的方法中会对反射创建出来的对象进行强转，如果类型不对，会直接抛出类型转换异常。</li>
+<li>开启 Activity 的方式有很多种如 startActivity()，startActivityForResult()等等，但是通过上面的分析，启动一个 Activity 其实和 Instrumentation 这个类有这密切的关系，所以如果我们把上面的流程通过会先方式实现一遍，一样是可以唤醒 Actiivty，不过这样做是没有意义的，但是我们可以通过反射来替换系统的 Instrumentation 对象并使用我们自定义的 Instrumentation 对象。插件化就是一个典型的例子。</li>
+</ol>
+<h1 id="插件化"><a href="#插件化" class="headerlink" title="插件化"></a>插件化</h1><p>上面分析了 startActivity() 的整个流程，但是感觉对我们的开发没有什么用，其实不然，Activity 的启动流程能帮助我们更容易的理解插件化的原理，下面我们就通过分析 VirtualAPKVirtualAPK</p>
+<p>VirtualAPK 这个开源库中是怎么实现将 Activity 插件化的。</p>
+<h2 id="何为插件化？"><a href="#何为插件化？" class="headerlink" title="何为插件化？"></a>何为插件化？</h2><p>最近几年在国内 Android 界中，插件化成为了一个比较热门的话题，几乎热门的 APP 都有自己的插件化方案，因为国内市场竞争激烈，每家 APP 都想将扩大自己的业务范围，所以就会在 APP 集成很多<code>模块</code>，这些模块对于用户来说是完全透明的，但是对于开发者来说却是噩梦，在传统 APP 开发环境中，实现几个小的模块并处理好里面的逻辑已经是很麻烦的事情了，而如果需要处理几个大模块，每个大模块中又有一堆小模块，这个时候开发就会变得很困难，但是老板不管这些，于是插件化就诞生了。</p>
+<p>其实插件化只是一种思想，就是一个复杂的东西，拆分成一个一个的简单的东西。至于每种插件化方案的差别，仅仅是技术实现手段不同而已，思想上是一样的，都是为了能更快速的迭代产品。</p>
+<h1 id="VirtualAPK"><a href="#VirtualAPK" class="headerlink" title="VirtualAPK"></a>VirtualAPK</h1><p>VirtualAPK 是滴滴开源的插件化方案，算是我看过最通俗易懂的插金化方案之一，是通过 Hook 系统的 Instrumenation 对象，来实现启动插件中的 Activity，本篇博客只分析 Activity 是如何实现插件化的。</p>
+<p>通过上面的分析，Activity 的启动流程最先是走到 Instrumentation 的 execStartActivity() 方法的，所以 VirtualAPK 使用反射技术将自定义的 VAInstrumentation 对象注入到系统的 ActivityThread 类中，从而实现接替系统的 execStartActivity() 方法，具体源码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">//PluginManager.java</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">prepare</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    Systems.sHostContext = getHostContext();</span><br><span class="line">    <span class="keyword">this</span>.hookInstrumentationAndHandler();</span><br><span class="line">    <span class="keyword">if</span> (Build.VERSION.SDK_INT &gt;= <span class="number">26</span>) &#123;</span><br><span class="line">        <span class="keyword">this</span>.hookAMSForO();</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">this</span>.hookSystemServices();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">hookInstrumentationAndHandler</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        Instrumentation baseInstrumentation = ReflectUtil.getInstrumentation(<span class="keyword">this</span>.mContext);</span><br><span class="line">        <span class="keyword">if</span> (baseInstrumentation.getClass().getName().contains(<span class="string">"lbe"</span>)) &#123;</span><br><span class="line">            <span class="comment">// reject executing in paralell space, for example, lbe.</span></span><br><span class="line">            System.exit(<span class="number">0</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//创建自己的 VAInstrumentation 对象</span></span><br><span class="line">        <span class="keyword">final</span> VAInstrumentation instrumentation = <span class="keyword">new</span> VAInstrumentation(<span class="keyword">this</span>, baseInstrumentation);</span><br><span class="line">        Object activityThread = ReflectUtil.getActivityThread(<span class="keyword">this</span>.mContext);</span><br><span class="line">        <span class="comment">//通过反射替换系统的 Instrumentation 对象</span></span><br><span class="line">        ReflectUtil.setInstrumentation(activityThread, instrumentation);</span><br><span class="line">        ReflectUtil.setHandlerCallback(<span class="keyword">this</span>.mContext, instrumentation);</span><br><span class="line">        <span class="keyword">this</span>.mInstrumentation = instrumentation;</span><br><span class="line">    &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">        e.printStackTrace();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>下面我们来看看在 VAInstrumentation 对象中，究竟做了一些什么事情，源码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">//VAInstrumentaion.java</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> ActivityResult <span class="title">execStartActivity</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">        Context who, IBinder contextThread, IBinder token, Activity target,</span></span></span><br><span class="line"><span class="function"><span class="params">        Intent intent, <span class="keyword">int</span> requestCode, Bundle options)</span> </span>&#123;</span><br><span class="line">    mPluginManager.getComponentsHandler().transformIntentToExplicitAsNeeded(intent);</span><br><span class="line">    <span class="comment">// null component is an implicitly intent</span></span><br><span class="line">    <span class="keyword">if</span> (intent.getComponent() != <span class="keyword">null</span>) &#123;</span><br><span class="line">        Log.i(TAG, String.format(<span class="string">"execStartActivity[%s : %s]"</span>, intent.getComponent().getPackageName(),</span><br><span class="line">                intent.getComponent().getClassName()));</span><br><span class="line">        <span class="comment">// resolve intent with Stub Activity if needed</span></span><br><span class="line">        <span class="keyword">this</span>.mPluginManager.getComponentsHandler().markIntentIfNeeded(intent);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    ActivityResult result = realExecStartActivity(who, contextThread, token, target,</span><br><span class="line">                intent, requestCode, options);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> result;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//执行系统的 execStartAcitivty 方法</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> ActivityResult <span class="title">realExecStartActivity</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">        Context who, IBinder contextThread, IBinder token, Activity target,</span></span></span><br><span class="line"><span class="function"><span class="params">        Intent intent, <span class="keyword">int</span> requestCode, Bundle options)</span> </span>&#123;</span><br><span class="line">    ActivityResult result = <span class="keyword">null</span>;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        Class[] parameterTypes = &#123;Context.class, IBinder.class, IBinder.class, Activity.class, Intent.class,</span><br><span class="line">        <span class="keyword">int</span>.class, Bundle.class&#125;;</span><br><span class="line">        result = (ActivityResult)ReflectUtil.invoke(Instrumentation.class, mBase,</span><br><span class="line">                <span class="string">"execStartActivity"</span>, parameterTypes,</span><br><span class="line">                who, contextThread, token, target, intent, requestCode, options);</span><br><span class="line">    &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">        <span class="keyword">if</span> (e.getCause() <span class="keyword">instanceof</span> ActivityNotFoundException) &#123;</span><br><span class="line">            <span class="keyword">throw</span> (ActivityNotFoundException) e.getCause();</span><br><span class="line">        &#125;</span><br><span class="line">        e.printStackTrace();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>阅读源码可以看到，VAInstrumentation 类其实使用了静态代理设计模式来实现接替系统的 Instrumentation，但是由于系统的 execStartActivity() 方法标记为 hide，所以在 realExecStartActivity() 方法中不得不使用反射去调用真正的 execStartActivity() 方法。</p>
+<p>回到 execStartActivity() 方法，平时我们调用 startAcitivty() 的时候，getComponent() 肯定是不会为 null 的，所以它会执行 ComponentsHandler 中的 markIntentIfNeeded() 方法，源码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">//ComponentsHandler.java</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">markIntentIfNeeded</span><span class="params">(Intent intent)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (intent.getComponent() == <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    String targetPackageName = intent.getComponent().getPackageName();</span><br><span class="line">    String targetClassName = intent.getComponent().getClassName();</span><br><span class="line">    <span class="comment">// search map and return specific launchmode stub activity</span></span><br><span class="line">    <span class="keyword">if</span> (!targetPackageName.equals(mContext.getPackageName()) &amp;&amp; mPluginManager.getLoadedPlugin(targetPackageName) != <span class="keyword">null</span>) &#123;</span><br><span class="line">        intent.putExtra(Constants.KEY_IS_PLUGIN, <span class="keyword">true</span>);</span><br><span class="line">        intent.putExtra(Constants.KEY_TARGET_PACKAGE, targetPackageName);</span><br><span class="line">        intent.putExtra(Constants.KEY_TARGET_ACTIVITY, targetClassName);</span><br><span class="line">        dispatchStubActivity(intent);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>可以发现，通过判断包名来判断，启动的 Activity 是否是插件中的，如果是插件中的，会在 Intent 中保存几个值，然后调用 dispatchStubActivity() 方法，源码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">dispatchStubActivity</span><span class="params">(Intent intent)</span> </span>&#123;</span><br><span class="line">    ComponentName component = intent.getComponent();</span><br><span class="line">    String targetClassName = intent.getComponent().getClassName();</span><br><span class="line">    LoadedPlugin loadedPlugin = mPluginManager.getLoadedPlugin(intent);</span><br><span class="line">    ActivityInfo info = loadedPlugin.getActivityInfo(component);</span><br><span class="line">    <span class="keyword">if</span> (info == <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> RuntimeException(<span class="string">"can not find "</span> + component);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">int</span> launchMode = info.launchMode;</span><br><span class="line">    Resources.Theme themeObj = loadedPlugin.getResources().newTheme();</span><br><span class="line">    themeObj.applyStyle(info.theme, <span class="keyword">true</span>);</span><br><span class="line">    String stubActivity = mStubActivityInfo.getStubActivity(targetClassName, launchMode, themeObj);</span><br><span class="line">    Log.i(TAG, String.format(<span class="string">"dispatchStubActivity,[%s -&gt; %s]"</span>, targetClassName, stubActivity));</span><br><span class="line">    intent.setClassName(mContext, stubActivity);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>可以看到，最关键的一行代码就是最后一行，调用了 intent 的 setClassName，这里为什么要调用 setClassName？ 因为我们启动的是插件中的 Activity，默认情况下一定会抛出 ActivityNotFound 的异常，所以 VirtualAPK 在 Manifest 中预先声明了几个<code>占位子</code>的 Activity，具体如下：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">&lt;!-- Stub Activities --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">activity</span> <span class="attr">android:name</span>=<span class="string">".A$1"</span> <span class="attr">android:launchMode</span>=<span class="string">"standard"</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">activity</span> <span class="attr">android:name</span>=<span class="string">".A$2"</span> <span class="attr">android:launchMode</span>=<span class="string">"standard"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">android:theme</span>=<span class="string">"@android:style/Theme.Translucent"</span> /&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!-- Stub Activities --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">activity</span> <span class="attr">android:name</span>=<span class="string">".B$1"</span> <span class="attr">android:launchMode</span>=<span class="string">"singleTop"</span>/&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- 省略部分代码 --&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!-- Stub Activities --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">activity</span> <span class="attr">android:name</span>=<span class="string">".C$1"</span> <span class="attr">android:launchMode</span>=<span class="string">"singleTask"</span>/&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- 省略部分代码 --&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!-- Stub Activities --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">activity</span> <span class="attr">android:name</span>=<span class="string">".D$1"</span> <span class="attr">android:launchMode</span>=<span class="string">"singleInstance"</span>/&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- 省略部分代码 --&gt;</span></span><br></pre></td></tr></table></figure>
+<p>到这里，就成功的欺骗了系统，让系统以为我们已经在 Manifest 中注册了插件中的 Activity，但是新的问题又出现了，上面的<code>.A$1</code>这个类肯定是不存在的，通过我们对 Activity 启动流程的分析，系统会通过调用 Instrumentation 的 newActivity() 方法来创建 Activity 对象的实例，创建的方法是使用反射，所以我们就可以通过重写这个方法来实现创建我们插件中 Activity 类的实例从而达到启动的目的。具体代码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//VAInstrumentation.java</span></span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> Activity <span class="title">newActivity</span><span class="params">(ClassLoader cl, String className, Intent intent)</span> <span class="keyword">throws</span> InstantiationException, IllegalAccessException, ClassNotFoundException </span>&#123;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="comment">//如果是启动插件中的 Activity，这里一定会报错！</span></span><br><span class="line">        cl.loadClass(className);</span><br><span class="line">    &#125; <span class="keyword">catch</span> (ClassNotFoundException e) &#123;</span><br><span class="line">        LoadedPlugin plugin = <span class="keyword">this</span>.mPluginManager.getLoadedPlugin(intent);</span><br><span class="line">        String targetClassName = PluginUtil.getTargetActivity(intent);</span><br><span class="line"></span><br><span class="line">        Log.i(TAG, String.format(<span class="string">"newActivity[%s : %s]"</span>, className, targetClassName));</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (targetClassName != <span class="keyword">null</span>) &#123;</span><br><span class="line">            Activity activity = mBase.newActivity(plugin.getClassLoader(), targetClassName, intent);</span><br><span class="line">            activity.setIntent(intent);</span><br><span class="line"></span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                <span class="comment">// for 4.1+</span></span><br><span class="line">                ReflectUtil.setField(ContextThemeWrapper.class, activity, <span class="string">"mResources"</span>, plugin.getResources());</span><br><span class="line">            &#125; <span class="keyword">catch</span> (Exception ignored) &#123;</span><br><span class="line">                <span class="comment">// ignored.</span></span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">return</span> activity;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> mBase.newActivity(cl, className, intent);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>分析上面的代码，可以看到 在 newActivity() 方法中判断如果报错了，就说明启动的是插件中的 Activity 所以就通过插件中 ClassLoader 去创建插件中的 Activity 的实例，然后在设置一相应的属性比返回，这样就成功的打开了插件里面里面的 Activity。</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>Activity 的启动流程大致可以看为 APP 进程像系统服务 ActivityManagerService 发送”请求”，通过返回信息加反射创建 Activity 类的实例。这里的”请求”其实就是一次 <code>IPC</code>。</p>
+<p>系统实现的像 ActivityManagerService 这样的系统服务，这些服务都是向 APP 提供服务的，这样做的好处就是可以将很多复杂的功能都封装起来，只提供对外的接口，如果后面服务有修改，只要接口不变，APP 这块不需要任何修改。</p>
+<p>关于 VirtualAPK 实现的插件化 Activity，可以说是很简洁的一种方案，但是这里仅仅只分析了打开插件里面的 Activity，还有其他需要处理的地方，可以看出插件化这项技术对学习系统服务的原理有这很大的帮助。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/源码分析/" rel="tag"># 源码分析</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/02/24/Kotlin-其他特性-持续更新/" rel="next" title="Kotlin-其他特性(持续更新)">
+                <i class="fa fa-chevron-left"></i> Kotlin-其他特性(持续更新)
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/03/31/Window机制分析/" rel="prev" title="Window机制分析">
+                Window机制分析 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="http://ofdvg4c5w.bkt.clouddn.com/%E7%BA%B1%E9%9B%BE.jpg"
+                alt="linzheng" />
+            
+              <p class="site-author-name" itemprop="name">linzheng</p>
+              <p class="site-description motion-element" itemprop="description">一枚苦逼的 Android 程序员</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">31</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                
+                  <span class="site-state-item-count">1</span>
+                  <span class="site-state-item-name">分类</span>
+                
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">13</span>
+                  <span class="site-state-item-name">标签</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/linzhengloser" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-globe"></i>GitHub</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                Links
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://www.wanandroid.com" title="玩Android" target="_blank">玩Android</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#开始"><span class="nav-number">1.</span> <span class="nav-text">开始</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#分析之前"><span class="nav-number">2.</span> <span class="nav-text">分析之前</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#startActivity"><span class="nav-number">3.</span> <span class="nav-text">startActivity()</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#ActivityThread"><span class="nav-number">4.</span> <span class="nav-text">ActivityThread</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#插件化"><span class="nav-number">5.</span> <span class="nav-text">插件化</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#何为插件化？"><span class="nav-number">5.1.</span> <span class="nav-text">何为插件化？</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#VirtualAPK"><span class="nav-number">6.</span> <span class="nav-text">VirtualAPK</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#总结"><span class="nav-number">7.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">linzheng</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("E2NRFAQwyrEiYK2wzPMwCXOj-gzGzoHsz", "imqxxTrh0lXoz3FtACFo1TIf");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
