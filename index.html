@@ -323,7 +323,7 @@
 
       
         
-          <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>上一篇博客中，我们分析了 Activity 的启动流程，其实 Activity 只是一个有生命周期的”组件”，表明来看用户看到的是 Activity 其实是 View，而 View 的显示其实和 Activity 是没有关系的，因为 View 的显示和系统的 WindowManagerService 有关系，具体原因我们下面来慢慢分析。</p>
+          <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>上一篇博客中，我们分析了 Activity 的启动流程，在我看来，Activity 其实只是一个有生命周期的<code>组件</code>，用户看到的其实是显示在屏幕上的 View，而 View 的显示其实和 Activity 是没有直接关系的，具体原因我们下面来慢慢分析。</p>
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/2018/03/31/Window机制分析/#more" rel="contents">
