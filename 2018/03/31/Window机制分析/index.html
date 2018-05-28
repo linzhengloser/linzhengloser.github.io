@@ -89,7 +89,7 @@
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://yoursite.com/2018/03/31/Window机制分析/Window机制分析/dialog-1.png">
 <meta property="og:image" content="http://ofdvg4c5w.bkt.clouddn.com/Window-Activity-setContentView%28%29.png">
-<meta property="og:updated_time" content="2018-05-06T20:48:22.061Z">
+<meta property="og:updated_time" content="2018-05-08T21:58:36.175Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Window机制分析">
 <meta name="twitter:description" content="前言上一篇博客中，我们分析了 Activity 的启动流程，在我看来，Activity 其实只是一个有生命周期的组件，用户看到的其实是显示在屏幕上的 View，而 View 的显示其实和 Activity 是没有直接关系的，具体原因我们下面来慢慢分析。">
@@ -406,7 +406,7 @@
 <figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">// MainActivity.kt</span></span><br><span class="line"><span class="keyword">val</span> toast = Toast(<span class="keyword">this</span>)</span><br><span class="line">toast.view = LayoutInflater.from(<span class="keyword">this</span>).inflate(R.layout.layout_custom_toast,<span class="literal">null</span>)</span><br><span class="line">toast.show()</span><br></pre></td></tr></table></figure>
 <p>自定义 Toast 其实很简单，核心代码就一行，就是调用 Toast 对象的 setView() 方法，注意这里 Toast 对象要用 new 方法来创建，不能用 makeText() 方法创建。</p>
 <p>其实自定义 Toast 意义不是很大，因为 Toast 会有一个自动取消的机制，这个机制主要是为了防止某些垃圾 APP 通过 Toast 弹出强制弹出一些无法取消的垃圾信息，所以我们自定义的 Toast 只能表达一些简短的信息，所以只使用系统提供的 Toast 完全够用。</p>
-<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>分析了这么多，终于算是对 Android 的 Window 机制有了一个初步理解，本文主要是通过下面几个方面来了解 Window 机制，</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>分析了这么多，终于算是对 Android 的 Window 机制有了一个初步理解，本文主要是通过下面几个方面来了解 Window 机制。</p>
 <ol>
 <li>通过分析 Activity 的 setContentView() 方法，我们知道了，DecorView 和 VieRootImpl 这两个东西，在 setContentView() 方法中主要是创建 DecorView 和 将我们的布局添加到 DecorView 中，而在 Activity 的 onResume() 方法中，会将 DecorView 添加到 Window 中。(这里说添加到 Window 中不准确)。</li>
 </ol>
@@ -459,6 +459,10 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/05/28/论「面向对象」/" rel="prev" title="论「面向对象」">
+                论「面向对象」 <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -539,7 +543,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">31</span>
+                  <span class="site-state-item-count">32</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -561,7 +565,7 @@
               
               <div class="site-state-item site-state-tags">
                 
-                  <span class="site-state-item-count">13</span>
+                  <span class="site-state-item-count">14</span>
                   <span class="site-state-item-name">标签</span>
                 
               </div>
