@@ -82,14 +82,14 @@
 <meta name="description" content="开始Kotlin 中有很多自带的方法，可以省略很多模板代码。这些方法只是帮我们封装了很多常用的代码如 for if 等等之类的，对性能提升没有什么关系，但是可以提高代码的可读性，让代码逼格上升。">
 <meta name="keywords" content="Kotlin">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Kotlin中的Standard.kt">
+<meta property="og:title" content="Kotlin中的常用方法.kt">
 <meta property="og:url" content="http://yoursite.com/2017/11/10/Kotlin中的常用方法/index.html">
 <meta property="og:site_name" content="linzheng blog">
 <meta property="og:description" content="开始Kotlin 中有很多自带的方法，可以省略很多模板代码。这些方法只是帮我们封装了很多常用的代码如 for if 等等之类的，对性能提升没有什么关系，但是可以提高代码的可读性，让代码逼格上升。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-01-31T11:22:54.864Z">
+<meta property="og:updated_time" content="2018-06-07T05:56:52.334Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Kotlin中的Standard.kt">
+<meta name="twitter:title" content="Kotlin中的常用方法.kt">
 <meta name="twitter:description" content="开始Kotlin 中有很多自带的方法，可以省略很多模板代码。这些方法只是帮我们封装了很多常用的代码如 for if 等等之类的，对性能提升没有什么关系，但是可以提高代码的可读性，让代码逼格上升。">
 
 
@@ -126,7 +126,7 @@
 
 
 
-  <title>Kotlin中的Standard.kt | linzheng blog</title>
+  <title>Kotlin中的常用方法.kt | linzheng blog</title>
   
 
 
@@ -260,7 +260,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">Kotlin中的Standard.kt</h1>
+          <h1 class="post-title" itemprop="name headline">Kotlin中的常用方法.kt</h1>
         
 
         <div class="post-meta">
@@ -290,7 +290,7 @@
 
           
           
-             <span id="/2017/11/10/Kotlin中的常用方法/" class="leancloud_visitors" data-flag-title="Kotlin中的Standard.kt">
+             <span id="/2017/11/10/Kotlin中的常用方法/" class="leancloud_visitors" data-flag-title="Kotlin中的常用方法.kt">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -335,7 +335,7 @@
 <figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">//also()</span></span><br><span class="line">StringBuilder().also &#123;</span><br><span class="line">    it.append(<span class="string">"content: "</span>)</span><br><span class="line">    it.append(it.javaClass.canonicalName)</span><br><span class="line">&#125;.print()</span><br><span class="line"></span><br><span class="line"><span class="comment">//apply()</span></span><br><span class="line">StringBuilder().apply &#123;</span><br><span class="line">    append(<span class="string">"content:"</span>)</span><br><span class="line">    append(javaClass.canonicalName)</span><br><span class="line">&#125;.print()</span><br></pre></td></tr></table></figure>
 <p>乍一看好像和 let()/run() 没啥区别，其实区别在返回值地方，我们可以通过 Standard.kt 的源码中看到区别，代码如下：</p>
 <figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta">@kotlin</span>.<span class="keyword">internal</span>.InlineOnly</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">inline</span> <span class="function"><span class="keyword">fun</span> <span class="type">&lt;T, R&gt;</span> T.<span class="title">run</span><span class="params">(block: <span class="type">T</span>.()</span></span> -&gt; R): R = block()</span><br><span class="line"></span><br><span class="line"><span class="meta">@kotlin</span>.<span class="keyword">internal</span>.InlineOnly</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">inline</span> <span class="function"><span class="keyword">fun</span> <span class="type">&lt;T, R&gt;</span> T.<span class="title">let</span><span class="params">(block: (<span class="type">T</span>)</span></span> -&gt; R): R = block(<span class="keyword">this</span>)</span><br><span class="line"></span><br><span class="line"><span class="meta">@kotlin</span>.<span class="keyword">internal</span>.InlineOnly</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">inline</span> <span class="function"><span class="keyword">fun</span> <span class="type">&lt;T&gt;</span> T.<span class="title">apply</span><span class="params">(block: <span class="type">T</span>.()</span></span> -&gt; <span class="built_in">Unit</span>): T &#123; block(); <span class="keyword">return</span> <span class="keyword">this</span> &#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@kotlin</span>.<span class="keyword">internal</span>.InlineOnly</span><br><span class="line"><span class="meta">@SinceKotlin(<span class="meta-string">"1.1"</span>)</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">inline</span> <span class="function"><span class="keyword">fun</span> <span class="type">&lt;T&gt;</span> T.<span class="title">also</span><span class="params">(block: (<span class="type">T</span>)</span></span> -&gt; <span class="built_in">Unit</span>): T &#123; block(<span class="keyword">this</span>); <span class="keyword">return</span> <span class="keyword">this</span> &#125;</span><br></pre></td></tr></table></figure>
-<p>通过上面的源码可以看到，run()和let() 返回的是 R 类型的即我们定义的代码块的返回值。而 apply() 和 also() 返回的是 this，即指的是调用者对象本身。</p>
+<p>通过上面的源码可以看到，run() 和 let() 返回的是 R 类型的即我们定义的代码块的返回值。而 apply() 和 also() 返回的是 this，即指的是调用者对象本身。</p>
 <h2 id="takeIf-和-takeIf"><a href="#takeIf-和-takeIf" class="headerlink" title="takeIf() 和 takeIf()"></a>takeIf() 和 takeIf()</h2><p>takeIf() 和 takeIf() 可以帮助我们实现一个 if 判断，代码如下：</p>
 <figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">//takeUnless() 只是 takeIf() 取反而已</span></span><br><span class="line"><span class="keyword">val</span> list = listOf&lt;<span class="built_in">Int</span>&gt;(<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>)</span><br><span class="line">list.takeIf&#123;!it.isEmpty()&#125;?.map&#123;doSomeThing()&#125;</span><br><span class="line">list.takeUnless&#123;it.isEmpty()&#125;?.map&#123;doSomeThing()&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//上面代码等价于，当然 map() 自身就会对 list 做非空判断，这里只是做个参考</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span>(!list.isEmpty())&#123;</span><br><span class="line">    list.map&#123;doSomeThing()&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <h2 id="with-方法"><a href="#with-方法" class="headerlink" title="with 方法"></a>with 方法</h2><p>with() 和上面的有点区别，它是一个普通方法而不是一个扩展方法，具体用法如下:</p>
@@ -467,7 +467,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">33</span>
+                  <span class="site-state-item-count">34</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
