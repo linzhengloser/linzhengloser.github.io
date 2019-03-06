@@ -87,7 +87,7 @@
 <meta property="og:site_name" content="linzheng blog">
 <meta property="og:description" content="前言本篇博客为《Android开发艺术探索》这本书的读书笔记。方便日后复习使用。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-01-31T11:22:54.850Z">
+<meta property="og:updated_time" content="2019-03-05T10:07:01.394Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Android开发艺术探索读书笔记">
 <meta name="twitter:description" content="前言本篇博客为《Android开发艺术探索》这本书的读书笔记。方便日后复习使用。">
@@ -248,7 +248,7 @@
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="linzheng">
       <meta itemprop="description" content="">
-      <meta itemprop="image" content="http://ofdvg4c5w.bkt.clouddn.com/%E7%BA%B1%E9%9B%BE.jpg">
+      <meta itemprop="image" content="https://s2.ax1x.com/2019/02/28/k70pNt.jpg">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
@@ -323,245 +323,146 @@
       
         <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>本篇博客为《Android开发艺术探索》这本书的读书笔记。方便日后复习使用。</p>
 <a id="more"></a>
-<h1 id="第一章-Activity-的生命周期和启动模式"><a href="#第一章-Activity-的生命周期和启动模式" class="headerlink" title="第一章 Activity 的生命周期和启动模式"></a>第一章 Activity 的生命周期和启动模式</h1><p><strong>打开另一个 Activity 的时候，生命周期的调用顺序。</strong></p>
-<blockquote>
-<p>假设有两个 Activity，分别叫做 FirstActivity 和 SecondActivity。现在从 FirstActivity 中通过 startActivity() 方法打开 SecondActivity，那么这个时候，FirstActivity 的 onPause() 方法会先调用，然后调用 SecondActivit 的 onCreate()，onStart()，onResume() 方法，最后调用 FirstActivity 的 onStop() 方法。</p>
-<p>从上面的结论中，我们可以得出，如果们需要在 Activity 中执行一些临时的回收操作，最好放在 onStop() 方法中。 </p>
+<h1 id="第一章-Activity-的生命周期和启动模式打开另一个-Activity-的时候，生命周期的调用顺序"><a href="#第一章-Activity-的生命周期和启动模式打开另一个-Activity-的时候，生命周期的调用顺序" class="headerlink" title="第一章 Activity 的生命周期和启动模式打开另一个 Activity 的时候，生命周期的调用顺序"></a>第一章 Activity 的生命周期和启动模式打开另一个 Activity 的时候，生命周期的调用顺序</h1><blockquote>
+<p>假设有两个 Activity，分别叫做 FirstActivity 和 SecondActivity。现在从 FirstActivity 中通过 startActivity() 方法打开 SecondActivity，那么这个时候，FirstActivity 的 onPause() 方法会先调用，然后调用 SecondActivit 的 onCreate()，onStart()，onResume() 方法，最后调用 FirstActivity 的 onStop() 方法。<br>从上面的结论中，我们可以得出，如果们需要在 Activity 中执行一些临时的回收操作，最好放在 onStop() 方法中。</p>
 </blockquote>
-<p><strong>异常情况下，Activity 生命周期的调用顺序。</strong></p>
-<blockquote>
-<p>这里的异常情况分为两种情况，第一种情况是当系统配置发生变化，比如很竖屏切换，这个时候 Activity 会被重新创建，其生命周期方法调用顺序和正常情况下的调用顺序一致，不过会在 onStop() 方法之前调用 onSaveInstanceState() 方法，和在 onStart() 之后调用 onRestoreInstanceState() 方法。</p>
-<p>onSaveInstanceState() 方法和 onRestoreInstanceState() 方法，一个是用来保存数据，一个是用来恢复数据，比如当在竖屏状态下，往 EditText 中的输入一段内容，这个时候切换横屏，系统默认会帮我们把数据保存，然后在恢复。</p>
-<p>第二种情况是当内存不足的时候，系统会通过优先级来回收内存，如果这个时候，某个 Activity 不幸被系统给回收了，这个时候 onSaveInstanceState() 和 onRestoreInstanceState() 方法也会被调用。注：onRestoreInstanceState() 是当被回收的 Activity 重新被启动的时候调用。</p>
+<h2 id="异常情况下，Activity-生命周期的调用顺序"><a href="#异常情况下，Activity-生命周期的调用顺序" class="headerlink" title="异常情况下，Activity 生命周期的调用顺序"></a>异常情况下，Activity 生命周期的调用顺序</h2><blockquote>
+<p>这里的异常情况分为两种情况，第一种情况是当系统配置发生变化，比如很竖屏切换，这个时候 Activity 会被重新创建，其生命周期方法调用顺序和正常情况下的调用顺序一致，不过会在 onStop() 方法之前调用 onSaveInstanceState() 方法，和在 onStart() 之后调用 onRestoreInstanceState() 方法。onSaveInstanceState() 方法和 onRestoreInstanceState() 方法，一个是用来保存数据，一个是用来恢复数据，比如当在竖屏状态下，往 EditText 中的输入一段内容，这个时候切换横屏，系统默认会帮我们把数据保存，然后在恢复。<br><br><br><br>第二种情况是当内存不足的时候，系统会通过优先级来回收内存，如果这个时候，某个 Activity 不幸被系统给回收了，这个时候 onSaveInstanceState() 和 onRestoreInstanceState() 方法也会被调用。注：onRestoreInstanceState() 是当被回收的 Activity 重新被启动的时候调用。</p>
 </blockquote>
-<p><strong>如何让系统在异常情况下不重新创建 Activity</strong></p>
-<blockquote>
+<h2 id="如何让系统在异常情况下不重新创建-Activity"><a href="#如何让系统在异常情况下不重新创建-Activity" class="headerlink" title="如何让系统在异常情况下不重新创建 Activity"></a>如何让系统在异常情况下不重新创建 Activity</h2><blockquote>
 <p>系统在 Manifest 中的 Activity 标签中提供了 configChanges 属性，这个属性用来指定当前 Activity 在触发哪些异常情况的时候，不重新创建 Activity。可以指定多个，用 | 隔开，当指定了 configChanges 这个属性之后，异常情况下，onSaveInstanceState() 方法和 onRestoreInstanceState() 方就不会被调用，取而代之被调用的是 onConfigurationChanged() 方法。</p>
 </blockquote>
-<p><strong>Activity 的 launchMode</strong></p>
-<blockquote>
-<p>Android 系统会帮我们维护一个 Activity 栈，后进先出的栈结构，每当用户按下 Back 键的时候，系统就会把栈顶的 Activity 出栈，每当打开一个新的 Activity 的时候，就会把这个新的 Activity 入栈(默认情况下)。我们可以通过修改 Activity 的 launchMode 属性来改变这一默认行为。</p>
-<p>Activity 一共有 4 种 launchMode，第一种为 standard，标准模式，也是 Activity 默认的 launchMode，注意，当我们使用 startActivity() 这个方法的时候，其实是将被启动的 Activity 添加到调用这个方法的 Activity 的栈中，所有当我们使用 applicationContext 对象调用 startActivity() 方法必须要添加标记 FLAG_ACTIVITY_NEW_TASK，原因是因为 applicationContext 并没有自己的 Activity 栈。</p>
-<p>第二种为 singleTop，栈顶复用模式，假如当前 Activity 栈为 ABCD 这 4 个 Activity，Activity D 的 launchMode 为 singleTop，这个时候调用 startActivity() 方法打开 D 这个 Activity，此时 Activity 栈还是 ABCD，但是 Activity D 的 onNewIntent() 方法会被调用。</p>
-<p>第三种为 singleTask，栈内复用模式，当一个 launchMode 为 singleTask 的 Activity 被启动的时候，系统会先寻找存在该 Activity 需要的 Activity 栈，如果没有，就创建一个 Activity 栈，并把这个 Activity 入栈。反之如果有该 Activity 需要的栈，会先判断该栈中是否有该 Activity，如果有就把栈中的 Activity 调到栈顶(即把栈中的 Activity 上面的所有 Activity 全部出栈)，然后调用 onNewIntent() 方法，反之如果在栈中不存在，那么就和 standard 模式一样，直接创建 Activity 并入栈。</p>
-<p>第四种为 singleInstance，单实例模式，如果启动的 Activity 是 singleInstance 模式，那么系统会为该 Activity 单独创建一个 Activity 栈，后面在启动该 Activity 都只会打开这个单独栈中的 Acitivty 不会在重新创建。</p>
+<h2 id="Activity-的-launchMode"><a href="#Activity-的-launchMode" class="headerlink" title="Activity 的 launchMode"></a>Activity 的 launchMode</h2><blockquote>
+<p>Android 系统会帮我们维护一个 Activity 栈，后进先出的栈结构，每当用户按下 Back 键的时候，系统就会把栈顶的 Activity 出栈，每当打开一个新的 Activity 的时候，就会把这个新的 Activity 入栈(默认情况下)。我们可以通过修改 Activity 的 launchMode 属性来改变这一默认行为。<br><br><br><br>Activity 一共有 4 种 launchMode，第一种为 standard，标准模式，也是 Activity 默认的 launchMode，注意，当我们使用 startActivity() 这个方法的时候，其实是将被启动的 Activity 添加到调用这个方法的 Activity 的栈中，所有当我们使用 applicationContext 对象调用 startActivity() 方法必须要添加标记 FLAG_ACTIVITY_NEW_TASK，原因是因为 applicationContext 并没有自己的 Activity 栈。<br><br><br><br>第二种为 singleTop，栈顶复用模式，假如当前 Activity 栈为 ABCD 这 4 个 Activity，Activity D 的 launchMode 为 singleTop，这个时候调用 startActivity() 方法打开 D 这个 Activity，此时 Activity 栈还是 ABCD，但是 Activity D 的 onNewIntent() 方法会被调用。<br><br><br><br>第三种为 singleTask，栈内复用模式，当一个 launchMode 为 singleTask 的 Activity 被启动的时候，系统会先寻找存在该 Activity 需要的 Activity 栈，如果没有，就创建一个 Activity 栈，并把这个 Activity 入栈。反之如果有该 Activity 需要的栈，会先判断该栈中是否有该 Activity，如果有就把栈中的 Activity 调到栈顶(即把栈中的 Activity 上面的所有 Activity 全部出栈)，然后调用 onNewIntent() 方法，反之如果在栈中不存在，那么就和 standard 模式一样，直接创建 Activity 并入栈。<br><br><br><br>第四种为 singleInstance，单实例模式，如果启动的 Activity 是 singleInstance 模式，那么系统会为该 Activity 单独创建一个 Activity 栈，后面在启动该 Activity 都只会打开这个单独栈中的 Acitivty 不会在重新创建。</p>
 </blockquote>
-<p><strong>Activity 的 TaskAffinity 和 allowTaskReparenting 属性</strong></p>
-<blockquote>
-<p>TaskAffinity 属性用来表示当前 Activity 所需要的 Activity 栈，默认为当前应用的包名。如果我们想让 Activity 和 当前的 Activity 不在一个 Activity 栈中，可以设置该属性。当 allowTaskReparenting 等于 true 的时候，情况比较复杂。比如现在有两个应用，分别叫做 A 和 B，A 应用启动 B 应用中名为 B1 的 Activity，而这个 B1 的 allowTaskReparenting 等于 true，这个时候当应用 B 被重新启动的时候，会直接打开 B1 这个 Activity。</p>
-<p>PS:这里解释的可能不是很清楚，可参考 P19 - P20。</p>
+<h2 id="Activity-的-TaskAffinity-和-allowTaskReparenting-属性"><a href="#Activity-的-TaskAffinity-和-allowTaskReparenting-属性" class="headerlink" title="Activity 的 TaskAffinity 和 allowTaskReparenting 属性"></a>Activity 的 TaskAffinity 和 allowTaskReparenting 属性</h2><blockquote>
+<p>TaskAffinity 属性用来表示当前 Activity 所需要的 Activity 栈，默认为当前应用的包名。如果我们想让 Activity 和 当前的 Activity 不在一个 Activity 栈中，可以设置该属性。当 allowTaskReparenting 等于 true 的时候，情况比较复杂。比如现在有两个应用，分别叫做 A 和 B，A 应用启动 B 应用中名为 B1 的 Activity，而这个 B1 的 allowTaskReparenting 等于 true，这个时候当应用 B 被重新启动的时候，会直接打开 B1 这个 Activity。<br><br><br><br>PS:这里解释的可能不是很清楚，可参考 P19 - P20。</p>
 </blockquote>
-<p><strong>IntentFilter 的匹配规则</strong></p>
-<blockquote>
-<p>IntentFilter 包括 action category data，用来匹配隐式 Intent，只有当 action category data 这三个属性同时匹配上才能够大启动 Activity，一个 Activity 可以声明多个 IntentFilter，当一个 Activity 声明多个 IntentFilter 的时候，只要匹配其中一个 IntentFilter 就可以成功打开该 Activity。</p>
-<p>action 的匹配规则，一个 IntentFilter 中可以声明多个 action，只需要匹配其中的一个 action 就表示 action 匹配成功。如果 Intent 中没有 action 则直接匹配失败。action 的匹配区分大小写，大小写不一致也会导致匹配失败。</p>
-<p>category 的匹配规则，一个 IntentFilter 中可以声明多个 category，Intent 中如果没有 category 则直接匹配成功，但如果有 category，无论有几个，必须要和 IntentFilter 中声明的所有 category 匹配才算匹配成功。</p>
-<p>data 的匹配规则，一个 IntentFilter 中可以什么多个 data，和 action 一样，如果 Intent 中没有 data 则匹配失败，只用匹配 IntentFilter 中声明的任何一个 data 即表示 data 匹配成功。</p>
+<h2 id="IntentFilter-的匹配规则"><a href="#IntentFilter-的匹配规则" class="headerlink" title="IntentFilter 的匹配规则"></a>IntentFilter 的匹配规则</h2><blockquote>
+<p>IntentFilter 包括 action category data，用来匹配隐式 Intent，只有当 action category data 这三个属性同时匹配上才能够大启动 Activity，一个 Activity 可以声明多个 IntentFilter，当一个 Activity 声明多个 IntentFilter 的时候，只要匹配其中一个 IntentFilter 就可以成功打开该 Activity。<br><br><br><br>action 的匹配规则，一个 IntentFilter 中可以声明多个 action，只需要匹配其中的一个 action 就表示 action 匹配成功。如果 Intent 中没有 action 则直接匹配失败。action 的匹配区分大小写，大小写不一致也会导致匹配失败。<br><br><br><br>category 的匹配规则，一个 IntentFilter 中可以声明多个 category，Intent 中如果没有 category 则直接匹配成功，但如果有 category，无论有几个，必须要和 IntentFilter 中声明的所有 category 匹配才算匹配成功。<br><br><br><br>data 的匹配规则，一个 IntentFilter 中可以什么多个 data，和 action 一样，如果 Intent 中没有 data 则匹配失败，只用匹配 IntentFilter 中声明的任何一个 data 即表示 data 匹配成功。</p>
 </blockquote>
-<p><strong>data 的声明方式</strong></p>
-<blockquote>
-<p>data 的声明方式比较特殊，使用属性 mimeType 来指定 date 的媒体类型，比如设置 mimeType 为 image/* 这个时候就算不指定 uri，uri也有默认值，默认匹配 content 和 file 类型的 uri。具体声明方式参考 P30 - P33</p>
+<h2 id="data-的声明方式"><a href="#data-的声明方式" class="headerlink" title="data 的声明方式"></a>data 的声明方式</h2><blockquote>
+<p>data 的声明方式比较特殊，使用属性 mimeType 来指定 data 的媒体类型，比如设置 mimeType 为 image/* 这个时候就算不指定 uri，uri也有默认值，默认匹配 content 和 file 类型的 uri。具体声明方式参考 P30 - P33</p>
 </blockquote>
-<h1 id="第二章-IPC-机制"><a href="#第二章-IPC-机制" class="headerlink" title="第二章 IPC 机制"></a>第二章 IPC 机制</h1><p><strong>IPC 简介</strong></p>
-<blockquote>
-<p>IPC 含义为进程间通信，进程间的通信的前提是要有多进程，Android中默认一个APP中的所有组件都在同一个进程，可以使用多进程的方式来提高 APP 所可占用的最大内存。在 Android 中，开启多进程的方式就是为 Manifest 中的 Activity 标签添加 process 属性，具体属性值的声明方式可参考 P37。</p>
-<p>如果一个 APP 开启了多进程，那么 Application 类的 onCreate() 方法会被调用多次，且静态成员不在是唯一的。线程同步机制也会失效，SharedPreferences 的可靠性下降。</p>
+<h1 id="第二章-IPC-机制"><a href="#第二章-IPC-机制" class="headerlink" title="第二章 IPC 机制"></a>第二章 IPC 机制</h1><h2 id="IPC-简介"><a href="#IPC-简介" class="headerlink" title="IPC 简介"></a>IPC 简介</h2><blockquote>
+<p>IPC 含义为进程间通信，进程间的通信的前提是要有多进程，Android中默认一个APP中的所有组件都在同一个进程，可以使用多进程的方式来提高 APP 所可占用的最大内存。在 Android 中，开启多进程的方式就是为 Manifest 中的 Activity 标签添加 process 属性，具体属性值的声明方式可参考 P37。<br><br><br><br>如果一个 APP 开启了多进程，那么 Application 类的 onCreate() 方法会被调用多次，且静态成员不在是唯一的。线程同步机制也会失效，SharedPreferences 的可靠性下降。</p>
 </blockquote>
-<p><strong>Android 中序列化的方法</strong></p>
-<blockquote>
+<h2 id="Android-中序列化的方法"><a href="#Android-中序列化的方法" class="headerlink" title="Android 中序列化的方法"></a>Android 中序列化的方法</h2><blockquote>
 <p>Android 中的序列化的方式有两种，第一种是来自 Java 中的，使用 Serializable 接口来时将对象序列化，具体实现方式可参考 P42 - P43。当使用 Serializable 接口的时候，需要在对象中声明 serialVersionUID 字段，该字段是用来判断类和被序列化后的对象是否匹配的，可以省略。第二种序列化方式是 Android 中提供的，使用 Parcelable 来实现，具体可参考 P45 - P46。如果需要把对象序列化存在内存中，推荐使用 Parcelable，如果是想把对象序列化并保存在磁盘上或是通过网络传输，推荐使用 Serializable。</p>
 </blockquote>
-<p><strong>Binder 与 AIDL</strong></p>
-<blockquote>
-<p>Binder 是 Android 中的一个类，继承至 IBinder 接口，是 Android 中的一种 IPC 方式。而 Binder 一般是 IDE 通过 AIDL 生成出来的。当然我们也可以自己手写。关于 Binder 和 AIDL 的实现方式，具体可参考 P49 - P52。这里总结一下 Binder 几个重要的方法和作用。</p>
-<p>asInterface()，该方法将服务端的 Binder 对象转换成客户端所需要的 AIDL 接口类型的对象，此方法会更具调用的进程判断返回的对象，如果服务端和客户端都在同一个进程中则会直接返回服务端对象色 Stub 对象本身，否者返回 Stub.Proxy 对象。</p>
-<p>asBind()，该方法返回当前的 Binder 对象。</p>
-<p>onTransact()，该方法运行在服务端中的 Binder 线程池中，通过区分 code 参数，来判断调用哪些方法。如果该方法返回 false 的话，那么客户端的请求会失败，可以使用这个特性来限制访问服务端的进程。</p>
-<p>AIDL 只是一个用来告诉 IDE，让 IDE 帮我们实现 Binder 的文件，仅此而已。上面提到的客户端和服务端指定是运行在不同进程中的 Android 组件，一般情况下客户端指的是 Activity 服务端指的是 Service。关于 Binder 的工作机制，可参考 P55。</p>
+<h2 id="Binder-与-AIDL"><a href="#Binder-与-AIDL" class="headerlink" title="Binder 与 AIDL"></a>Binder 与 AIDL</h2><blockquote>
+<p>Binder 是 Android 中的一个类，继承至 IBinder 接口，是 Android 中的一种 IPC 方式。而 Binder 一般是 IDE 通过 AIDL 生成出来的。当然我们也可以自己手写。关于 Binder 和 AIDL 的实现方式，具体可参考 P49 - P52。这里总结一下 Binder 几个重要的方法和作用。<br><br><br><br>asInterface()，该方法将服务端的 Binder 对象转换成客户端所需要的 AIDL 接口类型的对象，此方法会更具调用的进程判断返回的对象，如果服务端和客户端都在同一个进程中则会直接返回服务端对象色 Stub 对象本身，否者返回 Stub.Proxy 对象。<br><br><br><br>asBind()，该方法返回当前的 Binder 对象。<br><br><br><br>onTransact()，该方法运行在服务端中的 Binder 线程池中，通过区分 code 参数，来判断调用哪些方法。如果该方法返回 false 的话，那么客户端的请求会失败，可以使用这个特性来限制访问服务端的进程。<br><br><br><br>AIDL 只是一个用来告诉 IDE，让 IDE 帮我们实现 Binder 的文件，仅此而已。上面提到的客户端和服务端指定是运行在不同进程中的 Android 组件，一般情况下客户端指的是 Activity 服务端指的是 Service。关于 Binder 的工作机制，可参考 P55。</p>
 </blockquote>
-<p><strong>使用 Bundle 实现 IPC</strong></p>
-<blockquote>
+<h2 id="使用-Bundle-实现-IPC"><a href="#使用-Bundle-实现-IPC" class="headerlink" title="使用 Bundle 实现 IPC"></a>使用 Bundle 实现 IPC</h2><blockquote>
 <p>Android 提供的 Bundle 类本身支持在多进程中传递，缺点是支持类型有限。具体参考 P62。</p>
 </blockquote>
-<p><strong>使用文件共享实现  IPC</strong></p>
-<blockquote>
+<h2 id="使用文件共享实现-IPC"><a href="#使用文件共享实现-IPC" class="headerlink" title="使用文件共享实现  IPC"></a>使用文件共享实现  IPC</h2><blockquote>
 <p>文件共享其实就是制定服务端和客户端同时读或写同一个文件来来达到通信的目的，缺点是有并发的问题。具体参考 P64</p>
 </blockquote>
-<p><strong>使用 Messenger 实现 IPC</strong></p>
-<blockquote>
+<h2 id="使用-Messenger-实现-IPC"><a href="#使用-Messenger-实现-IPC" class="headerlink" title="使用 Messenger 实现 IPC"></a>使用 Messenger 实现 IPC</h2><blockquote>
 <p>Messenger 是Android 提供的一个类，可以实现简单的 IPC，其底层使用的是 AIDL。具体参考 P65 - P70。</p>
 </blockquote>
-<p><strong>使用 AIDL 实现 IPC</strong></p>
-<blockquote>
-<p>P71 - P86 详细的介绍了怎么使用 AIDL 实现 IPC，需要注意的是客户端的 onServiceConnected 方法是运行在 UI 线程中的，我们不能在该方法里面执行耗时的操作不然会引起 ANR，另外服务端本身是运行在 Binder 线程池中的，所以不需要我们在服务端中不需要在手动 new Thread 来执行耗时操作。</p>
-<p>如果需要监听服务端的状态，当发生更新的时候通知客户端，这个通知的方法是由服务端调用的所以是运行在 Binder 线程池中的，所以不能直接在数据更新的回调方法中更新 UI。</p>
-<p>可以参考 P89 来实现对服务的重新绑定，即当服务端异常停止后，重新绑定服务。</p>
-<p>如果需要给服务端添加一个权限机制，即不希望所有进程都能绑定我们自己定义的服务，可以参考 P90 中的方式去实现。</p>
+<h2 id="使用-AIDL-实现-IPC"><a href="#使用-AIDL-实现-IPC" class="headerlink" title="使用 AIDL 实现 IPC"></a>使用 AIDL 实现 IPC</h2><blockquote>
+<p>P71 - P86 详细的介绍了怎么使用 AIDL 实现 IPC，需要注意的是客户端的 onServiceConnected 方法是运行在 UI 线程中的，我们不能在该方法里面执行耗时的操作不然会引起 ANR，另外服务端本身是运行在 Binder 线程池中的，所以不需要我们在服务端中不需要在手动 new Thread 来执行耗时操作。<br><br><br><br>如果需要监听服务端的状态，当发生更新的时候通知客户端，这个通知的方法是由服务端调用的所以是运行在 Binder 线程池中的，所以不能直接在数据更新的回调方法中更新 UI。<br><br><br><br>可以参考 P89 来实现对服务的重新绑定，即当服务端异常停止后，重新绑定服务。<br><br><br><br>如果需要给服务端添加一个权限机制，即不希望所有进程都能绑定我们自己定义的服务，可以参考 P90 中的方式去实现。</p>
 </blockquote>
-<p><strong>其他 IPC实现方式</strong></p>
-<blockquote>
-<p>使用 ContentProvider 可以实现 IPC，因为 ContentProvider 本身就是 Android 四大件之一。参考 P91 - P103。</p>
-<p>使用 Socket 可以实现 IPC，需要注意，如果使用 Socket 通信需要加上网络权限。参考 P104 - P110。</p>
+<h2 id="其他-IPC实现方式"><a href="#其他-IPC实现方式" class="headerlink" title="其他 IPC实现方式"></a>其他 IPC实现方式</h2><blockquote>
+<p>使用 ContentProvider 可以实现 IPC，因为 ContentProvider 本身就是 Android 四大件之一。参考 P91 - P103。<br><br><br><br>使用 Socket 可以实现 IPC，需要注意，如果使用 Socket 通信需要加上网络权限。参考 P104 - P110。</p>
 </blockquote>
-<p><strong>Binder 连接池</strong></p>
-<blockquote>
-<p>当业务模块越来越多的时候，每个模块都对应一个单独的 Binder，一个 Binder 又对应一个 Service，这种方法扩展性太差，所以可以使用 Binder 连接池来管理所有 Binder，这样无论多少个 Binder 都只需要一个 Service 即可。参考 P113 - P120 </p>
-<p>具体在什么情况下该用哪种方式实现 IPC，可参考 P121 的表格。</p>
+<h2 id="Binder-连接池"><a href="#Binder-连接池" class="headerlink" title="Binder 连接池"></a>Binder 连接池</h2><blockquote>
+<p>当业务模块越来越多的时候，每个模块都对应一个单独的 Binder，一个 Binder 又对应一个 Service，这种方法扩展性太差，所以可以使用 Binder 连接池来管理所有 Binder，这样无论多少个 Binder 都只需要一个 Service 即可。参考 P113 - P120<br><br><br><br>具体在什么情况下该用哪种方式实现 IPC，可参考 P121 的表格。</p>
 </blockquote>
-<h1 id="第三章-View-的事件体系"><a href="#第三章-View-的事件体系" class="headerlink" title="第三章 View 的事件体系"></a>第三章 View 的事件体系</h1><p><strong>View 的位置参数</strong></p>
-<blockquote>
-<p>getLeft()，getRight()，getTop()，getBottom() 这四个方法可以获取 View 的位置参数，这 4 个方法获取的值都是当前 View 相对于父布局而言的。且可以通过这几个参数得出 View 的 width 等于 getRight() 减 getLeft()，View 的 height 等于 getBottom() 减 getTop()。</p>
-<p>在 Android3.0 之后，View 还提供了 getX()，getY()，getTranslationX()，getTranslationY() 这 4 个方法。且 View 的 getX() 等于 getLeft() 加 getTranslationX()，View 的 getY() 等于 getTop() 加 getTranslationY()。参考 P124。</p>
+<h1 id="第三章-View-的事件体系"><a href="#第三章-View-的事件体系" class="headerlink" title="第三章 View 的事件体系"></a>第三章 View 的事件体系</h1><h2 id="View-的位置参数"><a href="#View-的位置参数" class="headerlink" title="View 的位置参数"></a>View 的位置参数</h2><blockquote>
+<p>getLeft()，getRight()，getTop()，getBottom() 这四个方法可以获取 View 的位置参数，这 4 个方法获取的值都是当前 View 相对于父布局而言的。且可以通过这几个参数得出 View 的 width 等于 getRight() 减 getLeft()，View 的 height 等于 getBottom() 减 getTop()。<br><br><br><br>在 Android3.0 之后，View 还提供了 getX()，getY()，getTranslationX()，getTranslationY() 这 4 个方法。且 View 的 getX() 等于 getLeft() 加 getTranslationX()，View 的 getY() 等于 getTop() 加 getTranslationY()。参考 P124。</p>
 </blockquote>
-<p><strong>MotionEvent，TouchSlop，VelocityTracker，GestrueDetector</strong></p>
-<blockquote>
-<p>MotionEvent 表示手指接触屏幕后产生的一系列事件，当手指点击屏幕松开后事件为 DOWN-&gt; UP，注意这里手指只是点击了屏幕没有移动，如果手指按下后又移动然后在松开，事件则为 DOWN -&gt; MOVE -&gt; UP。</p>
-<p>TouchSlop 提供了一系列常量，帮助我们更好的实现滑动处理，如最小滑动距离。我们在处理滑动的时候，如果移动的值小于这个值，就视为无效的滑动。</p>
-<p>VelocityTracker 用于计算滑动的速度，公式为 速度 = (终点位置 - 起点位置) / 时间段。需要注意的是，如果手指是从左往右滑的，那么获取到的速度是正数，否者反之。具体参考 P126。</p>
-<p>GestrueDetector 用来帮助我们判断用户的点击动作，比如可以判断用户是单击还是长按。具体使用方法参考 P127 - P128.</p>
+<h2 id="MotionEvent，TouchSlop，VelocityTracker，GestrueDetector"><a href="#MotionEvent，TouchSlop，VelocityTracker，GestrueDetector" class="headerlink" title="MotionEvent，TouchSlop，VelocityTracker，GestrueDetector"></a>MotionEvent，TouchSlop，VelocityTracker，GestrueDetector</h2><blockquote>
+<p>MotionEvent 表示手指接触屏幕后产生的一系列事件，当手指点击屏幕松开后事件为 DOWN-&gt; UP，注意这里手指只是点击了屏幕没有移动，如果手指按下后又移动然后在松开，事件则为 DOWN -&gt; MOVE -&gt; UP。<br><br><br><br>TouchSlop 提供了一系列常量，帮助我们更好的实现滑动处理，如最小滑动距离。我们在处理滑动的时候，如果移动的值小于这个值，就视为无效的滑动。<br><br><br><br>VelocityTracker 用于计算滑动的速度，公式为 速度 = (终点位置 - 起点位置) / 时间段。需要注意的是，如果手指是从左往右滑的，那么获取到的速度是正数，否者反之。具体参考 P126。<br><br><br><br>GestrueDetector 用来帮助我们判断用户的点击动作，比如可以判断用户是单击还是长按。具体使用方法参考 P127 - P128.</p>
 </blockquote>
-<p><strong>View 的滑动</strong></p>
-<blockquote>
-<p>Android 中要想实现 View 的滑动一共有 3 种方式，第一种是通过 View 的 scrollBy()/scrollTo() 方法，这两个方法本质是通过修改 View 的 mScrollX 和 mScrollY 来实现滑动，mScrollX 等于 View 的左边缘于 View 内容的左边缘的距离，mScrollY 也是一样，且像左滑动是正值，想右滑动是负值，想上滑动是正值，向下滑动是负值。注意这里的滑动并非是 View 的位置发生变化，而是 View 的内容滑动。</p>
-<p>Android 中的 Scroller 其实就是通过不断调用 scrollTo() 方法来实现弹性滑动，具体可参考 P128.</p>
-<p>第二种方式是使用 Android 中的动画实现 View 的滑动，在 Android3.0 之前只能使用 View 动画来实现滑动，这种实现有一个问题，就是无法真正改变 View 的位置。具体参考 P132。如果想真正的改变 View 的位置参数，可以使用 Android3.0 之后提供的属性动画。当然现在几乎没有 Android3.0 以下的手机，所以推荐如果想用动画实现 View 的滑动，直接使用属性动画即可。</p>
-<p>第三种方式是通过修改 View 的 LayoutParams 的 margin 来实现 View 的滑动，具体参考 P133。</p>
-<p>如果只是滑动 View 的内容推荐使用 scrollTo()/scrollBy() 实现，其他的都可用属性动画实现。</p>
+<h2 id="View-的滑动"><a href="#View-的滑动" class="headerlink" title="View 的滑动"></a>View 的滑动</h2><blockquote>
+<p>Android 中要想实现 View 的滑动一共有 3 种方式，第一种是通过 View 的 scrollBy()/scrollTo() 方法，这两个方法本质是通过修改 View 的 mScrollX 和 mScrollY 来实现滑动，mScrollX 等于 View 的左边缘于 View 内容的左边缘的距离，mScrollY 也是一样，且像左滑动是正值，想右滑动是负值，想上滑动是正值，向下滑动是负值。注意这里的滑动并非是 View 的位置发生变化，而是 View 的内容滑动。<br><br><br><br>Android 中的 Scroller 其实就是通过不断调用 scrollTo() 方法来实现弹性滑动，具体可参考 P128.<br><br><br><br>第二种方式是使用 Android 中的动画实现 View 的滑动，在 Android3.0 之前只能使用 View 动画来实现滑动，这种实现有一个问题，就是无法真正改变 View 的位置。具体参考 P132。如果想真正的改变 View 的位置参数，可以使用 Android3.0 之后提供的属性动画。当然现在几乎没有 Android3.0 以下的手机，所以推荐如果想用动画实现 View 的滑动，直接使用属性动画即可。<br><br><br><br>第三种方式是通过修改 View 的 LayoutParams 的 margin 来实现 View 的滑动，具体参考 P133。<br><br><br><br>如果只是滑动 View 的内容推荐使用 scrollTo()/scrollBy() 实现，其他的都可用属性动画实现。</p>
 </blockquote>
-<p><strong>View 的事件分发机制</strong></p>
-<blockquote>
-<p>View 的整个事件分发过程由 View 的三个方法来完成，分别是，dispatchTouchEvent() 方法，该方法用来分发事件，onInterceptTouchEvent() 方法，该方法用来判断当前 View 是否需要拦截事件，onTouchEvent() 方法，该方法用来处理点击事件，返回值用来表示是否消耗当前事件。具体参考 P141。</p>
-<p>如果一个 View 设置了 OnTouchListener，且 OnTouchListener 的 onTouch() 方法返回 true，这个时候 View 的 onTouchEvent() 方法不会被调用，反之会在调用完 OnTouchListener 的 onTouch() 方法之后在调用 onTouchEvent() 方法。这说明了 OnTouchListener 的 onTouch() 方法的优先级高于 View 的 onTouchEvent() 方法。</p>
-<p>事件的传递顺序为 Window -&gt; Activity -&gt; ViewGroup -&gt; View，如果 View，ViewGourp 的 onTouchEvent() 方法都返回 false，前提是事件没有被 ViewGroup 拦截，这个时候 Activity 的 onTouchEvent() 方法会被调用。</p>
-<p>当一个 View 一旦决定拦截事件，那么这一个事件序列都只能由它来处理，并且它的 onInterceptTouchEvent() 方法将不会在被调用。原因是这个 View 已经决定拦截这个事件了，那么就不用在判断当前 View 是否需要拦截事件了。</p>
-<p>当一个 View 不消耗 DOWN 事件，即 onTouchEvent() 方法返回 false，那么后续的事件都只会交由他的父 View 来处理，即父 View 的 onTouchEvent() 方法会被调用。反之如果这个 View 不消耗除了 DOWN 以外的事件，那么这个事件就会消失，不会调用父 View 的 onTouchEvent() 方法，并且当前 View 可以持续受到后续事件，最终这些消失的事件都会传递给 Activity 来处理。</p>
-<p>ViewGroup 的 onInterceptTouchEvent() 方法默认返回 false，View 没有 onInterceptTouchEvent() 方法，当事件传递给 View 的时候，View 的 onTouchEvent() 方法会被调用。View 的 onTouchEvent() 默认返回 true，除非当前 View 是不可点击的，这一点需要注意。如果我们调用 View 的 setOnClickListener() 方法，在方法内部会为我们调用 setClickable(true) 即设置当前 View 为可点击的，这也说明了如果当前 View 是不可点击的，那么它的 onTouchEvent 是返回 false 的。View 的 enable 属性不会影响 onTouchEvent() 的返回值，只要这个 View 的 clickable 和 longClickable 一个为 true，那么这个 View 的 onTouchEvent() 方法就会返回 false。注意这了指的是 onTouchEvent() 的默认返回值。</p>
-<p>事件是由外而内传递的，即事件总是会先传递个 ViewGroup 然后在传递给 View，如果我们在 View 中想告诉父 View 需要这个事件，可以调用 requestDisallowInterceptTouchEvent() 方法来干预父 View 的事件分发过程，除了 DOWN 事件。</p>
+<h2 id="View-的事件分发机制"><a href="#View-的事件分发机制" class="headerlink" title="View 的事件分发机制"></a>View 的事件分发机制</h2><blockquote>
+<p>View 的整个事件分发过程由 View 的三个方法来完成，分别是，dispatchTouchEvent() 方法，该方法用来分发事件，onInterceptTouchEvent() 方法，该方法用来判断当前 View 是否需要拦截事件，onTouchEvent() 方法，该方法用来处理点击事件，返回值用来表示是否消耗当前事件。具体参考 P141。<br><br><br><br>如果一个 View 设置了 OnTouchListener，且 OnTouchListener 的 onTouch() 方法返回 true，这个时候 View 的 onTouchEvent() 方法不会被调用，反之会在调用完 OnTouchListener 的 onTouch() 方法之后在调用 onTouchEvent() 方法。这说明了 OnTouchListener 的 onTouch() 方法的优先级高于 View 的 onTouchEvent() 方法。<br><br><br><br>事件的传递顺序为 Window -&gt; Activity -&gt; ViewGroup -&gt; View，如果 View，ViewGourp 的 onTouchEvent() 方法都返回 false，前提是事件没有被 ViewGroup 拦截，这个时候 Activity 的 onTouchEvent() 方法会被调用。<br><br><br><br>当一个 View 一旦决定拦截事件，那么这一个事件序列都只能由它来处理，并且它的 onInterceptTouchEvent() 方法将不会在被调用。原因是这个 View 已经决定拦截这个事件了，那么就不用在判断当前 View 是否需要拦截事件了。<br><br><br><br>当一个 View 不消耗 DOWN 事件，即 onTouchEvent() 方法返回 false，那么后续的事件都只会交由他的父 View 来处理，即父 View 的 onTouchEvent() 方法会被调用。反之如果这个 View 不消耗除了 DOWN 以外的事件，那么这个事件就会消失，不会调用父 View 的 onTouchEvent() 方法，并且当前 View 可以持续受到后续事件，最终这些消失的事件都会传递给 Activity 来处理。<br><br><br><br>ViewGroup 的 onInterceptTouchEvent() 方法默认返回 false，View 没有 onInterceptTouchEvent() 方法，当事件传递给 View 的时候，View 的 onTouchEvent() 方法会被调用。View 的 onTouchEvent() 默认返回 true，除非当前 View 是不可点击的，这一点需要注意。如果我们调用 View 的 setOnClickListener() 方法，在方法内部会为我们调用 setClickable(true) 即设置当前 View 为可点击的，这也说明了如果当前 View 是不可点击的，那么它的 onTouchEvent 是返回 false 的。View 的 enable 属性不会影响 onTouchEvent() 的返回值，只要这个 View 的 clickable 和 longClickable 一个为 true，那么这个 View 的 onTouchEvent() 方法就会返回 false。注意这了指的是 onTouchEvent() 的默认返回值。<br><br><br><br>事件是由外而内传递的，即事件总是会先传递个 ViewGroup 然后在传递给 View，如果我们在 View 中想告诉父 View 需要这个事件，可以调用 requestDisallowInterceptTouchEvent() 方法来干预父 View 的事件分发过程，除了 DOWN 事件。</p>
 </blockquote>
-<p><strong>滑动冲突的解决方案</strong></p>
-<blockquote>
+<h2 id="滑动冲突的解决方案"><a href="#滑动冲突的解决方案" class="headerlink" title="滑动冲突的解决方案"></a>滑动冲突的解决方案</h2><blockquote>
 <p>滑动冲突的解决方案推荐在引发冲突最外层的 ViewGroup 的 onInterceptTouchEvent() 方法中解决冲突。具体可以参考 P157 - P159。</p>
 </blockquote>
-<p>#第四章 View 的工作原理</p>
-<p><strong>MeasureSpec</strong></p>
-<blockquote>
+<h1 id="第四章-View-的工作原理"><a href="#第四章-View-的工作原理" class="headerlink" title="第四章 View 的工作原理"></a>第四章 View 的工作原理</h1><h2 id="MeasureSpec"><a href="#MeasureSpec" class="headerlink" title="MeasureSpec"></a>MeasureSpec</h2><blockquote>
 <p>MeasureSpec 用来计算 View 在测量过程中，所测量出来的值和模式。具体参考 P178。对于顶级 View 来说(即 DecorView )，它的 MeasureSpec 是由自身 LayoutParams 和屏幕的宽高来决定的。</p>
 </blockquote>
-<p><strong>View 的 measure</strong></p>
-<blockquote>
-<p>View 的 MeasureSpec 是由自身 LayoutParams 和 父 View 的 MeasureSpec 一起来决定的，可参考 P182 的表格。总的来说如果一个 View 明确指定了 width/height 那么它的 MeasureSpec.MODE 就一定是 EXACTLY，且它的 MeasureSpec.SIZE 一定等于声明的具体值。</p>
-<p>如果一个 View 的 width/height 为 match_parent，这个时候如果它的父 View 的 MeasureSpec.MODE 为 EXACTLY，这时它的 MeasureSpec.MODE 为 EXACTLY，MeasureSpec.SIZE 为父 View 剩余可用大小。反之，如果父 View 的 MeasureSpec.MODE 为 AT_MOST，这个时候它的 MeasureSpec.MODE 为 AT_MOST，MeasureSpec.SIZE 为父 View 剩余可用大小。</p>
-<p>如果一个 View 的 width/hegith 为 wrap_content，这个时候无论父 View 的 MeasureSpec.MODE 为 EXACTLY 还是 AT_MOST，它的 MeasureSpec.MODE 都为 AT_MOST 且 MeasureSpec.SIZE 为父 View 剩余可用大小。</p>
-<p>有一个地方需要注意，View 的 mesure 过程和 Activity 的生命周期不是顺序执行的，即我们无法在 Activity 的 onCreate() onStart() onResume() 方法中获取到某个 View 的 width/height。如果需要在 Activity 中获取 View 的 width/height，可以使用如下几个方法，第一种就是在 Activity 的 onWindowFocusChanged() 方法中获取，第二种是使用 View 的 post() 方法来发送一个 Runnable 对象，在 Runnable 对象的 run() 方法中我们可以获取到 View 的 width/height，第三种就是使用 ViewTreeObserver 监听 View 的 Layout，在回调中我们可以获取到 View 的 width/height，第四种方法是手动调用 View 的 measure() 方法来计算出 width/height。注意上面说的获取 width/height 指的是调用 view 的 getMeasureWidth()/getMeasureHeight() 方法，而并非是 getWidth()/getHeight() 方法。具体参考 P190 - P192。</p>
+<h2 id="View-的-measure"><a href="#View-的-measure" class="headerlink" title="View 的 measure"></a>View 的 measure</h2><blockquote>
+<p>View 的 MeasureSpec 是由自身 LayoutParams 和 父 View 的 MeasureSpec 一起来决定的，可参考 P182 的表格。总的来说如果一个 View 明确指定了 width/height 那么它的 MeasureSpec.MODE 就一定是 EXACTLY，且它的 MeasureSpec.SIZE 一定等于声明的具体值。<br><br><br><br>如果一个 View 的 width/height 为 match_parent，这个时候如果它的父 View 的 MeasureSpec.MODE 为 EXACTLY，这时它的 MeasureSpec.MODE 为 EXACTLY，MeasureSpec.SIZE 为父 View 剩余可用大小。反之，如果父 View 的 MeasureSpec.MODE 为 AT_MOST，这个时候它的 MeasureSpec.MODE 为 AT_MOST，MeasureSpec.SIZE 为父 View 剩余可用大小。<br><br><br><br>如果一个 View 的 width/hegith 为 wrap_content，这个时候无论父 View 的 MeasureSpec.MODE 为 EXACTLY 还是 AT_MOST，它的 MeasureSpec.MODE 都为 AT_MOST 且 MeasureSpec.SIZE 为父 View 剩余可用大小。<br><br><br><br>有一个地方需要注意，View 的 mesure 过程和 Activity 的生命周期不是顺序执行的，即我们无法在 Activity 的 onCreate() onStart() onResume() 方法中获取到某个 View 的 width/height。如果需要在 Activity 中获取 View 的 width/height，可以使用如下几个方法，第一种就是在 Activity 的 onWindowFocusChanged() 方法中获取，第二种是使用 View 的 post() 方法来发送一个 Runnable 对象，在 Runnable 对象的 run() 方法中我们可以获取到 View 的 width/height，第三种就是使用 ViewTreeObserver 监听 View 的 Layout，在回调中我们可以获取到 View 的 width/height，第四种方法是手动调用 View 的 measure() 方法来计算出 width/height。注意上面说的获取 width/height 指的是调用 view 的 getMeasureWidth()/getMeasureHeight() 方法，而并非是 getWidth()/getHeight() 方法。具体参考 P190 - P192。</p>
 </blockquote>
-<p><strong>View 的 layout</strong></p>
-<blockquote>
-<p>在 View 的 layout 过程中，会调用 View 的 layout() 方法，并在 layout() 方法中为指定 mLeft，mRight，mTop，mBottom 的值。然后在调用 onLayout() 方法，在 onLayout() 方法中会确定子 View 的位置。注意 ViewGroup 的 onLayout() 方法是一个抽象方法，所以如果继承 ViewGroup 就必须要实现它的 onLayout() 方法。</p>
-<p>需要注意的是，一般情况下 getWidth() 和 getMeasureHeight() 获取的值是一样的，但是在特殊情况下是有区别的，比如重写 layout() 方法并手动修改 right 和 top 参数的值，这个时候 getWidth()/getHeight() 方法获取到的值就和 getMeasureWidth()/getMeasureHeight() 方法获取到的值不一样。</p>
+<h2 id="View-的-layout"><a href="#View-的-layout" class="headerlink" title="View 的 layout"></a>View 的 layout</h2><blockquote>
+<p>在 View 的 layout 过程中，会调用 View 的 layout() 方法，并在 layout() 方法中为指定 mLeft，mRight，mTop，mBottom 的值。然后在调用 onLayout() 方法，在 onLayout() 方法中会确定子 View 的位置。注意 ViewGroup 的 onLayout() 方法是一个抽象方法，所以如果继承 ViewGroup 就必须要实现它的 onLayout() 方法。<br><br><br><br>需要注意的是，一般情况下 getWidth() 和 getMeasureHeight() 获取的值是一样的，但是在特殊情况下是有区别的，比如重写 layout() 方法并手动修改 right 和 top 参数的值，这个时候 getWidth()/getHeight() 方法获取到的值就和 getMeasureWidth()/getMeasureHeight() 方法获取到的值不一样。</p>
 </blockquote>
-<p><strong>View 的 draw</strong></p>
-<blockquote>
+<h2 id="View-的-draw"><a href="#View-的-draw" class="headerlink" title="View 的 draw"></a>View 的 draw</h2><blockquote>
 <p>View 的 draw 按照如下步骤执行，绘制背景 -&gt; 绘制自己 -&gt; 绘制 children -&gt; 绘制装饰。View 提供了 setWillNotDraw() 方法来设置一个标记位，如果这个标记位为 true 系统会对该 View 的绘制进行优化，默认 ViewGroup 启用了这个标记位了的。所以如果我们需要在自定义 ViewGroup 的 onDrow() 方法中绘制内容，就需要取消这个标记位。</p>
 </blockquote>
-<p><strong>自定义 View 需要注意的地方</strong></p>
-<blockquote>
-<p>在自定义 View 的时候需要注意一些地方，比如需要支持 WRAP_CONTENT，即实现 View 的 onMeasure() 在里面处理 AT_MOST 这个 MODE，在实现 onDraw() 方法的时候，需要计算 View 的 padding 值，如果需要在 View 中使用 Handler 可以直接使用 View 的 post() 方法，如果在 View 中使用了动画，需要在 View 的 onDetachedFromWindow() 方法中取消动画防止内存泄漏。</p>
-<p>在书中 P202 - P209 提供了实现一个基本的自定义 View 的方式。</p>
+<h2 id="自定义-View-需要注意的地方"><a href="#自定义-View-需要注意的地方" class="headerlink" title="自定义 View 需要注意的地方"></a>自定义 View 需要注意的地方</h2><blockquote>
+<p>在自定义 View 的时候需要注意一些地方，比如需要支持 WRAP_CONTENT，即实现 View 的 onMeasure() 在里面处理 AT_MOST 这个 MODE，在实现 onDraw() 方法的时候，需要计算 View 的 padding 值，如果需要在 View 中使用 Handler 可以直接使用 View 的 post() 方法，如果在 View 中使用了动画，需要在 View 的 onDetachedFromWindow() 方法中取消动画防止内存泄漏。<br><br><br><br>在书中 P202 - P209 提供了实现一个基本的自定义 View 的方式。</p>
 </blockquote>
-<h1 id="第五，六，七，章-RmoteViews，Drawable，动画"><a href="#第五，六，七，章-RmoteViews，Drawable，动画" class="headerlink" title="第五，六，七，章  RmoteViews，Drawable，动画"></a>第五，六，七，章  RmoteViews，Drawable，动画</h1><p><strong>RemoteViews</strong></p>
-<blockquote>
+<h1 id="第五，六，七，章-RmoteViews，Drawable，动画"><a href="#第五，六，七，章-RmoteViews，Drawable，动画" class="headerlink" title="第五，六，七，章  RmoteViews，Drawable，动画"></a>第五，六，七，章  RmoteViews，Drawable，动画</h1><h2 id="RemoteViews"><a href="#RemoteViews" class="headerlink" title="RemoteViews"></a>RemoteViews</h2><blockquote>
 <p>RemoteViews 在 Android 中主要是用来更新远程 View 的，即更新另一个进程中的 View，如 Android 中通知栏中的通知和桌面小部件。RemoteViews 只能支持部分的 View 具体参考 P320。RemoteViews 内部使用了 Binder 来实现跨进程的更新 UI，</p>
 </blockquote>
-<p><strong>Drawable</strong></p>
-<blockquote>
+<h2 id="Drawable"><a href="#Drawable" class="headerlink" title="Drawable"></a>Drawable</h2><blockquote>
 <p>Android 中 Drawable 既可以表示图片也可以自定义绘制的内容，算是 Android 中对图像的一种抽象概念，具体实现有很多，如 shape 等。Drawable 使用的范围很单一，一个是做为 View 的背景，另一个是做为 ImageView 的 src。我们可以自定义自己的 Drawable，需要注意的是，在自定义 Drawable 的时候 getIntrinsicWidth() 和 getIntrinsicHeight() 这两个方法会影响 View 的 wrap_content 属性。具体参考 P264.</p>
 </blockquote>
-<p><strong>动画</strong></p>
-<blockquote>
+<h2 id="动画"><a href="#动画" class="headerlink" title="动画"></a>动画</h2><blockquote>
 <p>Android 中的 View 动画比较单一，只能实现平移，缩放，旋转和透明度变化这几种效果，而帧动画也属于 View 动画，只是变换形式上跟上面几种不一样。我可以通过定义 LayoutAnimation 到实现 ListView 的布局动画，具体参考 P273。而在 Android3.0 中加入了属性动画，属性动画并不是只针对 View 做动画，而是针对所有对象都可以实现动画(由一个值到另一个值的变化)，属性动画中可以自定义插值器(Interpolator)和估值器(Evaluator)。插值器是用来将时间流逝的百分比转换成动画完成的百分百，估值器是用来将动画动画百分百转换成具体的动画属性值。ObjectAnimator 如果要对某个 View 的某个属性执行动画，那么这个 View 的这个属性必须要提供 set() 和 get() 方法，当然也有其他方法实现，具体参考 P285。</p>
 </blockquote>
-<h1 id="第八章-Window-和-WindowManager"><a href="#第八章-Window-和-WindowManager" class="headerlink" title="第八章 Window 和 WindowManager"></a>第八章 Window 和 WindowManager</h1><p><strong>Window内部机制</strong></p>
-<blockquote>
-<p>Android 中 Activity，Dialog 和 Toast 的实现都离不开 Window，Window 是一个抽象类，唯一实现类是 PhoneWindow，如果需要实现一个类似悬浮窗的效果，可以使用 WindowManager 来将一个 View 添加到 Window 中。具体可以参考 P295 - P296。</p>
-<p>Android 提供了 WindowManager 这个类来供我们访问 Window，如果我们想将一个 View 添加到 Window 中，那么需要调用 WindowManager 的 addView() 方法，在 addView() 方法中会创建 ViewRootImpl() 对象并调用它的 setView() 方法将我们需要添加的 View 和 ViewRootImpl 对象关联起来。最后通过 WindowSession 的 addToDisplay() 方法将 Window 添加进去，这个添加的过程是一个 IPC 的操作，具体运行在 WindowManagerService 的 Binder 线程池中。</p>
+<h1 id="第八章-Window-和-WindowManager"><a href="#第八章-Window-和-WindowManager" class="headerlink" title="第八章 Window 和 WindowManager"></a>第八章 Window 和 WindowManager</h1><h2 id="Window内部机制"><a href="#Window内部机制" class="headerlink" title="Window内部机制"></a>Window内部机制</h2><blockquote>
+<p>Android 中 Activity，Dialog 和 Toast 的实现都离不开 Window，Window 是一个抽象类，唯一实现类是 PhoneWindow，如果需要实现一个类似悬浮窗的效果，可以使用 WindowManager 来将一个 View 添加到 Window 中。具体可以参考 P295 - P296。<br><br><br><br>Android 提供了 WindowManager 这个类来供我们访问 Window，如果我们想将一个 View 添加到 Window 中，那么需要调用 WindowManager 的 addView() 方法，在 addView() 方法中会创建 ViewRootImpl() 对象并调用它的 setView() 方法将我们需要添加的 View 和 ViewRootImpl 对象关联起来。最后通过 WindowSession 的 addToDisplay() 方法将 Window 添加进去，这个添加的过程是一个 IPC 的操作，具体运行在 WindowManagerService 的 Binder 线程池中。</p>
 </blockquote>
-<p><strong>Activity 的 setContentView() 方法</strong></p>
-<blockquote>
-<p>当我们调用 Activity 的 setContentView() 方法的时候，最终会调用 PhoneWindow 的 setContentView() 方法，在 setContentView() 方法内部会先判断 DecorView 对象是否创建，如果没有创建会先创建一个 DecorView 对象，创建完 DecorView 对象后会获取到 ID 为 com.android.internal.R.id.content 的 ViewGroup，并将这个 View 赋值给 mContentParent,最后通过 LayoutInflater 的 inflate() 方法将 mContentParent 添加到 DecorView 中。</p>
-<p>当 setContentView() 方法调用完之后，我们的布局文件已经添加到 DecorView 中了，但是并没有和 Window 关联起来，那是因为关联的代码并不是在 onCreate() 中，而是在 onResume() 方法中，在 Activity 的 onResume() 方法中会使用 WindowManager 的 addView 方法将 DecorView 添加到 Window 中。</p>
-<p>关于 Android 中，在子线程中是不能更新 UI 的，但是在某些情况下，我们是可以在子线程中更新 UI 的，因为 Android 中对线程的监听是在 VIewRootImpl 中的 checkThread() 方法，而每当我们调用更新 UI 的方法，本质上都会去调用 ViewRootImpl 的 requestLayout() 方法，在 ViewRootImpl 的 requestLayout() 方法的内部会调用 checkThread() 这个方法来对更新 UI 的线程进行判断，然后在调用 WindowManagerService 的对应的方法去更新屏幕，那么只要我们在 ViewRootImpl 创建之前更新 UI 就不会触发那个更新 UI 的异常，结合上面的分析，ViewRootImpl 其实是在 onResume() 方法中被创建的，所以我们在 onCreate() 中更新 UI 是有一定几率不会触发异常的，为什么说一定几率呢？因为我们本来是子线程中更新 UI 的，如果我们的子线程在 onResume() 方法之后执行还是会触发子线程更新 UI 的异常。</p>
-<p>当我们启动一个 Activity 的时候，ActivityThread 会调用 performLaunchActivity() 方法，在这个方法这中会创建我们需要打开的 Activity 对象的实例，然后调用其 attach() 方法，在 attach() 方法内部会创建 PhoneWindow 对象的实例，然后再将 DecorView 这个对象通过 WindowManager 的 addView() 方法添加到 Window 中，这个时候 Window 就和我们的界面关联在一起了。具体参考 P306 - P308。</p>
+<h2 id="Activity-的-setContentView-方法"><a href="#Activity-的-setContentView-方法" class="headerlink" title="Activity 的 setContentView() 方法"></a>Activity 的 setContentView() 方法</h2><blockquote>
+<p>当我们调用 Activity 的 setContentView() 方法的时候，最终会调用 PhoneWindow 的 setContentView() 方法，在 setContentView() 方法内部会先判断 DecorView 对象是否创建，如果没有创建会先创建一个 DecorView 对象，创建完 DecorView 对象后会获取到 ID 为 com.android.internal.R.id.content 的 ViewGroup，并将这个 View 赋值给 mContentParent,最后通过 LayoutInflater 的 inflate() 方法将 mContentParent 添加到 DecorView 中。<br><br><br><br>当 setContentView() 方法调用完之后，我们的布局文件已经添加到 DecorView 中了，但是并没有和 Window 关联起来，那是因为关联的代码并不是在 onCreate() 中，而是在 onResume() 方法中，在 Activity 的 onResume() 方法中会使用 WindowManager 的 addView 方法将 DecorView 添加到 Window 中。<br><br><br><br>关于 Android 中，在子线程中是不能更新 UI 的，但是在某些情况下，我们是可以在子线程中更新 UI 的，因为 Android 中对线程的监听是在 VIewRootImpl 中的 checkThread() 方法，而每当我们调用更新 UI 的方法，本质上都会去调用 ViewRootImpl 的 requestLayout() 方法，在 ViewRootImpl 的 requestLayout() 方法的内部会调用 checkThread() 这个方法来对更新 UI 的线程进行判断，然后在调用 WindowManagerService 的对应的方法去更新屏幕，那么只要我们在 ViewRootImpl 创建之前更新 UI 就不会触发那个更新 UI 的异常，结合上面的分析，ViewRootImpl 其实是在 onResume() 方法中被创建的，所以我们在 onCreate() 中更新 UI 是有一定几率不会触发异常的，为什么说一定几率呢？因为我们本来是子线程中更新 UI 的，如果我们的子线程在 onResume() 方法之后执行还是会触发子线程更新 UI 的异常。<br><br><br><br>当我们启动一个 Activity 的时候，ActivityThread 会调用 performLaunchActivity() 方法，在这个方法这中会创建我们需要打开的 Activity 对象的实例，然后调用其 attach() 方法，在 attach() 方法内部会创建 PhoneWindow 对象的实例，然后再将 DecorView 这个对象通过 WindowManager 的 addView() 方法添加到 Window 中，这个时候 Window 就和我们的界面关联在一起了。具体参考 P306 - P308。</p>
 </blockquote>
-<p><strong>添加系统级别的 Window</strong></p>
-<blockquote>
+<h2 id="添加系统级别的-Window"><a href="#添加系统级别的-Window" class="headerlink" title="添加系统级别的 Window"></a>添加系统级别的 Window</h2><blockquote>
 <p>可以通过申请系统级别的权限来将一些 View 显示在系统进程中，如某些手机安全软件里面的回收内存的悬浮窗，具体声明方法可参考 P310。</p>
 </blockquote>
-<p><strong>Toast 的实现原理</strong></p>
-<blockquote>
-<p>Toast 的内部实现也和 Window 离不开关系，不过在调用 WindowManagerService 的 addView() 方法之前，Toast 会调用调用 NotificationManagerService 的 enqueueToast() 方法，在 NotificationManagerService 内部会限定一共只能有 50 个 Toast 调用 show()，很显然这个过程也是一个 IPC，在 NotificationManagerService 的 enqueueToast() 方法中会回调 TN 的 show() 方法，而这个 TN 也是一个 Binder 对象，在 TN 的 show() 方法中就会去调用 WindowManagerService 的 addView() 方法。</p>
-<p>在 TN 的 show() 方法中使用了 Handler，所以如果想在子线程中显示 Toast 需要调用 Looper.prepare() 方法。</p>
+<h2 id="Toast-的实现原理"><a href="#Toast-的实现原理" class="headerlink" title="Toast 的实现原理"></a>Toast 的实现原理</h2><blockquote>
+<p>Toast 的内部实现也和 Window 离不开关系，不过在调用 WindowManagerService 的 addView() 方法之前，Toast 会调用调用 NotificationManagerService 的 enqueueToast() 方法，在 NotificationManagerService 内部会限定一共只能有 50 个 Toast 调用 show()，很显然这个过程也是一个 IPC，在 NotificationManagerService 的 enqueueToast() 方法中会回调 TN 的 show() 方法，而这个 TN 也是一个 Binder 对象，在 TN 的 show() 方法中就会去调用 WindowManagerService 的 addView() 方法。<br><br><br><br>在 TN 的 show() 方法中使用了 Handler，所以如果想在子线程中显示 Toast 需要调用 Looper.prepare() 方法。</p>
 </blockquote>
-<p><strong>关于 IPC 在 Android 中的应用</strong></p>
-<blockquote>
+<h2 id="关于-IPC-在-Android-中的应用"><a href="#关于-IPC-在-Android-中的应用" class="headerlink" title="关于 IPC 在 Android 中的应用"></a>关于 IPC 在 Android 中的应用</h2><blockquote>
 <p>通过上面的分析不难发现，IPC 在 Android 系统中有多么的重要，无论是显示 View 还是 弹出 Toast，在底层都离不开 IPC，因为 Android 系统中有很多的线程，如果我们想显示一个 View 在屏幕上，真正显示的代码其实跟我们的 APP 没有任何关系，我只需要通过 IPC 来通知 WindowManagerService 来做对应的处理。所以说虽然我们平时写代码看不到 IPC 是因为 Android 将这些地方都隐藏起来了。</p>
 </blockquote>
-<h1 id="第九章-四大组件工作原理"><a href="#第九章-四大组件工作原理" class="headerlink" title="第九章 四大组件工作原理"></a>第九章 四大组件工作原理</h1><p><strong>Activity 启动流程</strong></p>
-<blockquote>
-<p>当我你们调用 startActivity() 方法的时候，系统的调用流程如下：Activity.startActivityForResult() -&gt; Instrumentation.execStartActivity() -&gt; ActivityManagerService.startActivity() -&gt; ActivityManagerService.startActivityAsUser() -&gt; ActivityStarter.startActivityMayWait() -&gt; ActivityStarter.startActivityLocked() -&gt; ActivityStarter.startActivityUnchecked() -&gt; ActivityStackSupervisor.resumeFocusedStackTopActivityLocked() -&gt; ActivityStack.resumeTopActivityUncheckedLocked() -&gt; ActivityStack.resumeTopActivityInnerLocked() -&gt; ActivityStackSupervisor.startSpecificActivityLocked() -&gt; ActivityStackSupervisor.realStartActivityLocked() -&gt; ActivityThread.ApplicationThread.scheduleLaunchActivity() -&gt; ActivityThread.handleLaunchActivity() -&gt; ActivityThread.performLaunchActivity()</p>
-<p>通过上面一长串的调用，最终回到了 ActivityThread 的 performLaunchActivity() 方法中，在该方法中使用 Instrumentation.newActivity() 方法创建 Activity 对象的实例，然后调用 LoadApk 的 makeApplication() 方法，在该方法中会判断当前 Application 对象是否创建如果没有创建则创建，这说明了一个 App 中的 Application 只会有一个(同一个进程)，接着会调用 Activity 的 onAttach() 方法来初始化 Activity 的一些重要数据，最后通过 Instrumentation 的 callActivityOnCreate() 方法来调用 Activity 的 onCreate() 方法。</p>
+<h1 id="第九章-四大组件工作原理"><a href="#第九章-四大组件工作原理" class="headerlink" title="第九章 四大组件工作原理"></a>第九章 四大组件工作原理</h1><h2 id="Activity-启动流程"><a href="#Activity-启动流程" class="headerlink" title="Activity 启动流程"></a>Activity 启动流程</h2><blockquote>
+<p>当我你们调用 startActivity() 方法的时候，系统的调用流程如下：Activity.startActivityForResult() -&gt; Instrumentation.execStartActivity() -&gt; ActivityManagerService.startActivity() -&gt; ActivityManagerService.startActivityAsUser() -&gt; ActivityStarter.startActivityMayWait() -&gt; ActivityStarter.startActivityLocked() -&gt; ActivityStarter.startActivityUnchecked() -&gt; ActivityStackSupervisor.resumeFocusedStackTopActivityLocked() -&gt; ActivityStack.resumeTopActivityUncheckedLocked() -&gt; ActivityStack.resumeTopActivityInnerLocked() -&gt; ActivityStackSupervisor.startSpecificActivityLocked() -&gt; ActivityStackSupervisor.realStartActivityLocked() -&gt; ActivityThread.ApplicationThread.scheduleLaunchActivity() -&gt; ActivityThread.handleLaunchActivity() -&gt; ActivityThread.performLaunchActivity()<br><br><br><br>通过上面一长串的调用，最终回到了 ActivityThread 的 performLaunchActivity() 方法中，在该方法中使用 Instrumentation.newActivity() 方法创建 Activity 对象的实例，然后调用 LoadApk 的 makeApplication() 方法，在该方法中会判断当前 Application 对象是否创建如果没有创建则创建，这说明了一个 App 中的 Application 只会有一个(同一个进程)，接着会调用 Activity 的 onAttach() 方法来初始化 Activity 的一些重要数据，最后通过 Instrumentation 的 callActivityOnCreate() 方法来调用 Activity 的 onCreate() 方法。</p>
 </blockquote>
-<p><strong>Service 的启动流程</strong></p>
-<blockquote>
-<p>当我们调用 startService() 这个方法的时候，系统的调用流程如下：ContextImpl.startService() -&gt; ContextImpl.startServiceCommon() -&gt; ActivityManagerService.startService() -&gt; ActiveServices.startServiceLocked() -&gt; ActiveServices.startServiceInnerLocked() -&gt; ActiveServices.bringUpServiceLocked() -&gt; ActiveServices.realStartServiceLocked() -&gt; ActivityThread.ApplicationThread.scheduleCreateService() -&gt; ActivityThread.handleCreateService()</p>
-<p>最终在 ActivityThread 的 handleCreateService() 方法中，首先会通过 ClassLoader 创建 Service 对象，然后创建 Application 对象(Application 对象只会创建一次)，然后调用 Service 的 attach() 方法来初始化 Service 的一些参数，接着调用 Service 的 onCreate() 方法，这里的流程和 Activity 的启动流程相似，最后会通过 ActivityThread 的 handleServiceArags() 方法来调用 Service 的 onStartCommand() 方法，到这里 Service 就被启动了。</p>
+<h2 id="Service-的启动流程"><a href="#Service-的启动流程" class="headerlink" title="Service 的启动流程"></a>Service 的启动流程</h2><blockquote>
+<p>当我们调用 startService() 这个方法的时候，系统的调用流程如下：ContextImpl.startService() -&gt; ContextImpl.startServiceCommon() -&gt; ActivityManagerService.startService() -&gt; ActiveServices.startServiceLocked() -&gt; ActiveServices.startServiceInnerLocked() -&gt; ActiveServices.bringUpServiceLocked() -&gt; ActiveServices.realStartServiceLocked() -&gt; ActivityThread.ApplicationThread.scheduleCreateService() -&gt; ActivityThread.handleCreateService()<br><br><br><br>最终在 ActivityThread 的 handleCreateService() 方法中，首先会通过 ClassLoader 创建 Service 对象，然后创建 Application 对象(Application 对象只会创建一次)，然后调用 Service 的 attach() 方法来初始化 Service 的一些参数，接着调用 Service 的 onCreate() 方法，这里的流程和 Activity 的启动流程相似，最后会通过 ActivityThread 的 handleServiceArags() 方法来调用 Service 的 onStartCommand() 方法，到这里 Service 就被启动了。</p>
 </blockquote>
-<p><strong>Service 的绑定流程</strong></p>
-<blockquote>
+<h2 id="Service-的绑定流程"><a href="#Service-的绑定流程" class="headerlink" title="Service 的绑定流程"></a>Service 的绑定流程</h2><blockquote>
 <p>到我们调用 bindService() 方法的时候，系统的调用流程如下: ContextImpl.bindService() -&gt; ContextImpl.bindServiceCommon() 在 bindServiceCommon() 方法中，因为绑定的服务可能是跨进程的，所以我们不能直接把我们创建的 ServiceConnection 对象传过去，而是需要借助一个 Binder 来进行回调，让另一个进程的 Service 通过 IPC 机制调用我们的这个对象从而回调 ServiceConnection 对象中的方法，而这个对象就是 ServiceDispatcher.InnerConnection。接着会调用 ActivityManagerService 的 bindService() 方法，而之后的流程和 startService() 类似，唯一不同的是在 bindService() 的过程中会调用 ApplicationThread 的 handleBindService() 方法，在该方法中会通过 IPC 的方式通过 ServiceDispatcher.InnerConnection 的 connected() 方法调用 ServiceDispatcher 的 connected(),在该方法中会向 ActivityThread post 一个叫做 RunConnection 的 Runnable，这个 Runnable 中就会去回调 ServiceConnection 中的 onServiceConnected() 方法， 且 onServiceConnection() 是运行在主线程中的。</p>
 </blockquote>
-<p><strong>BroadcastReceiver 的工作过程</strong></p>
-<blockquote>
-<p>BroadcastReciver 分为动态注册和静态注册，是由 PackageManagerService 来负责静态解析的，而且四大组件都是由这个 PackageManagerService 来解析的，动态注册 BroadcastReciver，首先会调用 ContextImpl 的 registerReceiver() 方法，然后在调用 ContextImpl 的 registerReceiverinternal() 方法，在该方法中会调用 ActivityManagerService 的 registerReceiver() 方法，因为注册广播是一个 IPC 的过程，所以会创建一个 ReceiverDispatcher.InnerReceiver 对象，这个对象是一个 Binder 用来接收注册的回调，这里和 Service 的绑定过程类似，在 ActivityManagerService 的 registerReceiver() 方法中会把我们传过去的 ReceiverDipatcher.InnerReceiver 对象存储起来。到这里 BroadcastReceiver 就注册完成了。</p>
-<p>调用 ContextImpl 的 sendBroadcast() 方法可以发送一条广播，在该方法中会调用 ActivityManagerService 的 broadcastIntent() 方法，在然后又调用了 broacastIntenerLocked() 方法，在该方法中调用 BroadcastQueue 的 enqueueOrderedBroadcastLocaed() 和 scheduleBroadcastsLocked() 这两个方法，主要是将我们要发送的加入到队列中，在 scheduBroadcastLocked() 方法中会调用 processNextBroadcast() 方法，在该方法中通过 deliverToRegisteredReceiverLocked() 方法发送广播，在其方法内部调用了 performReceiveLocked() 方法，在该方法中会调用 ActivityThread.ApplicationThread 的 scheduleRegisteredReceiver() 方法，接着会调用 ReceiverDispatcher 的 performReceive() 方法，这个方法中会向 ActivityThread post 一个 Args 对象，Args 对象实现了 Runnable，所有会在 ActivityThread 的 Handler 中执行 Args 的 run() 方法，其内部就回去调用 Receiver 对象的 onReceive() 方法。</p>
+<h2 id="BroadcastReceiver-的工作过程"><a href="#BroadcastReceiver-的工作过程" class="headerlink" title="BroadcastReceiver 的工作过程"></a>BroadcastReceiver 的工作过程</h2><blockquote>
+<p>BroadcastReciver 分为动态注册和静态注册，是由 PackageManagerService 来负责静态解析的，而且四大组件都是由这个 PackageManagerService 来解析的，动态注册 BroadcastReciver，首先会调用 ContextImpl 的 registerReceiver() 方法，然后在调用 ContextImpl 的 registerReceiverinternal() 方法，在该方法中会调用 ActivityManagerService 的 registerReceiver() 方法，因为注册广播是一个 IPC 的过程，所以会创建一个 ReceiverDispatcher.InnerReceiver 对象，这个对象是一个 Binder 用来接收注册的回调，这里和 Service 的绑定过程类似，在 ActivityManagerService 的 registerReceiver() 方法中会把我们传过去的 ReceiverDipatcher.InnerReceiver 对象存储起来。到这里 BroadcastReceiver 就注册完成了。<br><br><br><br>调用 ContextImpl 的 sendBroadcast() 方法可以发送一条广播，在该方法中会调用 ActivityManagerService 的 broadcastIntent() 方法，在然后又调用了 broacastIntenerLocked() 方法，在该方法中调用 BroadcastQueue 的 enqueueOrderedBroadcastLocaed() 和 scheduleBroadcastsLocked() 这两个方法，主要是将我们要发送的加入到队列中，在 scheduBroadcastLocked() 方法中会调用 processNextBroadcast() 方法，在该方法中通过 deliverToRegisteredReceiverLocked() 方法发送广播，在其方法内部调用了 performReceiveLocked() 方法，在该方法中会调用 ActivityThread.ApplicationThread 的 scheduleRegisteredReceiver() 方法，接着会调用 ReceiverDispatcher 的 performReceive() 方法，这个方法中会向 ActivityThread post 一个 Args 对象，Args 对象实现了 Runnable，所有会在 ActivityThread 的 Handler 中执行 Args 的 run() 方法，其内部就回去调用 Receiver 对象的 onReceive() 方法。</p>
 </blockquote>
-<p><strong>ContentProvider 的工作过程</strong></p>
-<blockquote>
-<p>可以通过 getContentResolver() 来获取 ContentResolver 对象，从而来操作 ContentProvider，而 getContentResolver() 方法返回的是 ApplicationContentResolver 对象。调用 ContentResolver 对象的 query/insert/insert/update 这四个方法中任意一个方法都会触发 ContentProvider 的启动，调用其中任意一个方法后，会调用 ActivityThread 的 acquireProvicder() 方法，在该方法中又会调用 ActivityManagerService 的 getContentProvider() 方法，在该方法中会去创建 ContentProvicder 对象，如果这个 ContentProvider 所在的进程没有启动，就会通过 Proccess 的 start() 方法启动这个进程，这个时候又会执行 ActivityThread 的 main() 方法。</p>
-<p>一个 APP 启动的时候，会从 ActivityThread 的 main() 方法作为入口开始执行，在 main() 中创建的 ActivityThread 的实例，并创建了主线程的 Handler，接着会通过 ActivityManagerService 的 attachApplication() 方法，在该方法中会调用 ApplicationThread 的 bindApplication() 方法，在这个方法中会创建 Application 对象的实例，然后调用 installContentProviders () 初始化当前 APP 中的 ContentProvider 并调用所有 ContentProvicder 的 onCreate() 方法，紧接着会调用 Application 的 onCreate() 方法。</p>
+<h2 id="ContentProvider-的工作过程"><a href="#ContentProvider-的工作过程" class="headerlink" title="ContentProvider 的工作过程"></a>ContentProvider 的工作过程</h2><blockquote>
+<p>可以通过 getContentResolver() 来获取 ContentResolver 对象，从而来操作 ContentProvider，而 getContentResolver() 方法返回的是 ApplicationContentResolver 对象。调用 ContentResolver 对象的 query/insert/insert/update 这四个方法中任意一个方法都会触发 ContentProvider 的启动，调用其中任意一个方法后，会调用 ActivityThread 的 acquireProvicder() 方法，在该方法中又会调用 ActivityManagerService 的 getContentProvider() 方法，在该方法中会去创建 ContentProvicder 对象，如果这个 ContentProvider 所在的进程没有启动，就会通过 Proccess 的 start() 方法启动这个进程，这个时候又会执行 ActivityThread 的 main() 方法。<br><br><br><br>一个 APP 启动的时候，会从 ActivityThread 的 main() 方法作为入口开始执行，在 main() 中创建的 ActivityThread 的实例，并创建了主线程的 Handler，接着会通过 ActivityManagerService 的 attachApplication() 方法，在该方法中会调用 ApplicationThread 的 bindApplication() 方法，在这个方法中会创建 Application 对象的实例，然后调用 installContentProviders () 初始化当前 APP 中的 ContentProvider 并调用所有 ContentProvicder 的 onCreate() 方法，紧接着会调用 Application 的 onCreate() 方法。</p>
 </blockquote>
-<h1 id="第十章-Android-的消息机制"><a href="#第十章-Android-的消息机制" class="headerlink" title="第十章 Android 的消息机制"></a>第十章 Android 的消息机制</h1><p><strong>ThreadLocal</strong></p>
-<blockquote>
+<h1 id="第十章-Android-的消息机制"><a href="#第十章-Android-的消息机制" class="headerlink" title="第十章 Android 的消息机制"></a>第十章 Android 的消息机制</h1><h2 id="ThreadLocal"><a href="#ThreadLocal" class="headerlink" title="ThreadLocal"></a>ThreadLocal</h2><blockquote>
 <p>Android 中的消息机制和 ThreadLocal 有分不开的关系，系统会通过 ThreadLocal 来保存每个线程中的 Looper 对象，而 ThreadLocal 的作用就是在指定线程中保存数据。ThreadLocal 有两个核心方法，一个是 get() 方法，在该方法中会获取当前线程中存储的对象，如果对象不存在就会将一个 null 保存在一个内部维护的 Map 中，然后返回，可以通过重写 ThreadLocal 的 initialValue() 修改获取不到的情况下返回的对象。另一个方法是 set()，就是将对象保存在 ThreadLocal 内部维护的 Map 中。这个 Map 其实是一个数组，实现原理和 HashMap 类似，Key 为 ThreadLocal 对象，Value 为具体需要保存的对象。</p>
 </blockquote>
-<p><strong>Handler，Looper，MessageQueue，Message</strong></p>
-<blockquote>
-<p>在创建 Handler 的时候，在其构造函数中对对当前线程的 Looper 做了非空判断，这里就是使用 ThreadLocal 来存储每个线程中的 Looper 对象，所以如果我们需要在子线程中使用 Handler 需要调用 Looper 的 prepare() 和 loop() 这两个方法。而 MessageQueue 从是一个用来管理所有 Message 的一个单链表，MessageQueue 的 enqueueMessage() 会把 Message 插入到这个单链表中，而 MessageQueue 的 next() 方法会返回一个 Message 对象并把这个 Message 从这个单链表中删除，next() 方法中是一个无限循环，如果单链表中没有消息则会阻塞。</p>
-<p>Looper 的 prepare() 方法会创建一个 Looper 对象并把这个对象保存在 ThreadLocal 对象中，并且一个线程只能调用一次 prepare() 方法，而在 Looper 的 loop() 方法，会首先判断当前线程是否有 Looper 对象，所以 loop() 必须要在 prepare() 方法之后调用，之后也是一个无限循环，在循环中调用 MessageQueue 的 next() 方法获取消息，并调用 Message 对象的 target 属性的 dispatchMessage() 方法，而这个无线循环跳出的条件就是 next() 方法返回 null。Handler 对象其实就是 Message 对象的 target 属性，而 dispatchMessage() 方法会调用 Handler 的 handleMessage() 方法。</p>
+<h2 id="Handler，Looper，MessageQueue，Message"><a href="#Handler，Looper，MessageQueue，Message" class="headerlink" title="Handler，Looper，MessageQueue，Message"></a>Handler，Looper，MessageQueue，Message</h2><blockquote>
+<p>在创建 Handler 的时候，在其构造函数中对对当前线程的 Looper 做了非空判断，这里就是使用 ThreadLocal 来存储每个线程中的 Looper 对象，所以如果我们需要在子线程中使用 Handler 需要调用 Looper 的 prepare() 和 loop() 这两个方法。而 MessageQueue 从是一个用来管理所有 Message 的一个单链表，MessageQueue 的 enqueueMessage() 会把 Message 插入到这个单链表中，而 MessageQueue 的 next() 方法会返回一个 Message 对象并把这个 Message 从这个单链表中删除，next() 方法中是一个无限循环，如果单链表中没有消息则会阻塞。<br><br><br><br>Looper 的 prepare() 方法会创建一个 Looper 对象并把这个对象保存在 ThreadLocal 对象中，并且一个线程只能调用一次 prepare() 方法，而在 Looper 的 loop() 方法，会首先判断当前线程是否有 Looper 对象，所以 loop() 必须要在 prepare() 方法之后调用，之后也是一个无限循环，在循环中调用 MessageQueue 的 next() 方法获取消息，并调用 Message 对象的 target 属性的 dispatchMessage() 方法，而这个无线循环跳出的条件就是 next() 方法返回 null。Handler 对象其实就是 Message 对象的 target 属性，而 dispatchMessage() 方法会调用 Handler 的 handleMessage() 方法。</p>
 </blockquote>
-<p><strong>主线程的消息循环</strong></p>
-<blockquote>
+<h2 id="主线程的消息循环"><a href="#主线程的消息循环" class="headerlink" title="主线程的消息循环"></a>主线程的消息循环</h2><blockquote>
 <p>ActivityThread 通过调用 ActivityManagerService 的一些列方法来实现 startActivity 或 startService 等操作，最终 ActivityManagerService 会回调 ApplicationThread 中对应的方法，而在对应的方法中会对 ActivityThread 中的一个名为 H 的 Handler 发送消息，从而执行对应的操作，这就是 Android 中主线程的消息循环机制。</p>
 </blockquote>
-<h1 id="第十一章-Android中的线程和线程池"><a href="#第十一章-Android中的线程和线程池" class="headerlink" title="第十一章 Android中的线程和线程池"></a>第十一章 Android中的线程和线程池</h1><p><strong>AsyncTask</strong></p>
-<blockquote>
+<h1 id="第十一章-Android中的线程和线程池"><a href="#第十一章-Android中的线程和线程池" class="headerlink" title="第十一章 Android中的线程和线程池"></a>第十一章 Android中的线程和线程池</h1><h2 id="AsyncTask"><a href="#AsyncTask" class="headerlink" title="AsyncTask"></a>AsyncTask</h2><blockquote>
 <p>关于 AsyncTask 的基本使用方法，可参考 P393 - P394，AsyncTask 默认使用串行的方式执行，可以通过调用 excuteOnEecutor() 方法来让它并行的方式执行，</p>
 </blockquote>
-<p><strong>HandlerThread 和 IntentService</strong></p>
-<blockquote>
+<h2 id="HandlerThread-和-IntentService"><a href="#HandlerThread-和-IntentService" class="headerlink" title="HandlerThread 和 IntentService"></a>HandlerThread 和 IntentService</h2><blockquote>
 <p>HandlerThread 是一个自带 Looper 的 Thread，即我们在 HandlerThread 中创建 Handler 对象不需要调用 Looper.prepare() 和 Looper.loop() 方法。而在 Android 中 IntentService 中就是用了 HandlerThread，而 IntentService 是一个专门来由执行后台任务的 Service，且当 Service 执行完成后会自动关闭 Service，在 IntentService 的 onCreate() 方法中会创建 HandlerThread 对象，然后调用其 start() 方法，然后通过 HandlerThread 中的 Looper 对象创建对应的 Handler 对象，接着在 onStart() 方法中会对创建的 Handler 发送一个 Message，在 Handler 中收到消息后会调用 onHandleIntent() 方法，这个方法是一个抽象方法，我们可以实现这个方法在里面执行对应的耗时操作。如果我们需要执行多个耗时任务，只需多次调用 startService 即可，系统会判断只有当所有的耗时任务都执行完才会关闭 Service。</p>
 </blockquote>
-<p><strong>Android 中的线程池</strong></p>
-<blockquote>
+<h2 id="Android-中的线程池"><a href="#Android-中的线程池" class="headerlink" title="Android 中的线程池"></a>Android 中的线程池</h2><blockquote>
 <p>线程是一种很有用的系统资源，且是有限的资源，而且创建线程和销毁线程会带来性能消耗，所以使用线程池可以很好的利用线程资源，Android 中的线程池是使用的 Java 中的线程池，系统提供几种线程池的实现，第一种叫做 FixedThreadPool，其特点是没有闲置线程之后核心线程，可以很快的响应外界的请求，第二种叫做 newCachedThreadPool，其特点是没有核心线程，闲置线程没有闲置，适合请求量大的地方，第三种是 ScheduledThreadPool，其核心线程可自定义，且闲置线程没有上限，且闲置线程一旦空闲就会被立即回收，适合执行定时任务或是固定周期型任务，第四种是 SingleThreadExecutor，其核心线程只有一个，其所有任务都会在同一个线程中执行，所以不需要考虑线程同步的问题。</p>
 </blockquote>
-<h1 id="第十二章-Bitmap-的加载和-Cache"><a href="#第十二章-Bitmap-的加载和-Cache" class="headerlink" title="第十二章 Bitmap 的加载和 Cache"></a>第十二章 Bitmap 的加载和 Cache</h1><p><strong>加载 Bitmap</strong></p>
-<blockquote>
+<h1 id="第十二章-Bitmap-的加载和-Cache"><a href="#第十二章-Bitmap-的加载和-Cache" class="headerlink" title="第十二章 Bitmap 的加载和 Cache"></a>第十二章 Bitmap 的加载和 Cache</h1><h2 id="加载-Bitmap"><a href="#加载-Bitmap" class="headerlink" title="加载 Bitmap"></a>加载 Bitmap</h2><blockquote>
 <p>在 Android 中加载 Bitmap 首先需要计算出合理的 inSimpleSize，然后在加载不然很容易 OOM，具体计算过程可参考 P416。</p>
 </blockquote>
-<p><strong>缓存 Bitmap</strong></p>
-<blockquote>
-<p>Android 提供了 LruCache 来实现内存缓存，其内部使用了 LinkedHashMap 来维护数据，当占用内存达到最大上限的时候，会移除不常用的缓存。DiskLruCache 可以实现磁盘上的缓存，具体参考 P420 - P423。</p>
-<p>书中 P433 - P441 实现了一个简易的 ImageLoader，使用了 LruCache 和 DiskLruCache，并采用线程池来优化效率。</p>
+<h2 id="缓存-Bitmap"><a href="#缓存-Bitmap" class="headerlink" title="缓存 Bitmap"></a>缓存 Bitmap</h2><blockquote>
+<p>Android 提供了 LruCache 来实现内存缓存，其内部使用了 LinkedHashMap 来维护数据，当占用内存达到最大上限的时候，会移除不常用的缓存。DiskLruCache 可以实现磁盘上的缓存，具体参考 P420 - P423。<br><br><br><br>书中 P433 - P441 实现了一个简易的 ImageLoader，使用了 LruCache 和 DiskLruCache，并采用线程池来优化效率。</p>
 </blockquote>
 <h1 id="完结"><a href="#完结" class="headerlink" title="完结"></a>完结</h1><p>2017-11-10</p>
 
@@ -673,7 +574,7 @@
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
               <img class="site-author-image" itemprop="image"
-                src="http://ofdvg4c5w.bkt.clouddn.com/%E7%BA%B1%E9%9B%BE.jpg"
+                src="https://s2.ax1x.com/2019/02/28/k70pNt.jpg"
                 alt="linzheng" />
             
               <p class="site-author-name" itemprop="name">linzheng</p>
@@ -687,7 +588,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">35</span>
+                  <span class="site-state-item-count">33</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -766,7 +667,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#第一章-Activity-的生命周期和启动模式"><span class="nav-number">2.</span> <span class="nav-text">第一章 Activity 的生命周期和启动模式</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#第二章-IPC-机制"><span class="nav-number">3.</span> <span class="nav-text">第二章 IPC 机制</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#第三章-View-的事件体系"><span class="nav-number">4.</span> <span class="nav-text">第三章 View 的事件体系</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#第五，六，七，章-RmoteViews，Drawable，动画"><span class="nav-number">5.</span> <span class="nav-text">第五，六，七，章  RmoteViews，Drawable，动画</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#第八章-Window-和-WindowManager"><span class="nav-number">6.</span> <span class="nav-text">第八章 Window 和 WindowManager</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#第九章-四大组件工作原理"><span class="nav-number">7.</span> <span class="nav-text">第九章 四大组件工作原理</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#第十章-Android-的消息机制"><span class="nav-number">8.</span> <span class="nav-text">第十章 Android 的消息机制</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#第十一章-Android中的线程和线程池"><span class="nav-number">9.</span> <span class="nav-text">第十一章 Android中的线程和线程池</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#第十二章-Bitmap-的加载和-Cache"><span class="nav-number">10.</span> <span class="nav-text">第十二章 Bitmap 的加载和 Cache</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#完结"><span class="nav-number">11.</span> <span class="nav-text">完结</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#第一章-Activity-的生命周期和启动模式打开另一个-Activity-的时候，生命周期的调用顺序"><span class="nav-number">2.</span> <span class="nav-text">第一章 Activity 的生命周期和启动模式打开另一个 Activity 的时候，生命周期的调用顺序</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#异常情况下，Activity-生命周期的调用顺序"><span class="nav-number">2.1.</span> <span class="nav-text">异常情况下，Activity 生命周期的调用顺序</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#如何让系统在异常情况下不重新创建-Activity"><span class="nav-number">2.2.</span> <span class="nav-text">如何让系统在异常情况下不重新创建 Activity</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Activity-的-launchMode"><span class="nav-number">2.3.</span> <span class="nav-text">Activity 的 launchMode</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Activity-的-TaskAffinity-和-allowTaskReparenting-属性"><span class="nav-number">2.4.</span> <span class="nav-text">Activity 的 TaskAffinity 和 allowTaskReparenting 属性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#IntentFilter-的匹配规则"><span class="nav-number">2.5.</span> <span class="nav-text">IntentFilter 的匹配规则</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#data-的声明方式"><span class="nav-number">2.6.</span> <span class="nav-text">data 的声明方式</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#第二章-IPC-机制"><span class="nav-number">3.</span> <span class="nav-text">第二章 IPC 机制</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#IPC-简介"><span class="nav-number">3.1.</span> <span class="nav-text">IPC 简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Android-中序列化的方法"><span class="nav-number">3.2.</span> <span class="nav-text">Android 中序列化的方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Binder-与-AIDL"><span class="nav-number">3.3.</span> <span class="nav-text">Binder 与 AIDL</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用-Bundle-实现-IPC"><span class="nav-number">3.4.</span> <span class="nav-text">使用 Bundle 实现 IPC</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用文件共享实现-IPC"><span class="nav-number">3.5.</span> <span class="nav-text">使用文件共享实现  IPC</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用-Messenger-实现-IPC"><span class="nav-number">3.6.</span> <span class="nav-text">使用 Messenger 实现 IPC</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用-AIDL-实现-IPC"><span class="nav-number">3.7.</span> <span class="nav-text">使用 AIDL 实现 IPC</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#其他-IPC实现方式"><span class="nav-number">3.8.</span> <span class="nav-text">其他 IPC实现方式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Binder-连接池"><span class="nav-number">3.9.</span> <span class="nav-text">Binder 连接池</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#第三章-View-的事件体系"><span class="nav-number">4.</span> <span class="nav-text">第三章 View 的事件体系</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#View-的位置参数"><span class="nav-number">4.1.</span> <span class="nav-text">View 的位置参数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MotionEvent，TouchSlop，VelocityTracker，GestrueDetector"><span class="nav-number">4.2.</span> <span class="nav-text">MotionEvent，TouchSlop，VelocityTracker，GestrueDetector</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#View-的滑动"><span class="nav-number">4.3.</span> <span class="nav-text">View 的滑动</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#View-的事件分发机制"><span class="nav-number">4.4.</span> <span class="nav-text">View 的事件分发机制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#滑动冲突的解决方案"><span class="nav-number">4.5.</span> <span class="nav-text">滑动冲突的解决方案</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#第四章-View-的工作原理"><span class="nav-number">5.</span> <span class="nav-text">第四章 View 的工作原理</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#MeasureSpec"><span class="nav-number">5.1.</span> <span class="nav-text">MeasureSpec</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#View-的-measure"><span class="nav-number">5.2.</span> <span class="nav-text">View 的 measure</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#View-的-layout"><span class="nav-number">5.3.</span> <span class="nav-text">View 的 layout</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#View-的-draw"><span class="nav-number">5.4.</span> <span class="nav-text">View 的 draw</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#自定义-View-需要注意的地方"><span class="nav-number">5.5.</span> <span class="nav-text">自定义 View 需要注意的地方</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#第五，六，七，章-RmoteViews，Drawable，动画"><span class="nav-number">6.</span> <span class="nav-text">第五，六，七，章  RmoteViews，Drawable，动画</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#RemoteViews"><span class="nav-number">6.1.</span> <span class="nav-text">RemoteViews</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Drawable"><span class="nav-number">6.2.</span> <span class="nav-text">Drawable</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#动画"><span class="nav-number">6.3.</span> <span class="nav-text">动画</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#第八章-Window-和-WindowManager"><span class="nav-number">7.</span> <span class="nav-text">第八章 Window 和 WindowManager</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Window内部机制"><span class="nav-number">7.1.</span> <span class="nav-text">Window内部机制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Activity-的-setContentView-方法"><span class="nav-number">7.2.</span> <span class="nav-text">Activity 的 setContentView() 方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#添加系统级别的-Window"><span class="nav-number">7.3.</span> <span class="nav-text">添加系统级别的 Window</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Toast-的实现原理"><span class="nav-number">7.4.</span> <span class="nav-text">Toast 的实现原理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#关于-IPC-在-Android-中的应用"><span class="nav-number">7.5.</span> <span class="nav-text">关于 IPC 在 Android 中的应用</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#第九章-四大组件工作原理"><span class="nav-number">8.</span> <span class="nav-text">第九章 四大组件工作原理</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Activity-启动流程"><span class="nav-number">8.1.</span> <span class="nav-text">Activity 启动流程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Service-的启动流程"><span class="nav-number">8.2.</span> <span class="nav-text">Service 的启动流程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Service-的绑定流程"><span class="nav-number">8.3.</span> <span class="nav-text">Service 的绑定流程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#BroadcastReceiver-的工作过程"><span class="nav-number">8.4.</span> <span class="nav-text">BroadcastReceiver 的工作过程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ContentProvider-的工作过程"><span class="nav-number">8.5.</span> <span class="nav-text">ContentProvider 的工作过程</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#第十章-Android-的消息机制"><span class="nav-number">9.</span> <span class="nav-text">第十章 Android 的消息机制</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#ThreadLocal"><span class="nav-number">9.1.</span> <span class="nav-text">ThreadLocal</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Handler，Looper，MessageQueue，Message"><span class="nav-number">9.2.</span> <span class="nav-text">Handler，Looper，MessageQueue，Message</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#主线程的消息循环"><span class="nav-number">9.3.</span> <span class="nav-text">主线程的消息循环</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#第十一章-Android中的线程和线程池"><span class="nav-number">10.</span> <span class="nav-text">第十一章 Android中的线程和线程池</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#AsyncTask"><span class="nav-number">10.1.</span> <span class="nav-text">AsyncTask</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#HandlerThread-和-IntentService"><span class="nav-number">10.2.</span> <span class="nav-text">HandlerThread 和 IntentService</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Android-中的线程池"><span class="nav-number">10.3.</span> <span class="nav-text">Android 中的线程池</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#第十二章-Bitmap-的加载和-Cache"><span class="nav-number">11.</span> <span class="nav-text">第十二章 Bitmap 的加载和 Cache</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#加载-Bitmap"><span class="nav-number">11.1.</span> <span class="nav-text">加载 Bitmap</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#缓存-Bitmap"><span class="nav-number">11.2.</span> <span class="nav-text">缓存 Bitmap</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#完结"><span class="nav-number">12.</span> <span class="nav-text">完结</span></a></li></ol></div>
             
 
           </div>
@@ -786,7 +687,7 @@
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
   <span class="with-love">
     <i class="fa fa-user"></i>
   </span>

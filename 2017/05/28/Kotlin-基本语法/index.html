@@ -87,7 +87,7 @@
 <meta property="og:site_name" content="linzheng blog">
 <meta property="og:description" content="开始因为在今年的 Google的IO 大会上，谷爹宣布将Kotlin作为安卓的一级开发语言，以后肯定会接 Java 的班，所以趁现在赶紧来学习学习 Kotlin 这门语言。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-01-31T11:22:54.863Z">
+<meta property="og:updated_time" content="2019-02-28T14:48:08.549Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Kotlin-基本语法">
 <meta name="twitter:description" content="开始因为在今年的 Google的IO 大会上，谷爹宣布将Kotlin作为安卓的一级开发语言，以后肯定会接 Java 的班，所以趁现在赶紧来学习学习 Kotlin 这门语言。">
@@ -248,7 +248,7 @@
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="linzheng">
       <meta itemprop="description" content="">
-      <meta itemprop="image" content="http://ofdvg4c5w.bkt.clouddn.com/%E7%BA%B1%E9%9B%BE.jpg">
+      <meta itemprop="image" content="https://s2.ax1x.com/2019/02/28/k70pNt.jpg">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
@@ -330,7 +330,7 @@
 <p>翻译过来意识就是，Kotlin非常适合开发 Android 应用,将现代语言的所有优势带入Android平台。</p>
 <p>下面先学习一下 Kotlin 的基本语法。</p>
 <p>以下代码来自 Kotlin 的官方文档:<a href="https://kotlinlang.org/docs/reference/basic-syntax.html" target="_blank" rel="noopener">https://kotlinlang.org/docs/reference/basic-syntax.html</a></p>
-<h1 id="方法-Fun"><a href="#方法-Fun" class="headerlink" title="方法(Fun)"></a>方法(<code>Fun</code>)</h1><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">fun</span> <span class="title">sum</span><span class="params">(a: <span class="type">Int</span>, b: <span class="type">Int</span>)</span></span>: <span class="built_in">Int</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> a + b</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">fun</span> <span class="title">sum</span><span class="params">(a: <span class="type">Int</span>, b: <span class="type">Int</span>)</span></span> a + b</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">fun</span> <span class="title">printSum</span><span class="params">(a: <span class="type">Int</span>, b: <span class="type">Int</span>)</span></span>: <span class="built_in">Unit</span>&#123;</span><br><span class="line">    println(<span class="string">"sum of <span class="variable">$a</span> and <span class="variable">$b</span> is <span class="subst">$&#123;a + b&#125;</span>"</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">fun</span> <span class="title">printSum</span><span class="params">(a: <span class="type">Int</span>, b: <span class="type">Int</span>)</span></span>&#123;</span><br><span class="line">    println(<span class="string">"sum of <span class="variable">$a</span> and <span class="variable">$b</span> is <span class="subst">$&#123;a + b&#125;</span>"</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="方法"><a href="#方法" class="headerlink" title="方法"></a>方法</h1><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">fun</span> <span class="title">sum</span><span class="params">(a: <span class="type">Int</span>, b: <span class="type">Int</span>)</span></span>: <span class="built_in">Int</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> a + b</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">fun</span> <span class="title">sum</span><span class="params">(a: <span class="type">Int</span>, b: <span class="type">Int</span>)</span></span> a + b</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">fun</span> <span class="title">printSum</span><span class="params">(a: <span class="type">Int</span>, b: <span class="type">Int</span>)</span></span>: <span class="built_in">Unit</span>&#123;</span><br><span class="line">    println(<span class="string">"sum of <span class="variable">$a</span> and <span class="variable">$b</span> is <span class="subst">$&#123;a + b&#125;</span>"</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">fun</span> <span class="title">printSum</span><span class="params">(a: <span class="type">Int</span>, b: <span class="type">Int</span>)</span></span>&#123;</span><br><span class="line">    println(<span class="string">"sum of <span class="variable">$a</span> and <span class="variable">$b</span> is <span class="subst">$&#123;a + b&#125;</span>"</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>定义方法，使用关键字<code>Fun</code>，和 Java 不一样的是，在不是在方法名前面定义方法的返回类型,而是在参数后面定义方法的返回类型(或者可以不写放回类型,参考第二种方法的定义)。</p>
 <p>当方法体只有一行的时候可以直接使用第二种定义方式，而且返回的类型也不需要指定。</p>
 <p>Kotlin 中如果想让方法不需要返回值，可以使用 <code>Unit</code> 类型，通常情况下 <code>Unit</code> 可以省略。</p>
@@ -466,7 +466,7 @@
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
               <img class="site-author-image" itemprop="image"
-                src="http://ofdvg4c5w.bkt.clouddn.com/%E7%BA%B1%E9%9B%BE.jpg"
+                src="https://s2.ax1x.com/2019/02/28/k70pNt.jpg"
                 alt="linzheng" />
             
               <p class="site-author-name" itemprop="name">linzheng</p>
@@ -480,7 +480,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">35</span>
+                  <span class="site-state-item-count">33</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -559,7 +559,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#开始"><span class="nav-number">1.</span> <span class="nav-text">开始</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#方法-Fun"><span class="nav-number">2.</span> <span class="nav-text">方法(Fun)</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#局部变量-val-and-var"><span class="nav-number">3.</span> <span class="nav-text">局部变量(val and var)</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#字符串模板"><span class="nav-number">4.</span> <span class="nav-text">字符串模板</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#条件表达式-if-and-else"><span class="nav-number">5.</span> <span class="nav-text">条件表达式(if and else)</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#空值判断"><span class="nav-number">6.</span> <span class="nav-text">空值判断(?)</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#类型检查和类型转换-is"><span class="nav-number">7.</span> <span class="nav-text">类型检查和类型转换(is)</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#循环-while-and-for"><span class="nav-number">8.</span> <span class="nav-text">循环(while and for)</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#when表达式"><span class="nav-number">9.</span> <span class="nav-text">when表达式</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#范围"><span class="nav-number">10.</span> <span class="nav-text">范围</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#集合"><span class="nav-number">11.</span> <span class="nav-text">集合</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#开始"><span class="nav-number">1.</span> <span class="nav-text">开始</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#方法"><span class="nav-number">2.</span> <span class="nav-text">方法</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#局部变量-val-and-var"><span class="nav-number">3.</span> <span class="nav-text">局部变量(val and var)</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#字符串模板"><span class="nav-number">4.</span> <span class="nav-text">字符串模板</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#条件表达式-if-and-else"><span class="nav-number">5.</span> <span class="nav-text">条件表达式(if and else)</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#空值判断"><span class="nav-number">6.</span> <span class="nav-text">空值判断(?)</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#类型检查和类型转换-is"><span class="nav-number">7.</span> <span class="nav-text">类型检查和类型转换(is)</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#循环-while-and-for"><span class="nav-number">8.</span> <span class="nav-text">循环(while and for)</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#when表达式"><span class="nav-number">9.</span> <span class="nav-text">when表达式</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#范围"><span class="nav-number">10.</span> <span class="nav-text">范围</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#集合"><span class="nav-number">11.</span> <span class="nav-text">集合</span></a></li></ol></div>
             
 
           </div>
@@ -579,7 +579,7 @@
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
   <span class="with-love">
     <i class="fa fa-user"></i>
   </span>

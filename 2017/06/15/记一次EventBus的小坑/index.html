@@ -79,18 +79,18 @@
 
 
 
-<meta name="description" content="起因此博客纯属扯淡，后来进过本人测试，发现是自己代码有问题，跟 EventBus 没有半毛钱关系。 最近在做公司项目的时候，大量的使用了 EventBus 。用的不亦乐乎，但是今天突然遇到了一个很奇怪的问题。">
+<meta name="description" content="起因此博客纯属扯淡，后来进过本人测试，发现是自己代码有问题，跟 EventBus 没有半毛钱关系。最近在做公司项目的时候，大量的使用了 EventBus 。用的不亦乐乎，但是今天突然遇到了一个很奇怪的问题。">
 <meta name="keywords" content="疑难杂症">
 <meta property="og:type" content="article">
 <meta property="og:title" content="记一次EventBus的小坑">
 <meta property="og:url" content="http://yoursite.com/2017/06/15/记一次EventBus的小坑/index.html">
 <meta property="og:site_name" content="linzheng blog">
-<meta property="og:description" content="起因此博客纯属扯淡，后来进过本人测试，发现是自己代码有问题，跟 EventBus 没有半毛钱关系。 最近在做公司项目的时候，大量的使用了 EventBus 。用的不亦乐乎，但是今天突然遇到了一个很奇怪的问题。">
+<meta property="og:description" content="起因此博客纯属扯淡，后来进过本人测试，发现是自己代码有问题，跟 EventBus 没有半毛钱关系。最近在做公司项目的时候，大量的使用了 EventBus 。用的不亦乐乎，但是今天突然遇到了一个很奇怪的问题。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-01-31T11:22:54.871Z">
+<meta property="og:updated_time" content="2019-02-28T09:32:49.878Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="记一次EventBus的小坑">
-<meta name="twitter:description" content="起因此博客纯属扯淡，后来进过本人测试，发现是自己代码有问题，跟 EventBus 没有半毛钱关系。 最近在做公司项目的时候，大量的使用了 EventBus 。用的不亦乐乎，但是今天突然遇到了一个很奇怪的问题。">
+<meta name="twitter:description" content="起因此博客纯属扯淡，后来进过本人测试，发现是自己代码有问题，跟 EventBus 没有半毛钱关系。最近在做公司项目的时候，大量的使用了 EventBus 。用的不亦乐乎，但是今天突然遇到了一个很奇怪的问题。">
 
 
 
@@ -248,7 +248,7 @@
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="linzheng">
       <meta itemprop="description" content="">
-      <meta itemprop="image" content="http://ofdvg4c5w.bkt.clouddn.com/%E7%BA%B1%E9%9B%BE.jpg">
+      <meta itemprop="image" content="https://s2.ax1x.com/2019/02/28/k70pNt.jpg">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
@@ -321,8 +321,7 @@
       
 
       
-        <h1 id="起因"><a href="#起因" class="headerlink" title="起因"></a>起因</h1><p><strong>此博客纯属扯淡，后来进过本人测试，发现是自己代码有问题，跟 EventBus 没有半毛钱关系。</strong></p>
-<p>最近在做公司项目的时候，大量的使用了 EventBus 。用的不亦乐乎，但是今天突然遇到了一个很奇怪的问题。</p>
+        <h1 id="起因"><a href="#起因" class="headerlink" title="起因"></a>起因</h1><p><strong>此博客纯属扯淡，后来进过本人测试，发现是自己代码有问题，跟 EventBus 没有半毛钱关系。</strong><br>最近在做公司项目的时候，大量的使用了 EventBus 。用的不亦乐乎，但是今天突然遇到了一个很奇怪的问题。</p>
 <a id="more"></a>
 <p>在接入微支付的时候，微信的回调在一个 Activity 中，所以就在里面是用 EventBus 来通知界面更新，本来没有什么大问题。可是后面我在封装支付工具类的时候，发现 EventBus 发不出去，反复检查也没发现问题。刚开始以为是自己代码写的有问题，后来进入 EventBus 的源码一看，才知道原来跟 EventBus 有关。</p>
 <h1 id="在接收EventBus-Event的方法中在发Event"><a href="#在接收EventBus-Event的方法中在发Event" class="headerlink" title="在接收EventBus Event的方法中在发Event"></a>在接收EventBus Event的方法中在发Event</h1><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">//伪代码如下，在支付的工具类中接收 微信支付的Event</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//接收微信支付成功回调</span></span><br><span class="line"><span class="meta">@Subscribe</span>(threadMode = ThreadMode.MAIN)</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onMessageEvent</span><span class="params">(String event)</span></span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(支付成功)&#123;</span><br><span class="line">        <span class="comment">//通知Ui更新</span></span><br><span class="line">        EventBus.getDefault().post(object);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Subscribe</span>(threadMode = ThreadMode.MAIN)</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onRefreshUI</span><span class="params">(Object object)</span></span>&#123;</span><br><span class="line">    <span class="comment">//更新UI</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
@@ -442,7 +441,7 @@
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
               <img class="site-author-image" itemprop="image"
-                src="http://ofdvg4c5w.bkt.clouddn.com/%E7%BA%B1%E9%9B%BE.jpg"
+                src="https://s2.ax1x.com/2019/02/28/k70pNt.jpg"
                 alt="linzheng" />
             
               <p class="site-author-name" itemprop="name">linzheng</p>
@@ -456,7 +455,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">35</span>
+                  <span class="site-state-item-count">33</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -555,7 +554,7 @@
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
   <span class="with-love">
     <i class="fa fa-user"></i>
   </span>

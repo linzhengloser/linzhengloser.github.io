@@ -242,12 +242,283 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/07/10/OkHttp源码解析/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="linzheng">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://s2.ax1x.com/2019/02/28/k70pNt.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="linzheng blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/07/10/OkHttp源码解析/" itemprop="url">OkHttp源码解析</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-07-10T11:22:27+08:00">
+                2017-07-10
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2017/07/10/OkHttp源码解析/" class="leancloud_visitors" data-flag-title="OkHttp源码解析">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h1 id="开始"><a href="#开始" class="headerlink" title="开始"></a>开始</h1><p>又是新的一周，美好的一周，应该由源码解析来开始。很早就像看看OkHttp的源码，主要是对这个框架中的 Interceptor(拦截器) 比较感兴趣，废话少说，跟随源码的脚步来看看它的实现原理吧~</p>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2017/07/10/OkHttp源码解析/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/06/23/Volley源码解析/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="linzheng">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://s2.ax1x.com/2019/02/28/k70pNt.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="linzheng blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/06/23/Volley源码解析/" itemprop="url">Volley 源码分析</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-06-23T11:34:26+08:00">
+                2017-06-23
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2017/06/23/Volley源码解析/" class="leancloud_visitors" data-flag-title="Volley 源码分析">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h1 id="开始"><a href="#开始" class="headerlink" title="开始"></a>开始</h1><p>有段时间没看源码(主要是最近有点忙)，最近公司项目也进入了改 BUG 阶段，终于有时间看看源码了。于是就选择来看看 <code>Volley</code> 的源码。</p>
+<p><code>Volley</code> 这个框架我是在刚工作那会就接触到了。那个时候除了 <code>HttpURLConnection</code> 和 <code>HttpClient</code> 以外，就只知道 <code>Volley</code> 这个网络框架。当初只是停留在用的层次，对其中的原理也是半知半解。这次就来好好看看 Volley 的源码 ~</p>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2017/06/23/Volley源码解析/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/06/15/记一次EventBus的小坑/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="linzheng">
       <meta itemprop="description" content="">
-      <meta itemprop="image" content="http://ofdvg4c5w.bkt.clouddn.com/%E7%BA%B1%E9%9B%BE.jpg">
+      <meta itemprop="image" content="https://s2.ax1x.com/2019/02/28/k70pNt.jpg">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
@@ -323,8 +594,7 @@
 
       
         
-          <h1 id="起因"><a href="#起因" class="headerlink" title="起因"></a>起因</h1><p><strong>此博客纯属扯淡，后来进过本人测试，发现是自己代码有问题，跟 EventBus 没有半毛钱关系。</strong></p>
-<p>最近在做公司项目的时候，大量的使用了 EventBus 。用的不亦乐乎，但是今天突然遇到了一个很奇怪的问题。</p>
+          <h1 id="起因"><a href="#起因" class="headerlink" title="起因"></a>起因</h1><p><strong>此博客纯属扯淡，后来进过本人测试，发现是自己代码有问题，跟 EventBus 没有半毛钱关系。</strong><br>最近在做公司项目的时候，大量的使用了 EventBus 。用的不亦乐乎，但是今天突然遇到了一个很奇怪的问题。</p>
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/2017/06/15/记一次EventBus的小坑/#more" rel="contents">
@@ -383,7 +653,7 @@
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="linzheng">
       <meta itemprop="description" content="">
-      <meta itemprop="image" content="http://ofdvg4c5w.bkt.clouddn.com/%E7%BA%B1%E9%9B%BE.jpg">
+      <meta itemprop="image" content="https://s2.ax1x.com/2019/02/28/k70pNt.jpg">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
@@ -519,7 +789,7 @@
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="linzheng">
       <meta itemprop="description" content="">
-      <meta itemprop="image" content="http://ofdvg4c5w.bkt.clouddn.com/%E7%BA%B1%E9%9B%BE.jpg">
+      <meta itemprop="image" content="https://s2.ax1x.com/2019/02/28/k70pNt.jpg">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
@@ -654,7 +924,7 @@
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="linzheng">
       <meta itemprop="description" content="">
-      <meta itemprop="image" content="http://ofdvg4c5w.bkt.clouddn.com/%E7%BA%B1%E9%9B%BE.jpg">
+      <meta itemprop="image" content="https://s2.ax1x.com/2019/02/28/k70pNt.jpg">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
@@ -789,7 +1059,7 @@
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="linzheng">
       <meta itemprop="description" content="">
-      <meta itemprop="image" content="http://ofdvg4c5w.bkt.clouddn.com/%E7%BA%B1%E9%9B%BE.jpg">
+      <meta itemprop="image" content="https://s2.ax1x.com/2019/02/28/k70pNt.jpg">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
@@ -865,145 +1135,10 @@
 
       
         
-          <h1 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h1><p>前面介绍了 ButterKnife 的基本原理，这里就分析下它是怎么实现动态生成 ViewBinding 类的。<br>大致原理原理在项目编译的时候，解析注解，然后使用 JavaFileObject 这个类生成对应的java文件。</p>
+          <h1 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h1><p>前面介绍了 ButterKnife 的基本原理，这里就分析下它是怎么实现动态生成 ViewBinding 类的。<br>大致原理原理在项目编译的时候解析注解，然后使用 JavaFileObject 这个类生成对应的 java 文件。</p>
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/2017/04/20/高仿Butterknife的BindView注解/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/03/31/关于融云直播聊天室的学习/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="linzheng">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="http://ofdvg4c5w.bkt.clouddn.com/%E7%BA%B1%E9%9B%BE.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="linzheng blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/03/31/关于融云直播聊天室的学习/" itemprop="url">关于融云直播聊天室的学习.</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-03-31T14:04:01+08:00">
-                2017-03-31
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-             <span id="/2017/03/31/关于融云直播聊天室的学习/" class="leancloud_visitors" data-flag-title="关于融云直播聊天室的学习.">
-               <span class="post-meta-divider">|</span>
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               
-                 <span class="post-meta-item-text">阅读次数&#58;</span>
-               
-                 <span class="leancloud-visitors-count"></span>
-             </span>
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h1 id="开始"><a href="#开始" class="headerlink" title="开始"></a>开始</h1><p>最近公司准备基于融云 + 七牛云直播，做一个关于直播类型的 APP ，所以提前熟悉下融云的 SDK 对开发还是有很大的好处的。</p>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2017/03/31/关于融云直播聊天室的学习/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -1059,7 +1194,7 @@
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="linzheng">
       <meta itemprop="description" content="">
-      <meta itemprop="image" content="http://ofdvg4c5w.bkt.clouddn.com/%E7%BA%B1%E9%9B%BE.jpg">
+      <meta itemprop="image" content="https://s2.ax1x.com/2019/02/28/k70pNt.jpg">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
@@ -1135,291 +1270,10 @@
 
       
         
-          <h1 id="ButterKnife介绍"><a href="#ButterKnife介绍" class="headerlink" title="ButterKnife介绍"></a>ButterKnife介绍</h1><p>ButterKnife是Github著名Android大神JakeWharton开源的,主要用于解决Android平台上findViewById,setOnClick等重复代码,使用非常方便.</p>
+          <h1 id="ButterKnife介绍"><a href="#ButterKnife介绍" class="headerlink" title="ButterKnife介绍"></a>ButterKnife介绍</h1><p>ButterKnife 是 Github 上著名 Android 大佬 JakeWharton 的一个库，主要用于解决 Android 平台上 findViewById()，setOnClickListener() 等重复代码,使用起来非常方便。</p>
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/2017/03/10/ButterKnife源码解析/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/03/09/HTML标签-链接标签/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="linzheng">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="http://ofdvg4c5w.bkt.clouddn.com/%E7%BA%B1%E9%9B%BE.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="linzheng blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/03/09/HTML标签-链接标签/" itemprop="url">HTML标签-链接标签</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-03-09T12:20:03+08:00">
-                2017-03-09
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-             <span id="/2017/03/09/HTML标签-链接标签/" class="leancloud_visitors" data-flag-title="HTML标签-链接标签">
-               <span class="post-meta-divider">|</span>
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               
-                 <span class="post-meta-item-text">阅读次数&#58;</span>
-               
-                 <span class="leancloud-visitors-count"></span>
-             </span>
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="HTML链接标签"><a href="#HTML链接标签" class="headerlink" title="HTML链接标签"></a>HTML链接标签</h1><p>链接是网络的主要特色,因为链接允许你从一个网页跳转到另一个网页,实现了人们在网上浏览和冲浪的想法.一般情况下,你会遇到下面几种链接:</p>
-<ol>
-<li>从一个网站指向另一个网站的链接.</li>
-<li>从一个网页指向同一个网站内部另一个网页的链接</li>
-<li>从网页的一个位置指向同一网页内另一个位置的链接</li>
-<li>在新的浏览器窗口中打开的链接</li>
-<li>启动你的电子邮件程序并为其添加收件人的链接</li>
-</ol>
-<h2 id="指向其他网站的链接"><a href="#指向其他网站的链接" class="headerlink" title="指向其他网站的链接"></a>指向其他网站的链接</h2><p><code>&lt;a&gt;</code></p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta">&lt;!DOCTYPE html&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">title</span>&gt;</span><span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">p</span>&gt;</span>BAT:</span><br><span class="line">    <span class="tag">&lt;<span class="name">ul</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">li</span>&gt;</span><span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">"http://www.baidu.com"</span>&gt;</span>百度<span class="tag">&lt;/<span class="name">a</span>&gt;</span><span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">li</span>&gt;</span><span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">"http://www.alibaba.com"</span>&gt;</span>阿里巴巴<span class="tag">&lt;/<span class="name">a</span>&gt;</span><span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">li</span>&gt;</span><span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">"http://www.tencent.com"</span>&gt;</span>腾讯<span class="tag">&lt;/<span class="name">a</span>&gt;</span><span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">ul</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
-<p>效果图:<br><br><img src="HTML标签-列表标签/linking-to-other-sites.png" alt="linking-to-other-sites" title="linking-to-other-sites"><br>;;;<br>标签用法:网页中的链接是通过<code>&lt;a&gt;</code>元素建立的,<code>&lt;a&gt;</code>元素拥有一个重要的特性:href,href特性的值设定了链接的目标,即网站用户单击链接时所到达的页面地址.当网站用户单击位于链接起始标签<code>&lt;a&gt;</code>和结束标签<code>&lt;a/&gt;</code>之间的内容时,就会打开href特性所设定的页面.如果链接指向另一个网站,那么href特性的值必须是另一个网站的完整Web地址,也就是<strong>绝对URL</strong>。默认情况下,链接文本在浏览器显示为蓝色并带有下划线.</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/02/27/HTML标签-列表标签/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="linzheng">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="http://ofdvg4c5w.bkt.clouddn.com/%E7%BA%B1%E9%9B%BE.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="linzheng blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/02/27/HTML标签-列表标签/" itemprop="url">HTML标签-列表标签</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-02-27T13:04:58+08:00">
-                2017-02-27
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-             <span id="/2017/02/27/HTML标签-列表标签/" class="leancloud_visitors" data-flag-title="HTML标签-列表标签">
-               <span class="post-meta-divider">|</span>
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               
-                 <span class="post-meta-item-text">阅读次数&#58;</span>
-               
-                 <span class="leancloud-visitors-count"></span>
-             </span>
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h1 id="HTML列表标签"><a href="#HTML列表标签" class="headerlink" title="HTML列表标签"></a>HTML列表标签</h1><p>在很多场合都需要用到列表,HTML提供了三种不同的列表</p>
-<ol>
-<li>有序列表是指为其中的每个项目编号的列表.例如,有序列表可能是菜谱的一系列步骤,而这些步骤必须按照顺序完成,也可能是一则法律合同,合同中的每项条文都需要指定一个序号.</li>
-<li>无序列表是指以点状项目符号(不同于表明顺序的字符)作为开头的列表.</li>
-<li>定义列表是由一系列术语及其定义组成的列表.</li>
-</ol>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2017/02/27/HTML标签-列表标签/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -1475,7 +1329,7 @@
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="linzheng">
       <meta itemprop="description" content="">
-      <meta itemprop="image" content="http://ofdvg4c5w.bkt.clouddn.com/%E7%BA%B1%E9%9B%BE.jpg">
+      <meta itemprop="image" content="https://s2.ax1x.com/2019/02/28/k70pNt.jpg">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
@@ -1596,6 +1450,141 @@
 
 
     
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/12/21/View-的绘制流程-measure-layout-draw/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="linzheng">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://s2.ax1x.com/2019/02/28/k70pNt.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="linzheng blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2016/12/21/View-的绘制流程-measure-layout-draw/" itemprop="url">View 的绘制流程(measure,layout,draw)</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-12-21T16:12:51+08:00">
+                2016-12-21
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2016/12/21/View-的绘制流程-measure-layout-draw/" class="leancloud_visitors" data-flag-title="View 的绘制流程(measure,layout,draw)">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h1 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h1><p>View的创建大致分为:measure(测量),layout(布局,一般是ViewGroup干的事）,draw（绘制）.在自定义View的时候,打交道最多的就是这个3个方法,但是系统的View是怎么实现这个方法的呢？接下来就来缝隙一下这个3个方法.</p>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2016/12/21/View-的绘制流程-measure-layout-draw/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
   </section>
 
   
@@ -1636,7 +1625,7 @@
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
               <img class="site-author-image" itemprop="image"
-                src="http://ofdvg4c5w.bkt.clouddn.com/%E7%BA%B1%E9%9B%BE.jpg"
+                src="https://s2.ax1x.com/2019/02/28/k70pNt.jpg"
                 alt="linzheng" />
             
               <p class="site-author-name" itemprop="name">linzheng</p>
@@ -1650,7 +1639,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">35</span>
+                  <span class="site-state-item-count">33</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -1733,7 +1722,7 @@
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
   <span class="with-love">
     <i class="fa fa-user"></i>
   </span>

@@ -1,0 +1,2453 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="读书笔记," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="编码说起编码，在脑海中第一时间想到的肯定是什么 UTF-8，GBK 等等等等，但是我们这里的编码指的并不是这些编码类型，而是指定一本书的书名。 这本书的文笔很特殊，它不像那些讲原理的书里面全是代码。也不像那些讲理论的书里面全是文字。在这本书中作者通过直接而又简单的例子，为我们诠释了编码的奥秘。 很推荐没看过这本书的人去看看这本书，相信会有不少收获，本篇博客会总结一下书中的部分内容，内容主要讲的是计">
+<meta name="keywords" content="读书笔记">
+<meta property="og:type" content="article">
+<meta property="og:title" content="编码-二进制">
+<meta property="og:url" content="http://yoursite.com/2019/02/28/编码-二进制/index.html">
+<meta property="og:site_name" content="linzheng blog">
+<meta property="og:description" content="编码说起编码，在脑海中第一时间想到的肯定是什么 UTF-8，GBK 等等等等，但是我们这里的编码指的并不是这些编码类型，而是指定一本书的书名。 这本书的文笔很特殊，它不像那些讲原理的书里面全是代码。也不像那些讲理论的书里面全是文字。在这本书中作者通过直接而又简单的例子，为我们诠释了编码的奥秘。 很推荐没看过这本书的人去看看这本书，相信会有不少收获，本篇博客会总结一下书中的部分内容，内容主要讲的是计">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-03-05T09:03:06.686Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="编码-二进制">
+<meta name="twitter:description" content="编码说起编码，在脑海中第一时间想到的肯定是什么 UTF-8，GBK 等等等等，但是我们这里的编码指的并不是这些编码类型，而是指定一本书的书名。 这本书的文笔很特殊，它不像那些讲原理的书里面全是代码。也不像那些讲理论的书里面全是文字。在这本书中作者通过直接而又简单的例子，为我们诠释了编码的奥秘。 很推荐没看过这本书的人去看看这本书，相信会有不少收获，本篇博客会总结一下书中的部分内容，内容主要讲的是计">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/02/28/编码-二进制/"/>
+
+
+
+
+
+  <title>编码-二进制 | linzheng blog</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?a47d4a5123200d8170cd198104ba9e50";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">linzheng blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">linzheng blog</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/02/28/编码-二进制/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="linzheng">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://s2.ax1x.com/2019/02/28/k70pNt.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="linzheng blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">编码-二进制</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-02-28T15:05:40+08:00">
+                2019-02-28
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2019/02/28/编码-二进制/" class="leancloud_visitors" data-flag-title="编码-二进制">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="编码"><a href="#编码" class="headerlink" title="编码"></a>编码</h1><p>说起编码，在脑海中第一时间想到的肯定是什么 <code>UTF-8</code>，<code>GBK</code> 等等等等，但是我们这里的编码指的并不是这些编码类型，而是指定一本书的书名。</p>
+<p>这本书的文笔很特殊，它不像那些讲原理的书里面全是代码。也不像那些讲理论的书里面全是文字。在这本书中作者通过直接而又简单的例子，为我们诠释了编码的奥秘。</p>
+<p>很推荐没看过这本书的人去看看这本书，相信会有不少收获，本篇博客会总结一下书中的<strong>部分内容</strong>，内容主要讲的是计算的的语言-二进制。</p>
+<a id="more"></a>
+<h1 id="交流"><a href="#交流" class="headerlink" title="交流"></a>交流</h1><p>人与人之间，如果想要交流可以通过很多种方式，而最简单的方式就是说话，比如中国人说的就是<strong>中文</strong>，美国人说的就是<strong>英语</strong>，只要你听得懂对面说的<strong>语言</strong>，就能和对方交流。</p>
+<p>然而声音的传播范围是有限制，如果你想和一个离你很远的人交流，就必须要考虑使用别的方式，最简单的方式就是写信。写信本质就是将上面说到语言转换成文字并写在纸上，最后通过邮局寄给你想要寄的人。</p>
+<h2 id="一次简单的交流"><a href="#一次简单的交流" class="headerlink" title="一次简单的交流"></a>一次简单的交流</h2><p>这是一个关于交流的故事，从前有个小孩，他的好朋友就住在他的对面，他们的窗户是相对的。每当到了晚上，它俩总喜欢在睡觉前扯扯闲话，开开玩笑。</p>
+<p>在刚开始的时候，他们可以通过一些简单的肢体来传达信息，不过前提是房间的灯是亮的，随着时间一点一点的推移，他们的父母会宣布<strong>关灯</strong>，这时他们没法在通过先前的方式进行交流了，于是他们又想到了一个新的交流方式。</p>
+<p>手电筒，基本上每个房间里面都会有东西，方便在没电的时候应急使用。这个时候他俩决定通过使用手电筒来进行交流，通过在空气中笔画出想要说的话，对方就能看见。</p>
+<p>不得不说这是一个不错的交流方式，有效的解决了在没有灯的情况下也能交流这里目的。但是如果先要说的话比较复杂，就很难在通过这种方式来表达了</p>
+<p>这个故事是不是很像某些电影中的情节，具体就是通过控制灯的开光状态，调整开与关之间间隔来传递信息。</p>
+<h1 id="摩尔斯电码"><a href="#摩尔斯电码" class="headerlink" title="摩尔斯电码"></a>摩尔斯电码</h1><p>很显然，通过使用手电筒在空气中笔画出我们想要表达的信息是一种不现实的方法，于是我们可以摩尔斯电码与手电筒进行结合，来让我们的手电筒交流变的更加高效。</p>
+<p>在摩尔斯电码中，有两个关键的<strong>表达方式</strong>，分别为 dot 和 dash，翻译过来就做<strong>点</strong>和<strong>划</strong>。下面是 26 个音文字母通过 dot 和 dash 的表示方式：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">A -&gt; dot dash</span><br><span class="line">B -&gt; dash dot dot</span><br><span class="line">C -&gt; dash dot dash dot</span><br><span class="line">D -&gt; dash dot dot</span><br><span class="line">E -&gt; dot</span><br><span class="line">F -&gt; dot dot dash dot</span><br><span class="line">G -&gt; dash dash dot</span><br><span class="line">H -&gt; dot dot dot dot</span><br><span class="line">I -&gt; dot dot</span><br><span class="line">J -&gt; dot dash dash dash</span><br><span class="line">K -&gt; dash dot dash</span><br><span class="line">L -&gt; dot dash dot dot</span><br><span class="line">M -&gt; dash dash</span><br><span class="line">N -&gt; dash dot</span><br><span class="line">O -&gt; dash dash dash</span><br><span class="line">P -&gt; dot dash dash dot</span><br><span class="line">Q -&gt; dash dash dot dash</span><br><span class="line">R -&gt; dot dash dot</span><br><span class="line">S -&gt; dot dot dot</span><br><span class="line">T -&gt; dash</span><br><span class="line">U -&gt; dot dot dash</span><br><span class="line">V -&gt; dot dot dot dash</span><br><span class="line">W -&gt; dot dash dash</span><br><span class="line">X -&gt; dash dot dot dash</span><br><span class="line">Y -&gt; dash dot dash dash</span><br><span class="line">Z -&gt; dash dash dot dot</span><br><span class="line"></span><br><span class="line">//例子</span><br><span class="line">Hello -&gt; dot dot dot dot  dot  dot dash dot dot  dot dash dot dot  dash dash dash</span><br></pre></td></tr></table></figure>
+<p>我们可以通过打开打开手电筒过一秒在关闭手电筒的方式来表示一个 dot，在通过打开手电筒过两秒在关闭手电筒来表示一个 dash。</p>
+<p>像我们都知道的国际救援信号 SOS，它并不是某三个单词的缩写而是摩尔斯码中 <code>dot dot dot dash dash dash dot dot dot</code> 的意识。因为标示简单所有被用作为国际救援信号，翻译过来就是 SOS。</p>
+<p>假设在日常的生活中我们的语言变成了摩尔斯电码，那么我们听到的只有点和划这两个字了，这到底是变的简单还是复杂了呢？</p>
+<h2 id="解码"><a href="#解码" class="headerlink" title="解码"></a>解码</h2><p>通过上面的字母对照关系，我们可以开始的写出我们想要表达的信息的摩尔斯电码，但是如果给你一段摩尔斯电码要你转成字母，就会比较麻烦，所以我们还需要一个专门用来解码的对照表：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line">//通过 dot dash 的个数来区分</span><br><span class="line"></span><br><span class="line">//一个</span><br><span class="line">dot -&gt; E</span><br><span class="line">dash -&gt; T</span><br><span class="line"></span><br><span class="line">//两个</span><br><span class="line">dot dot -&gt; I</span><br><span class="line">dash dot -&gt; N</span><br><span class="line">dot dash -&gt; A</span><br><span class="line">dash dash -&gt; M</span><br><span class="line"></span><br><span class="line">//三个</span><br><span class="line">dot dot dot -&gt; S</span><br><span class="line">dot dot dash -&gt; U</span><br><span class="line">dot dash dot -&gt; R</span><br><span class="line">dot dash dash -&gt; W</span><br><span class="line">dash dot dot -&gt; D</span><br><span class="line">dash dot dash -&gt; K</span><br><span class="line">dash dash dot -&gt; G</span><br><span class="line">dash dash dash -&gt; O</span><br><span class="line"></span><br><span class="line">//四个</span><br><span class="line">dot dot dot dot -&gt; H</span><br><span class="line">dot dot dot dash -&gt; V</span><br><span class="line">dot dot dash dot -&gt; F</span><br><span class="line">dot dot dash dash -&gt; 德语 U</span><br><span class="line">dot dash dot dot -&gt; L</span><br><span class="line">dot dash dot dash -&gt; 德语 A</span><br><span class="line">dot dash dash dot -&gt; P</span><br><span class="line">dot dash dash dash -&gt; J</span><br><span class="line">dash dot dot dot -&gt; B</span><br><span class="line">dash dot dot dash -&gt; X</span><br><span class="line">dash dot dash dot -&gt; C</span><br><span class="line">dash dot dash dash -&gt; Y</span><br><span class="line">dash dash dot dot -&gt; Z</span><br><span class="line">dash dash dot dash -&gt; Z</span><br><span class="line">dash dash dot dash -&gt; Q</span><br><span class="line">dash dash dash dot -&gt; 德语 O</span><br><span class="line">dash dash dash dash -&gt; 德语 S</span><br></pre></td></tr></table></figure>
+<p>通过上面的对照表，我们就可以通过摩尔斯电码的个数快速知道其表示的字母是什么。</p>
+<p>观察上面的对照表的个数，你会发现一个规律，通过这规律我们可以找摩尔电码的个数和字母个数的关系，如下：</p>
+<table>
+<thead>
+<tr>
+<th>点和划的个数</th>
+<th>可表示的字母个数</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>2</td>
+</tr>
+<tr>
+<td>2</td>
+<td>4</td>
+</tr>
+<tr>
+<td>3</td>
+<td>8</td>
+</tr>
+<tr>
+<td>4</td>
+<td>16</td>
+</tr>
+</tbody>
+</table>
+<p>或者</p>
+<table>
+<thead>
+<tr>
+<th>点和划的个数</th>
+<th>可表示的字母个数</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>2</td>
+</tr>
+<tr>
+<td>2</td>
+<td>2 x 2</td>
+</tr>
+<tr>
+<td>3</td>
+<td>2 x 2 x 2</td>
+</tr>
+<tr>
+<td>4</td>
+<td>2 x 2 x 2 x 2</td>
+</tr>
+</tbody>
+</table>
+<p>通过上面表格的规律，我们可以算出如果有 5 个点或划，那么一共可以表示 32 个字母。</p>
+<p>除了通过摩尔斯电码的个数来进行解码，我们还可以通过下面这个树形图来让界面变的更快，如下：</p>
+<ul>
+<li>dot -&gt; E<ul>
+<li>dot -&gt; I<ul>
+<li>dot -&gt; S<ul>
+<li>dot -&gt; H</li>
+<li>dash -&gt; V</li>
+</ul>
+</li>
+<li>dash -&gt; U<ul>
+<li>dot -&gt; F</li>
+<li>dash -&gt; 德语 U</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>dash -&gt; A<ul>
+<li>dot -&gt; R<ul>
+<li>dot -&gt; L</li>
+<li>dash -&gt; 德语 A</li>
+</ul>
+</li>
+<li>dash -&gt; W<ul>
+<li>dot -&gt; P</li>
+<li>dash -&gt; J</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>dash -&gt; T<ul>
+<li>dot -&gt; N<ul>
+<li>dot -&gt; D<ul>
+<li>dot -&gt; B</li>
+<li>dash -&gt; X</li>
+</ul>
+</li>
+<li>dash -&gt; K<ul>
+<li>dot -&gt; C</li>
+<li>dash -&gt; Y</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>dash -&gt; M<ul>
+<li>dot -&gt; G<ul>
+<li>dot -&gt; Z</li>
+<li>dash -&gt; Q</li>
+</ul>
+</li>
+<li>dash -&gt; O<ul>
+<li>dot -&gt; 德语 O</li>
+<li>dash -&gt; 德语 S</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>通过上面这个树形结构，就可以非常快速的知道一个位数小于等于四的摩尔斯电码所表示是的字母。</p>
+<h2 id="扩展"><a href="#扩展" class="headerlink" title="扩展"></a>扩展</h2><p>通过上面的分析，我们知道了四位的摩尔是电码最多能表示 <code>2 + 4 + 8 + 16 = 30</code> 个字母，而如果想要表示更多的信息，如阿拉伯数字，表达符号等等，我么那就需使用五位或者六位的摩尔斯电码。</p>
+<p>摩尔斯电码的位数和能表示信息的公式如下：</p>
+<p> 2<sup>摩尔斯电码位数</sup> = 表示信息的个数</p>
+<p> 例子：</p>
+<table>
+<thead>
+<tr>
+<th>点和划的个数</th>
+<th>可表示的字母个数</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>2<sup>1</sup> = 2</td>
+</tr>
+<tr>
+<td>2</td>
+<td>2<sup>2</sup> = 4</td>
+</tr>
+<tr>
+<td>3</td>
+<td>2<sup>3</sup> = 8</td>
+</tr>
+<tr>
+<td>4</td>
+<td>2<sup>4</sup> = 16</td>
+</tr>
+<tr>
+<td>5</td>
+<td>2<sup>5</sup> = 32</td>
+</tr>
+<tr>
+<td>6</td>
+<td>2<sup>6</sup> = 64</td>
+</tr>
+<tr>
+<td>7</td>
+<td>2<sup>7</sup> = 128</td>
+</tr>
+<tr>
+<td>8</td>
+<td>2<sup>8</sup> = 256</td>
+</tr>
+<tr>
+<td>9</td>
+<td>2<sup>9</sup> = 512</td>
+</tr>
+<tr>
+<td>10</td>
+<td>2<sup>10</sup> = 1024</td>
+</tr>
+</tbody>
+</table>
+<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>通过上面的内容，不难看出摩尔斯电码就是一种<strong>编码</strong>，只不过里面只有 dot 和 dash。这种<strong>编码</strong>和我们说的话，写的字的作用是一样的。</p>
+<p>在上面的解码中，使用的方法在数学上叫做<strong>组合学</strong>，类似的例子有很多，比如抛硬币，掷骰子等等。在算法中的<strong>二分查找</strong>和那么树形图有点类似。</p>
+<h1 id="布莱叶盲文"><a href="#布莱叶盲文" class="headerlink" title="布莱叶盲文"></a>布莱叶盲文</h1><p>上面说到了人们为了让自己表达的信息能够传递的更远，会把文字写在纸上然后寄出去，而如果对方是个盲人该怎么知道纸上的文字呢？</p>
+<p>历史上发明编码的人有很多，上面的摩尔斯电码只是其中的一种，而有一种专门为盲人设计的编码，那就是布莱叶盲文。</p>
+<p>路易·布莱叶与 1809 年生于法国的库普雷，小时候因为顽皮不小心导致双目失明。按照当时的情况，布莱叶将会在无知和平困中度过自己的一生，但是布莱叶不服气，在他 10 岁的时候被送去了巴黎皇家盲人学院学习。</p>
+<p>盲人在学习中，最大的障碍就是无法阅读书籍。为了解决这个问题，巴黎皇家盲人学院的创始人发明了一种在纸由凹凸的点组成的文字系统。但是这种文字系统因为设计上的缺陷，用起来比较困难。</p>
+<p>原因在于，巴黎皇家盲人学院的创始人自身并不是一个盲人，他会被自身的感知模式所禁锢。比如一个字母 A 通过他发明的盲人文字系统写作为：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">    1</span><br><span class="line">  1   1</span><br><span class="line"> 1111111</span><br><span class="line">1       1</span><br></pre></td></tr></table></figure>
+<p>正如前面所说的，因为他自身不是盲人，所以他认为就算要发明一种文字系统给盲人，那么这种系统就必须要和现有的文字系统<strong>长的一样</strong>。</p>
+<p>在 1821 年，一名加夏尔·巴比尔的退伍军人来到布莱叶他的学校，像他们展示了自己发明的一种文字系统，这种文字系统用与军队在黑夜中交流，因为没有光线所以只能通过手来触摸凸起来的点。通过这些凸起来的点就可以传递信息。</p>
+<p>不过这种文字系统非常复杂，但是布莱叶很快就学会了，并且布莱叶很喜欢这种用凸起来的点来表达的方式。3 年以后，布莱叶就基于这些凸起来的点发明了他自己的文字系统。</p>
+<p>在日常的生活中处处充满了这些凸起来的点比如在电梯楼层按钮上，这些都要归功于布莱叶，因为就是因为有了这些点，盲人才能够像正常人一样做电梯。</p>
+<p>在布莱叶盲文中，没有文字(包括字母，数字，标点符号)，都是由 6 个点组成，每个点有凸起和没有凸起两种状态。具体如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">1 -&gt; 点点 &lt;- 4</span><br><span class="line">2 -&gt; 点点 &lt;- 5</span><br><span class="line">3 -&gt; 点点 &lt;- 6</span><br><span class="line"></span><br><span class="line">//例子</span><br><span class="line">10</span><br><span class="line">01</span><br><span class="line">10</span><br><span class="line">//136 为凸起，246是平的</span><br></pre></td></tr></table></figure>
+<p>在布莱叶盲文中，每个点只会有凸起和不凸起这两种状态，这和我们前面的摩尔斯电码中的 dot 和 dash 是一样的，所以通过公式我们可以算出由六个点组成的布莱叶盲文可以表示 2<sup>6</sup> = 64 个文字。</p>
+<p>下面是使用布莱叶盲文表示 25 个英文字母，如下：</p>
+<blockquote>
+<p>1 表示凸起的点，0 表示没有凸起来的点。</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>行数\字母</th>
+<th>a</th>
+<th>b</th>
+<th>c</th>
+<th>d</th>
+<th>e</th>
+<th>f</th>
+<th>g</th>
+<th>h</th>
+<th>i</th>
+<th>j</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>第一行</td>
+<td>10</td>
+<td>10</td>
+<td>11</td>
+<td>11</td>
+<td>10</td>
+<td>11</td>
+<td>11</td>
+<td>10</td>
+<td>01</td>
+<td>01</td>
+</tr>
+<tr>
+<td>第二行</td>
+<td>00</td>
+<td>10</td>
+<td>00</td>
+<td>01</td>
+<td>01</td>
+<td>10</td>
+<td>11</td>
+<td>11</td>
+<td>10</td>
+<td>11</td>
+</tr>
+<tr>
+<td>第三行</td>
+<td>00</td>
+<td>00</td>
+<td>00</td>
+<td>00</td>
+<td>00</td>
+<td>00</td>
+<td>00</td>
+<td>00</td>
+<td>00</td>
+<td>00</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>行数\字母</th>
+<th>k</th>
+<th>l</th>
+<th>m</th>
+<th>n</th>
+<th>o</th>
+<th>p</th>
+<th>q</th>
+<th>r</th>
+<th>s</th>
+<th>t</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>第一行</td>
+<td>10</td>
+<td>10</td>
+<td>11</td>
+<td>11</td>
+<td>10</td>
+<td>11</td>
+<td>11</td>
+<td>10</td>
+<td>01</td>
+<td>01</td>
+</tr>
+<tr>
+<td>第二行</td>
+<td>00</td>
+<td>10</td>
+<td>00</td>
+<td>01</td>
+<td>01</td>
+<td>10</td>
+<td>11</td>
+<td>11</td>
+<td>10</td>
+<td>11</td>
+</tr>
+<tr>
+<td>第三行</td>
+<td>10</td>
+<td>10</td>
+<td>10</td>
+<td>10</td>
+<td>10</td>
+<td>10</td>
+<td>10</td>
+<td>10</td>
+<td>10</td>
+<td>10</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>行数\字母</th>
+<th>u</th>
+<th>v</th>
+<th>x</th>
+<th>y</th>
+<th>z</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>第一行</td>
+<td>10</td>
+<td>10</td>
+<td>11</td>
+<td>11</td>
+<td>10</td>
+</tr>
+<tr>
+<td>第二行</td>
+<td>00</td>
+<td>10</td>
+<td>00</td>
+<td>01</td>
+<td>01</td>
+</tr>
+<tr>
+<td>第三行</td>
+<td>11</td>
+<td>11</td>
+<td>11</td>
+<td>11</td>
+<td>11</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>这里没有 w 的原因不知道是为什么，不过在下面的表中有 w。</p>
+</blockquote>
+<p>通过广场上面的表格，可以找出一个规律，那就是字母 k ~ t 的布莱叶盲文只不过是 a ~ j 的布莱叶盲文的基础上将第三行左边的点改为了 1。同理，u ~ z 就是在 k ~ o 的基础上把第三行右边的点改成了 1。</p>
+<p>通过这个规律我们可以扩展出更多多的布莱叶盲文，比如我们可以在 a ~ t 的基础上，将第三右边的点设置成 1，然后久了新的意思，具体如下：</p>
+<table>
+<thead>
+<tr>
+<th>行数\字母串</th>
+<th>ch</th>
+<th>gh</th>
+<th>sh</th>
+<th>th</th>
+<th>wh</th>
+<th>ed</th>
+<th>er</th>
+<th>ou</th>
+<th>ow</th>
+<th>w(will)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>第一行</td>
+<td>10</td>
+<td>10</td>
+<td>11</td>
+<td>11</td>
+<td>10</td>
+<td>11</td>
+<td>11</td>
+<td>10</td>
+<td>01</td>
+<td>01</td>
+</tr>
+<tr>
+<td>第二行</td>
+<td>00</td>
+<td>10</td>
+<td>00</td>
+<td>01</td>
+<td>01</td>
+<td>10</td>
+<td>11</td>
+<td>11</td>
+<td>10</td>
+<td>11</td>
+</tr>
+<tr>
+<td>第三行</td>
+<td>0<strong>1</strong></td>
+<td>0<strong>1</strong></td>
+<td>0<strong>1</strong></td>
+<td>0<strong>1</strong></td>
+<td>0<strong>1</strong></td>
+<td>0<strong>1</strong></td>
+<td>0<strong>1</strong></td>
+<td>0<strong>1</strong></td>
+<td>0<strong>1</strong></td>
+<td>0<strong>1</strong></td>
+</tr>
+</tbody>
+</table>
+<p>比如我们想要用布莱叶盲文表示 <code>about</code> 这个单词，可以这么写：</p>
+<table>
+<thead>
+<tr>
+<th>行数\字母</th>
+<th>a</th>
+<th>b</th>
+<th>ou</th>
+<th>t</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>第一行</td>
+<td>10</td>
+<td>10</td>
+<td>10</td>
+<td>01</td>
+</tr>
+<tr>
+<td>第二行</td>
+<td>00</td>
+<td>10</td>
+<td>11</td>
+<td>11</td>
+</tr>
+<tr>
+<td>第三行</td>
+<td>00</td>
+<td>00</td>
+<td>01</td>
+<td>10</td>
+</tr>
+</tbody>
+</table>
+<h2 id="换挡码-shfit-codes"><a href="#换挡码-shfit-codes" class="headerlink" title="换挡码 (shfit codes)"></a>换挡码 (shfit codes)</h2><p>除了上面的改变方式，在布莱叶盲文中，我们可以使用特定的前缀来改变后面盲文的含义，比如在布莱叶盲文中是这么表示数字的，如下：</p>
+<table>
+<thead>
+<tr>
+<th>行数\数字</th>
+<th>1</th>
+<th>2</th>
+<th>3</th>
+<th>4</th>
+<th>5</th>
+<th>6</th>
+<th>7</th>
+<th>8</th>
+<th>9</th>
+<th>0</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>第一行</td>
+<td>10</td>
+<td>10</td>
+<td>11</td>
+<td>11</td>
+<td>10</td>
+<td>11</td>
+<td>11</td>
+<td>10</td>
+<td>01</td>
+<td>01</td>
+</tr>
+<tr>
+<td>第二行</td>
+<td>00</td>
+<td>10</td>
+<td>00</td>
+<td>01</td>
+<td>01</td>
+<td>10</td>
+<td>11</td>
+<td>11</td>
+<td>10</td>
+<td>11</td>
+</tr>
+<tr>
+<td>第三行</td>
+<td>00</td>
+<td>00</td>
+<td>00</td>
+<td>00</td>
+<td>00</td>
+<td>00</td>
+<td>00</td>
+<td>00</td>
+<td>00</td>
+<td>00</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>行数\特殊字符</th>
+<th>st (/)</th>
+<th>ing</th>
+<th>ble (#)</th>
+<th>ar</th>
+<th>com (_)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>第一行</td>
+<td>01</td>
+<td>01</td>
+<td>01</td>
+<td>01</td>
+<td>00</td>
+</tr>
+<tr>
+<td>第二行</td>
+<td>00</td>
+<td>00</td>
+<td>01</td>
+<td>01</td>
+<td>00</td>
+</tr>
+<tr>
+<td>第三行</td>
+<td>10</td>
+<td>11</td>
+<td>11</td>
+<td>10</td>
+<td>11</td>
+</tr>
+</tbody>
+</table>
+<p>数字 256 用布莱叶盲文表示为：</p>
+<table>
+<thead>
+<tr>
+<th>行数\数字</th>
+<th>ble</th>
+<th>2</th>
+<th>5</th>
+<th>6</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>第一行</td>
+<td>01</td>
+<td>10</td>
+<td>10</td>
+<td>11</td>
+</tr>
+<tr>
+<td>第二行</td>
+<td>01</td>
+<td>10</td>
+<td>01</td>
+<td>10</td>
+</tr>
+<tr>
+<td>第三行</td>
+<td>11</td>
+<td>00</td>
+<td>00</td>
+<td>00</td>
+</tr>
+</tbody>
+</table>
+<p>可以看多，数字 1 ~ 6 的布莱叶盲文其实就是字母 a ~ j，只不过在表示数字的时候需要加 <code>ble</code> 这个前缀。</p>
+<p>这种通过添加前缀来改变后面编码的含义的手段，叫做<strong>换挡码</strong>。</p>
+<h2 id="逃逸码-escape-codes"><a href="#逃逸码-escape-codes" class="headerlink" title="逃逸码 (escape codes)"></a>逃逸码 (escape codes)</h2><p>除了上面说到的<strong>换挡码</strong>之外，还有一种被称作<strong>逃逸码</strong>的东西，表示方式和上面一样，不过<strong>逃逸码</strong>只能改变跟随特殊字符的一个字母，具体如下：</p>
+<table>
+<thead>
+<tr>
+<th>行数\特殊字符</th>
+<th>大写字母</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>第一行</td>
+<td>00</td>
+</tr>
+<tr>
+<td>第二行</td>
+<td>00</td>
+</tr>
+<tr>
+<td>第三行</td>
+<td>01</td>
+</tr>
+</tbody>
+</table>
+<p>使用这个特殊符号，我们可以将布莱叶名字表示为：</p>
+<table>
+<thead>
+<tr>
+<th>行数\字母</th>
+<th>大写字母</th>
+<th>l</th>
+<th>ou</th>
+<th>i</th>
+<th>s</th>
+<th>分隔</th>
+<th>大写字母</th>
+<th>b</th>
+<th>r</th>
+<th>a</th>
+<th>i</th>
+<th>l</th>
+<th>l</th>
+<th>e</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>第一行</td>
+<td>00</td>
+<td>10</td>
+<td>10</td>
+<td>01</td>
+<td></td>
+<td>00</td>
+<td>10</td>
+<td>10</td>
+<td>10</td>
+<td>01</td>
+<td>10</td>
+<td>10</td>
+<td>10</td>
+</tr>
+<tr>
+<td>第二行</td>
+<td>00</td>
+<td>10</td>
+<td>11</td>
+<td>10</td>
+<td></td>
+<td>00</td>
+<td>10</td>
+<td>11</td>
+<td>00</td>
+<td>10</td>
+<td>10</td>
+<td>10</td>
+<td>01</td>
+</tr>
+<tr>
+<td>第三行</td>
+<td>01</td>
+<td>10</td>
+<td>01</td>
+<td>00</td>
+<td></td>
+<td>01</td>
+<td>00</td>
+<td>10</td>
+<td>00</td>
+<td>00</td>
+<td>10</td>
+<td>10</td>
+<td>00</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>意思为：Louis Braiile</p>
+</blockquote>
+<p>在使用二进制对书面语言进行编码时，换挡码和逃逸码是非常常见的。</p>
+<h1 id="数字"><a href="#数字" class="headerlink" title="数字"></a>数字</h1><p>通过上面的内容，应该对编码有了一定的理解。通过举一反三，数字也也可以被看做是一种编码，比如当我们看到数字 3，第一时间在脑海中想到的会是什么？三个苹果或者是三个别的什么东西，反正数目一定是三。那为什么我们在脑海中数字 11 不能和三个苹果关联起来呢？这个听上去有点拗口，因为这里涉及进制的不同。</p>
+<p>小时候，老师都是教我们可以使用<strong>手</strong>来数数，比如 2 用<strong>手</strong>表示就是两个手指。而然在古代，那个时候可不是这样的，根据历史信息表明，在古时候是通过画画来计数的，比如通过画出两个狗来表示两条狗的意识。后来直接使用画线条来代替画狗，画俩个线条就是表示两条狗。</p>
+<h2 id="罗马数字"><a href="#罗马数字" class="headerlink" title="罗马数字"></a>罗马数字</h2><p>随着时间的推移，慢慢发明了数字系统。从远古时期流传到现在比较熟悉的就是罗马数字。比如现在电影都会拍好几部，而一般在电影标题的地方都是用罗马数字来表示当前是第几部。沿用到今天的罗马数字有如下几个：</p>
+<blockquote>
+<p>I V X L C D M</p>
+</blockquote>
+<p>其中 I 表示数字 1，V 表示数字 5，X 表示数字 10。L 表示数字 50，C 表示数字 100，D 表示数字 500，最后一个 M 表示数字 1000。<br>仔细观察，可以看出这几个字母之间的关系，就是后一个字母代表的数组等于前一个字母乘以五，比如五个 V 等于一个 X。这样设计的好处就是让罗马数字变的比较适合做加减法。</p>
+<h2 id="阿拉伯数字"><a href="#阿拉伯数字" class="headerlink" title="阿拉伯数字"></a>阿拉伯数字</h2><p>我们现在所用的数字系统被叫做<strong>阿拉伯数字</strong>，这个数字系统之所以成为主流数字系统，主要是他有几个其他数字系统没有的有点。第一个有点就是在阿拉伯数字系统中，一个数字所在的位置不同则其表示的含义也不同。在前面说的的罗马数字中有专门用来表示数字十的符号，而在阿拉伯中没有这种符号。正因为如此，阿拉伯数字系统多了一个特殊的符号，那就是数字 0。</p>
+<p>数字 0 不仅仅可以用它来表示零，跟多的情况是用它来表示一位。比如 10 和 10000 这两个数字看上去都是由 1 和 0 组成，但是我们都知道后者要远远大于前者，原因就在于后者的 0 比前者多。</p>
+<p>另外一个优点体现在阿拉伯数字的读法上，比如数字 4396 读作<code>四千三百九十六</code>，用公式可以写成下面这几种方式：</p>
+<ul>
+<li>4000 + 300 + 90 + 6</li>
+<li>4 x 1000 + 3 x 100 + 9 x 10 + 6 x 1</li>
+<li>4 x 10<sup>3</sup> + 3 x 10<sup>2</sup> + 9 x 10<sup>1</sup> + 6 x 10<sup>0</sup></li>
+</ul>
+<blockquote>
+<p>任何数的 0 次幂都是 1。</p>
+</blockquote>
+<p>除了可以表示整数还可以用 <code>.</code> 来表示分数，比如小数 439.67 可以用记住下面几种方式：</p>
+<ul>
+<li>4 x 100 + 3 x 10 + 9 x 1 + 6 / 10 + 7 / 100</li>
+<li>4 x 100 + 3 x 10 + 9 x 1 + 6 x 0.1 + 7 x 0.01</li>
+<li>4 x 10<sup>2</sup> + 3 x 10<sup>1</sup> + 9 x 10<sup>0</sup> + 6 x 10<sup>-1</sup> + 7 x 10<sup>-2</sup></li>
+</ul>
+<p>在书中第七章的最后一部分列出了两张表格，相信大家都不会陌生，一张表示九九加法表，另一张是九九乘法表。</p>
+<h1 id="不用十进制"><a href="#不用十进制" class="headerlink" title="不用十进制"></a>不用十进制</h1><p>正如上面开始说到的，人是因为有十根手指所以使用的是十进制作为数字系统的进制。如果人的手指个数是八个，这时候会发什么？换句话说当我们一共只有八根手指的时候我们该怎么用手指去表示 9 这个数字？</p>
+<p>如果一共只有八根手指，可能就会诞生以八为<strong>基数</strong>的数字系统，称为八进制数字系统。</p>
+<p>在这个八进制数字系统中，我们只需要使用 0 ~ 7 这八个符号，而数字八在八进制中表示为 10，读作一零而不是十。同理在八进制中 20 读作二零，对应到十进制中就是是 16。</p>
+<p>为了方便书写，我们使用 <sub>TEN</sub> 和 <sub>EIGHT</sub> 来分别表示十进制和八进制。例如：</p>
+<blockquote>
+<p>人类的手指个数是 10<sub>TEN</sub> 或 12<sub>EIGHT</sub></p>
+</blockquote>
+<p>通过分析我们可以得出无论是八进制还是十进制都和二进制有这一定关联，比如 100<sub>EIGHT</sub>，200<sub>EIGHT</sub> 和 400<sub>EIGHT</sub> 分别对应着十进制中的 64<sub>TEN</sub>，128<sub>TEN</sub> 和 256<sub>TEN</sub>。它们全是 2 的整数次幂。通过这一规律我们可以把 400<sub>EIGHT</sub> 分解成 4<sub>EIGHT</sub> 乘以 10<sub>EIGHT</sub> 乘以 10<sub>EIGHT</sub>。这些数恰恰都是 2 的整数次幂。可以得出下面这个结论：</p>
+<blockquote>
+<p>任何 2 的整数次幂的数乘以另外一个 2 的整数次幂的结果依然是 2 的整数次幂。</p>
+</blockquote>
+<p>下面这个表格表示一些的 2 的整数次幂分别用十进制和八进制表示的方式，如下：</p>
+<table>
+<thead>
+<tr>
+<th>2 的整数次幂</th>
+<th>十进制</th>
+<th>八进制</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2<sup>0</sup></td>
+<td>1</td>
+<td>1</td>
+</tr>
+<tr>
+<td>2<sup>1</sup></td>
+<td>2</td>
+<td>2</td>
+</tr>
+<tr>
+<td>2<sup>2</sup></td>
+<td>4</td>
+<td>4</td>
+</tr>
+<tr>
+<td>2<sup>3</sup></td>
+<td>8</td>
+<td>10</td>
+</tr>
+<tr>
+<td>2<sup>4</sup></td>
+<td>16</td>
+<td>20</td>
+</tr>
+<tr>
+<td>2<sup>5</sup></td>
+<td>32</td>
+<td>40</td>
+</tr>
+<tr>
+<td>2<sup>6</sup></td>
+<td>64</td>
+<td>100</td>
+</tr>
+<tr>
+<td>2<sup>7</sup></td>
+<td>128</td>
+<td>200</td>
+</tr>
+<tr>
+<td>2<sup>8</sup></td>
+<td>256</td>
+<td>400</td>
+</tr>
+<tr>
+<td>2<sup>9</sup></td>
+<td>512</td>
+<td>1000</td>
+</tr>
+<tr>
+<td>2<sup>10</sup></td>
+<td>1024</td>
+<td>2000</td>
+</tr>
+<tr>
+<td>2<sup>11</sup></td>
+<td>2048</td>
+<td>4000</td>
+</tr>
+<tr>
+<td>2<sup>12</sup></td>
+<td>4096</td>
+<td>10000</td>
+</tr>
+</tbody>
+</table>
+<p>可以看到八进制中的数字都是以 0 结尾的，这样的数字称作<strong>好数字</strong>(nice round number)，这样的数字在进行运算的时候很方便。就好比我们看到 100 x 100 第一时间就知道结果是 10000，而 199 x 199 算起来就比较麻烦了。</p>
+<h2 id="八进制转十进制"><a href="#八进制转十进制" class="headerlink" title="八进制转十进制"></a>八进制转十进制</h2><p>一个八进制 10<sub>EIGHT</sub> 转成十进制就是 8<sub>TEN</sub>，这个过程很容易，原因在于这 10<sub>EIGHT</sub> 这个数本身很小，如果遇到一个比较大的八进制数，该怎么快速的将它转成十进制呢？</p>
+<p>假设我们要把 4396<sub>EIGHT</sub> 转化成十进制数字，具体做法如下：</p>
+<p>我们将 4396<sub>EIGHT</sub> 分解为 4000<sub>EIGHT</sub> + 300<sub>EIGHT</sub> + 90<sub>EIGHT</sub> + 6<sub>EIGHT</sub></p>
+<p>转换一下格式就是：4 x 1000<sub>EIGHT</sub> + 3 x 100<sub>EIGHT</sub> + 9 x 10<sub>EIGHT</sub> + 6 x 1<sub>EIGHT</sub></p>
+<p>在通过下面这个表格：</p>
+<table>
+<thead>
+<tr>
+<th>1<sub>EIGHT</sub></th>
+<th>10<sub>EIGHT</sub></th>
+<th>100<sub>EIGHT</sub></th>
+<th>1000<sub>EIGHT</sub></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1<sub>TEN</sub></td>
+<td>8<sub>TEN</sub></td>
+<td>64<sub>TEN</sub></td>
+<td>512<sub>TEN</sub></td>
+</tr>
+</tbody>
+</table>
+<p>最终得出的结果就是：4 x 512<sub>TEN</sub> + 3 x 64<sub>TEN</sub> + 9 x 8<sub>TEN</sub> + 6 x 1<sub>TEN</sub> = 1050190<sub>TEN</sub></p>
+<h2 id="四进制"><a href="#四进制" class="headerlink" title="四进制"></a>四进制</h2><p>上面这套方法，同样适用用于<strong>四进制</strong>，比如我们想将一个四进制的数 3123<sub>FOUR</sub> 转成十进制。首先分解为 3 x 1000<sub>FOUR</sub> + 1 x 100<sub>FOUR</sub> + 2 x 10<sub>FOUR</sub> + 3 x 1<sub>FOUR</sub>。</p>
+<p>在通过下面这个表格:</p>
+<table>
+<thead>
+<tr>
+<th>1<sub>FOUR</sub></th>
+<th>10<sub>FOUR</sub></th>
+<th>100<sub>FOUR</sub></th>
+<th>1000<sub>FOUR</sub></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1<sub>TEN</sub></td>
+<td>4<sub>TEN</sub></td>
+<td>16<sub>TEN</sub></td>
+<td>64<sub>TEN</sub></td>
+</tr>
+</tbody>
+</table>
+<p>最终得出结果就是：3 x 64<sub>TEN</sub> + 1 x 16<sub>TEN</sub> + 2 x 4<sub>TEN</sub> + 3 x 1<sub>TEN</sub> = 219<sub>TEN</sub></p>
+<h2 id="二进制"><a href="#二进制" class="headerlink" title="二进制"></a>二进制</h2><p><strong>四进制</strong>并不是我们这里重点讨论的对象，而真正的主角是<strong>二进制</strong>。正如上面说看到的，在八进制中只有数字 0 ~ 7，而在四进制中只有数字 0 ~ 3，同理在二进制中只有数字 0 和 1。比如下面是数字 0 ~ 10 用二进制表示的方式：</p>
+<blockquote>
+<p>0，1，10，11，100，101，110，111，1000，1001，1010</p>
+</blockquote>
+<p>比起上面的八进制转十进制和四进制转十进制，二进制转十进制就简单的多。可以通过下面这个模板将任意一个八位的二进制转成十进制。</p>
+<table>
+<thead>
+<tr>
+<th>位数</th>
+<th>操作</th>
+<th>结果</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>-</td>
+<td>x1</td>
+<td>-</td>
+</tr>
+<tr>
+<td>-</td>
+<td>x2</td>
+<td>-</td>
+</tr>
+<tr>
+<td>-</td>
+<td>x4</td>
+<td>-</td>
+</tr>
+<tr>
+<td>-</td>
+<td>x8</td>
+<td>-</td>
+</tr>
+<tr>
+<td>-</td>
+<td>x16</td>
+<td>-</td>
+</tr>
+<tr>
+<td>-</td>
+<td>x32</td>
+<td>-</td>
+</tr>
+<tr>
+<td>-</td>
+<td>x64</td>
+<td>-</td>
+</tr>
+<tr>
+<td>-</td>
+<td>x128</td>
+<td>-</td>
+</tr>
+</tbody>
+</table>
+<p>比如我们填入 10011001<sub>TWO</sub> 这个二进制，结果为：</p>
+<table>
+<thead>
+<tr>
+<th>位数</th>
+<th>操作</th>
+<th>结果</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>x1</td>
+<td>1</td>
+</tr>
+<tr>
+<td>0</td>
+<td>x2</td>
+<td>0</td>
+</tr>
+<tr>
+<td>0</td>
+<td>x4</td>
+<td>0</td>
+</tr>
+<tr>
+<td>1</td>
+<td>x8</td>
+<td>8</td>
+</tr>
+<tr>
+<td>1</td>
+<td>x16</td>
+<td>16</td>
+</tr>
+<tr>
+<td>0</td>
+<td>x32</td>
+<td>0</td>
+</tr>
+<tr>
+<td>0</td>
+<td>x64</td>
+<td>0</td>
+</tr>
+<tr>
+<td>1</td>
+<td>x128</td>
+<td>128</td>
+</tr>
+</tbody>
+</table>
+<p>最后将第三列记过相加，得出和为 153<sub>TEN</sub></p>
+<p>基于上面的分析，我们可以得出一个八位的二进制能表示的最大的十进制是 255<sub>TEN</sub> 即 11111111<sub>TWO</sub></p>
+<blockquote>
+<p>扯的题外话，在 Android 中涉及到 Bitmap 的地方，有一个参数叫做 <code>Bitmap.Config.ARGB_8888</code>，这里就有一个疑问为什么这个是 8888 而不是 7777 或者 9999。通过上面我们了解到一个八位的二进制只能表示 0 ~ 255 的十进制。等等是不是很熟悉？没错在定义颜色的 ARGB 的值的时候，其值的范围正好就是 0 ~ 255。原因在于十六进制颜色码使用的是两位的十六进制，如 #FFFFFF。所以我们可以算出一个 ARGB 中任意一个属性所占用的二进制就是八位，所以也就有了 ARGB_8888。<br><br><br><br>进一步讨论，一个像素使用的是 <code>Bitmap.Config.ARGB_8888</code>，那么它占用的内存就是 4 乘以 8 等于 32 位，转成字节就是 4 字节。</p>
+</blockquote>
+<p>反之我们还可以设计出用于将一个小于等于 255 大于 0 的十进制数转换成二进制的模板，具体如下：</p>
+<table>
+<thead>
+<tr>
+<th>余数</th>
+<th>操作</th>
+<th>商</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>-</td>
+<td>/1</td>
+<td>-</td>
+</tr>
+<tr>
+<td>-</td>
+<td>/2</td>
+<td>-</td>
+</tr>
+<tr>
+<td>-</td>
+<td>/4</td>
+<td>-</td>
+</tr>
+<tr>
+<td>-</td>
+<td>/8</td>
+<td>-</td>
+</tr>
+<tr>
+<td>-</td>
+<td>/16</td>
+<td>-</td>
+</tr>
+<tr>
+<td>-</td>
+<td>/32</td>
+<td>-</td>
+</tr>
+<tr>
+<td>-</td>
+<td>/64</td>
+<td>-</td>
+</tr>
+<tr>
+<td>-</td>
+<td>/128</td>
+<td>-</td>
+</tr>
+</tbody>
+</table>
+<p>我们想要把 150<sub>TEN</sub> 这个十进制数转成二进制，将这个数带入上面的模板得到结果为：</p>
+<blockquote>
+<p>需要从下往上填，结果也要从下往上读。</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>余数</th>
+<th>操作</th>
+<th>商</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>/1</td>
+<td>0</td>
+</tr>
+<tr>
+<td>2</td>
+<td>/2</td>
+<td>1</td>
+</tr>
+<tr>
+<td>6</td>
+<td>/4</td>
+<td>1</td>
+</tr>
+<tr>
+<td>6</td>
+<td>/8</td>
+<td>0</td>
+</tr>
+<tr>
+<td>22</td>
+<td>/16</td>
+<td>1</td>
+</tr>
+<tr>
+<td>22</td>
+<td>/32</td>
+<td>0</td>
+</tr>
+<tr>
+<td>22</td>
+<td>/64</td>
+<td>0</td>
+</tr>
+<tr>
+<td>150</td>
+<td>/128</td>
+<td>1</td>
+</tr>
+</tbody>
+</table>
+<p>最终结果为 10010110<sub>TWO</sub>。</p>
+<h2 id="二进制的运算"><a href="#二进制的运算" class="headerlink" title="二进制的运算"></a>二进制的运算</h2><p>二进制的加法和乘法远比十进制的要简单的多，原因在于二进制中只有 0 和 1 这两个数。我们只需要记住下面两个表格我们就可以算出任意位数的二进制相加或相乘。</p>
+<table>
+<thead>
+<tr>
+<th>加</th>
+<th>0</th>
+<th>1</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+</tr>
+<tr>
+<td>1</td>
+<td>1</td>
+<td>10</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>乘</th>
+<th>0</th>
+<th>1</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+</tr>
+</tbody>
+</table>
+<p>没有看错，仅仅只需要上面连个简单的表格就能算任意位数的二进制加法和乘法，并且算的过长也非常简单。</p>
+<p>举个例子：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">//加法</span><br><span class="line">  1100101</span><br><span class="line"> +0110110</span><br><span class="line">----------</span><br><span class="line"> 10011011</span><br><span class="line"></span><br><span class="line">//乘法</span><br><span class="line">    1101</span><br><span class="line">   x1011</span><br><span class="line">-----------</span><br><span class="line">    1101</span><br><span class="line">   1101</span><br><span class="line">  0000</span><br><span class="line"> 1101</span><br><span class="line">------------</span><br><span class="line"> 10001111</span><br></pre></td></tr></table></figure>
+<h2 id="二进制和十进制的规律"><a href="#二进制和十进制的规律" class="headerlink" title="二进制和十进制的规律"></a>二进制和十进制的规律</h2><table>
+<thead>
+<tr>
+<th>二进制数</th>
+<th>十进制数</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0000</td>
+<td>0</td>
+</tr>
+<tr>
+<td>0001</td>
+<td>1</td>
+</tr>
+<tr>
+<td>0010</td>
+<td>2</td>
+</tr>
+<tr>
+<td>0011</td>
+<td>3</td>
+</tr>
+<tr>
+<td>0100</td>
+<td>4</td>
+</tr>
+<tr>
+<td>0101</td>
+<td>5</td>
+</tr>
+<tr>
+<td>0110</td>
+<td>6</td>
+</tr>
+<tr>
+<td>0111</td>
+<td>7</td>
+</tr>
+<tr>
+<td>1000</td>
+<td>8</td>
+</tr>
+<tr>
+<td>1001</td>
+<td>9</td>
+</tr>
+<tr>
+<td>1010</td>
+<td>10</td>
+</tr>
+<tr>
+<td>1011</td>
+<td>11</td>
+</tr>
+<tr>
+<td>1100</td>
+<td>12</td>
+</tr>
+<tr>
+<td>1101</td>
+<td>13</td>
+</tr>
+<tr>
+<td>1110</td>
+<td>14</td>
+</tr>
+<tr>
+<td>1111</td>
+<td>15</td>
+</tr>
+</tbody>
+</table>
+<p>通过观察上面表格的第一列，从上往下看每一位我们可以找出以下规律：</p>
+<ul>
+<li>第一位总是 1 和 0 交替</li>
+<li>第二位总是 00 和 11 交替</li>
+<li>第三位总是 0000 和 1111 交替</li>
+<li>第四位总是 00000000 和 11111111 交替</li>
+</ul>
+<p>通过上面的规律可以很容容易的写出后 16 个数字的表格：</p>
+<table>
+<thead>
+<tr>
+<th>二进制数</th>
+<th>十进制数</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>10000</td>
+<td>16</td>
+</tr>
+<tr>
+<td>10001</td>
+<td>17</td>
+</tr>
+<tr>
+<td>10010</td>
+<td>18</td>
+</tr>
+<tr>
+<td>10011</td>
+<td>19</td>
+</tr>
+<tr>
+<td>10100</td>
+<td>20</td>
+</tr>
+<tr>
+<td>10101</td>
+<td>21</td>
+</tr>
+<tr>
+<td>10110</td>
+<td>22</td>
+</tr>
+<tr>
+<td>10111</td>
+<td>23</td>
+</tr>
+<tr>
+<td>11000</td>
+<td>24</td>
+</tr>
+<tr>
+<td>11001</td>
+<td>25</td>
+</tr>
+<tr>
+<td>11010</td>
+<td>26</td>
+</tr>
+<tr>
+<td>11011</td>
+<td>27</td>
+</tr>
+<tr>
+<td>11100</td>
+<td>28</td>
+</tr>
+<tr>
+<td>11101</td>
+<td>29</td>
+</tr>
+<tr>
+<td>11110</td>
+<td>30</td>
+</tr>
+<tr>
+<td>11111</td>
+<td>31</td>
+</tr>
+</tbody>
+</table>
+<h2 id="书写格式"><a href="#书写格式" class="headerlink" title="书写格式"></a>书写格式</h2><p>在生活中我们写一个位数比较的的数时，往往会按照一定的格式来书写，比如我们一般将 12000000 写作 1200,0000，这样做的好处就是方便我们阅读数字。</p>
+<p>同理二进制也有它的书写格式，因为二进制的位数增长的很快，所以一般都是将一个二进制以每四位进行分隔。例如 1200,0000 的二进制位为 101101110001101100000000，为了方便阅读可以写作 1011-0111-0001-1011-0000-0000。</p>
+<p>上面讲了十进制，八进制，四进制已经最重要的二进制。其中二进制和计算机有这非常紧密的联系，这个在书的后面有描述。大约在公元 1948 年，美国数学家约翰·威尔德·特克 意识到二进制会在未来的计算机领域发挥重要的重用。于是他发明了一个就像二进制一样简单纯粹的单词 bit。</p>
+<blockquote>
+<p>这个名为约翰·威尔德·特克的美国数学家在网上找不出关于他的中文资料。不过既然在书中出现了他的名字，相信他应该和二进制有这密切的关系。</p>
+</blockquote>
+<h1 id="二进制的应用"><a href="#二进制的应用" class="headerlink" title="二进制的应用"></a>二进制的应用</h1><p>上面讲了二进制的基本用法，下面来说说在生活有哪些关于二进制例子。比如抛出一枚硬币，只有可能是正面朝上或者反面朝上，再比如一些店铺会在门上挂一个只有两面的牌子，正面写着营业另一面写着休息。这些都可以用二进制来表示。</p>
+<h2 id="传递信息"><a href="#传递信息" class="headerlink" title="传递信息"></a>传递信息</h2><p>上面说的这些关于二进制的例子，可以看做是使用二进制来传递信息，这并不代表必须要用二进制来传递。比如上面的抛硬币，我们在上面时候要抛硬币？比如在决定做或者不做某件的事情的时候可以通过抛硬币来决定。</p>
+<p>注意这里的<strong>做</strong>与<strong>不做</strong>，一共只有两种可能。但是如果我们有了多种可能呢？比如我和朋友一起做，我一个人做，我要别的帮我做等等。这个时候可就不止两种了，所以我们就不能用抛硬币的方式来决定了。(这里的抛硬币指的是抛一枚)</p>
+<p>在看看关于商铺在门上挂一个牌子的例子，这个牌子只有两面，所以它只能传递两种信息，如果我们想传递更多的信息比如老板有事马上回来或者本店正在营业不过老板不在买东西自己结账等等。这个时候我们就需要使用别的方式来传递信息了。</p>
+<blockquote>
+<p>需要注意的是上面说的这两个例子其实并非不能使用二进制，比如抛硬币，抛一枚硬币只会有两种可能，那抛两枚是不是就有四种可能了呢？以此类推。不过往往当可能大于二之后会优先选择掷塞子而非是抛硬币。</p>
+</blockquote>
+<p>下面说说书中提到的一个可以用二进制解释的现实案例。</p>
+<blockquote>
+<p>他对他的朋友说：“今晚如果从镇里面来的的英国军队通过海路或陆路入侵，你就在北教堂钟楼的拱门处高高挂起等作为特殊信号-一盏灯表示英军从陆路进军，两盏灯表示英军从海路入侵…”</p>
+</blockquote>
+<p>上面这段话通过二进制表示如下：</p>
+<ul>
+<li>00 = 英军今晚不会入侵</li>
+<li>01 = 英军正由陆路入侵</li>
+<li>10 = 英军正由陆路入侵</li>
+<li>11 = 英军正由海路入侵</li>
+</ul>
+<p>上面这个故事利用两盏灯表示了三种可能性，和上面我们提到的二进制的例子是类似的。</p>
+<p>总结上面这些例子的共同点，就是它们说要传递的信息的内容可能是有限次数中的某一种，换句话说所有可以被转换成两种或者两种以上可能想的信息都可以用二进制来表示。</p>
+<p>很显然这条规则并不适用于人与人之间的交流，因为人与人之间的交流并不能用非黑即白来表示，就好比我们常说的不能用<strong>除了好人就是坏人来形容所有人。</strong>但是计算机却非常喜欢这种非黑即白的交流方式，这也为什么人无法直接与计算机交流的原因。</p>
+<h1 id="UPC-与二进制"><a href="#UPC-与二进制" class="headerlink" title="UPC 与二进制"></a>UPC 与二进制</h1><p>另外一个和二进制相关的例子就是 UPC(Universal Product Code)，中文意思为普通商品码。可能听上去比较陌生，不过如果我说<strong>条形码</strong>详细你应该不会陌生了。</p>
+<p>每个商品基本上都有自己的 UPC 码，这些 UPC 码的主要作用是方便在结算的时候快熟识别出商品从而自动化的管理。UPC 码的原理其实非常简单，比如下面就是一个 UPC 码被扫描后的信息：</p>
+<p><code>- -  -- - --   -  --  -   -- -   -- -   -- - - - ---  - --  -- -- --  -  --- --  -- -   -  - -</code></p>
+<blockquote>
+<p>这里表示的有点不太好，具体看书的 83 页</p>
+</blockquote>
+<p>在上面这个信息中一个 <code>-</code> 表示 1，而一个空格表示 0，所以我们可以将上面那段信息写作：</p>
+<p><code>10100011010110001001100100011010001101000110101010111001011001101101100100111011001101000100101</code></p>
+<p>作为一个正常人肯定是看不懂上面这串 0101 是什么意思，不过计算却看得懂。上面这段 0101 可以分为下面几个部分：</p>
+<ol>
+<li>开头的 101 和 101 是这段信息中的护线，其作用是表示开始和结尾</li>
+<li>护线之后是 6 组 bit 串，没串有 7 个 bit 位</li>
+<li>紧接着是一个 5 bit 位的中间护线，它和开头的 101 一样固定是 01010，主要作用是用来校验 UPC 有没有被修改或印错</li>
+</ol>
+<p>上面就是一个 UPC 码的结构，将我们例子中的 UPC 码解析最终得到下面的内容:</p>
+<table>
+<thead>
+<tr>
+<th>比特</th>
+<th>意义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>101</td>
+<td>最左边的护线</td>
+</tr>
+<tr>
+<td>0001101</td>
+<td>-</td>
+</tr>
+<tr>
+<td>0110001</td>
+<td>-</td>
+</tr>
+<tr>
+<td>0011001</td>
+<td>-</td>
+</tr>
+<tr>
+<td>0001101</td>
+<td>左边的数字</td>
+</tr>
+<tr>
+<td>0001101</td>
+<td>-</td>
+</tr>
+<tr>
+<td>0001101</td>
+<td>-</td>
+</tr>
+<tr>
+<td>01010</td>
+<td>中间的护线</td>
+</tr>
+<tr>
+<td>1110010</td>
+<td>-</td>
+</tr>
+<tr>
+<td>1100110</td>
+<td>-</td>
+</tr>
+<tr>
+<td>1101100</td>
+<td>-</td>
+</tr>
+<tr>
+<td>1001110</td>
+<td>右边的数字</td>
+</tr>
+<tr>
+<td>1100110</td>
+<td>-</td>
+</tr>
+<tr>
+<td>1000100</td>
+<td>-</td>
+</tr>
+<tr>
+<td>010</td>
+<td>最右边的护线</td>
+</tr>
+</tbody>
+</table>
+<p>左边和右边数字可以通过下面两个表格来进行解码。</p>
+<p>左边的数字：</p>
+<table>
+<thead>
+<tr>
+<th>比特</th>
+<th>数字</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0001101</td>
+<td>0</td>
+</tr>
+<tr>
+<td>0011001</td>
+<td>1</td>
+</tr>
+<tr>
+<td>0010011</td>
+<td>2</td>
+</tr>
+<tr>
+<td>0111101</td>
+<td>3</td>
+</tr>
+<tr>
+<td>0100011</td>
+<td>4</td>
+</tr>
+<tr>
+<td>0110001</td>
+<td>5</td>
+</tr>
+<tr>
+<td>0101111</td>
+<td>6</td>
+</tr>
+<tr>
+<td>0111011</td>
+<td>7</td>
+</tr>
+<tr>
+<td>0110111</td>
+<td>8</td>
+</tr>
+<tr>
+<td>0001011</td>
+<td>9</td>
+</tr>
+</tbody>
+</table>
+<p>右边数字：</p>
+<table>
+<thead>
+<tr>
+<th>比特</th>
+<th>数字</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1110010</td>
+<td>0</td>
+</tr>
+<tr>
+<td>1100110</td>
+<td>1</td>
+</tr>
+<tr>
+<td>1101100</td>
+<td>2</td>
+</tr>
+<tr>
+<td>1000010</td>
+<td>3</td>
+</tr>
+<tr>
+<td>1011100</td>
+<td>4</td>
+</tr>
+<tr>
+<td>1001110</td>
+<td>5</td>
+</tr>
+<tr>
+<td>1010000</td>
+<td>6</td>
+</tr>
+<tr>
+<td>1000100</td>
+<td>7</td>
+</tr>
+<tr>
+<td>1001000</td>
+<td>8</td>
+</tr>
+<tr>
+<td>1110100</td>
+<td>9</td>
+</tr>
+</tbody>
+</table>
+<p>仔细观察上面两个表格，左边的数字的比特位中 1 的数量总是为奇数而右边数字的比特位中 1 的数量总是偶数。这是用来做<strong>奇偶校验</strong>的。很显然左边数字采用的是奇校验，右边数字采用的是偶校验，一般用于检查错误和一致性的。</p>
+<p>在仔细观察右边数字的比特位后，发现其实右边数字的比特位就是左边数字比特位的补码。所谓补码就是将原本的 1 变为 0，反之 0 变为 1。</p>
+<p>通过上面的两张表格，最终上面例子的 UPC 码的解码结果为：</p>
+<p><code>0 51000 01251 7</code></p>
+<p>第一个数字 0 表示这个 UPC 码表示的商品的类型，后面五个数字 51000 表示商品制造商的编码，在后面的五个数字 01251 表示的是这个上面在制造商内部的编码，最后的数字 7 是模校验字符。</p>
+<p>它的作用用于检查扫描的结果是否有错误，我们可以把上面那段扫描结果替换成字母，如下：</p>
+<p><code>A BCDEF GHIJK</code></p>
+<p>然后使用下面的公式：</p>
+<p><code>3 x (A + C + E + G + I + K) + (B + D + F + H + J)</code></p>
+<p>带入公式结果为:</p>
+<p><code>3 x (0 + 1 + 0 + 0 + 2 + 1) + (5 + 0 + 0 + 1 + 5) = 3 x 4 + 11 = 23</code></p>
+<p>最后算出大于并离 23 最近的 10 的整数倍的数是 30，最后用 30 减去 23 算出 7。计算机在扫描并计算出所有数字后，会进行上面的校验，如果最后一个数字不是 7 那么就表示扫描结果有误。</p>
+<p>我们解析了例子中的 UPC 码，不过也发现了一个问题，一般情况下我们表示数字 0 ~ 9 应该只需要 4 个比特位就够了，而在 UPC 码中却是使用了 7 个比特位，加上护线整个 UPC使用了 113 个比特位。换言之 UPC 码使用 113 个比特位表示了 11 个十进制的数字。</p>
+<p>这么做的原因在于 UPC 不仅可以从走往右解析，还可以从右往左扫。还记得上面我们说的奇偶校验吗？它的作用之一就是告诉计算机扫描器是从左往右扫还是从右往左扫的。</p>
+<p>当从右往左扫描的时候就需要下面这两个表了解码，如下：</p>
+<p>右边的数字：</p>
+<table>
+<thead>
+<tr>
+<th>比特</th>
+<th>数字</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0100111</td>
+<td>0</td>
+</tr>
+<tr>
+<td>0110011</td>
+<td>1</td>
+</tr>
+<tr>
+<td>0011011</td>
+<td>2</td>
+</tr>
+<tr>
+<td>0100001</td>
+<td>3</td>
+</tr>
+<tr>
+<td>0011101</td>
+<td>4</td>
+</tr>
+<tr>
+<td>0111001</td>
+<td>5</td>
+</tr>
+<tr>
+<td>0000101</td>
+<td>6</td>
+</tr>
+<tr>
+<td>0010001</td>
+<td>7</td>
+</tr>
+<tr>
+<td>0001001</td>
+<td>8</td>
+</tr>
+<tr>
+<td>0010111</td>
+<td>9</td>
+</tr>
+</tbody>
+</table>
+<p>左边数字：</p>
+<table>
+<thead>
+<tr>
+<th>比特</th>
+<th>数字</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1011000</td>
+<td>0</td>
+</tr>
+<tr>
+<td>1001100</td>
+<td>1</td>
+</tr>
+<tr>
+<td>1100100</td>
+<td>2</td>
+</tr>
+<tr>
+<td>1011110</td>
+<td>3</td>
+</tr>
+<tr>
+<td>1100010</td>
+<td>4</td>
+</tr>
+<tr>
+<td>1000110</td>
+<td>5</td>
+</tr>
+<tr>
+<td>1111010</td>
+<td>6</td>
+</tr>
+<tr>
+<td>1101110</td>
+<td>7</td>
+</tr>
+<tr>
+<td>1110110</td>
+<td>8</td>
+</tr>
+<tr>
+<td>1101000</td>
+<td>9</td>
+</tr>
+</tbody>
+</table>
+<p>我将之前解码前的内容从右往左对这上面的两个表，可以发现接触的内容其实和前面从左往右扫的内容是一样的。</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>自此书中我认为的二进制基本内容就总结完了，可以看出布莱叶盲文和摩尔斯电码在思想上和二进制编码如出一辙。在看到现在生活中的例子，都与编码有这密不可分的关系，最最最重要的计算机则和二进制编码有这千丝万缕的关联。具体在后面的博客中会总结。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/读书笔记/" rel="tag"># 读书笔记</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/09/17/Intent 传递数据源码解析/" rel="next" title="Intent 传递数据源码解析">
+                <i class="fa fa-chevron-left"></i> Intent 传递数据源码解析
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="https://s2.ax1x.com/2019/02/28/k70pNt.jpg"
+                alt="linzheng" />
+            
+              <p class="site-author-name" itemprop="name">linzheng</p>
+              <p class="site-description motion-element" itemprop="description">一枚苦逼的 Android 程序员</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">33</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                
+                  <span class="site-state-item-count">1</span>
+                  <span class="site-state-item-name">分类</span>
+                
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">16</span>
+                  <span class="site-state-item-name">标签</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/linzhengloser" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-globe"></i>GitHub</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                Links
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://www.wanandroid.com" title="玩Android" target="_blank">玩Android</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#编码"><span class="nav-number">1.</span> <span class="nav-text">编码</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#交流"><span class="nav-number">2.</span> <span class="nav-text">交流</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#一次简单的交流"><span class="nav-number">2.1.</span> <span class="nav-text">一次简单的交流</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#摩尔斯电码"><span class="nav-number">3.</span> <span class="nav-text">摩尔斯电码</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#解码"><span class="nav-number">3.1.</span> <span class="nav-text">解码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#扩展"><span class="nav-number">3.2.</span> <span class="nav-text">扩展</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#小结"><span class="nav-number">3.3.</span> <span class="nav-text">小结</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#布莱叶盲文"><span class="nav-number">4.</span> <span class="nav-text">布莱叶盲文</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#换挡码-shfit-codes"><span class="nav-number">4.1.</span> <span class="nav-text">换挡码 (shfit codes)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#逃逸码-escape-codes"><span class="nav-number">4.2.</span> <span class="nav-text">逃逸码 (escape codes)</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#数字"><span class="nav-number">5.</span> <span class="nav-text">数字</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#罗马数字"><span class="nav-number">5.1.</span> <span class="nav-text">罗马数字</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#阿拉伯数字"><span class="nav-number">5.2.</span> <span class="nav-text">阿拉伯数字</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#不用十进制"><span class="nav-number">6.</span> <span class="nav-text">不用十进制</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#八进制转十进制"><span class="nav-number">6.1.</span> <span class="nav-text">八进制转十进制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#四进制"><span class="nav-number">6.2.</span> <span class="nav-text">四进制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二进制"><span class="nav-number">6.3.</span> <span class="nav-text">二进制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二进制的运算"><span class="nav-number">6.4.</span> <span class="nav-text">二进制的运算</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二进制和十进制的规律"><span class="nav-number">6.5.</span> <span class="nav-text">二进制和十进制的规律</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#书写格式"><span class="nav-number">6.6.</span> <span class="nav-text">书写格式</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#二进制的应用"><span class="nav-number">7.</span> <span class="nav-text">二进制的应用</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#传递信息"><span class="nav-number">7.1.</span> <span class="nav-text">传递信息</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#UPC-与二进制"><span class="nav-number">8.</span> <span class="nav-text">UPC 与二进制</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#总结"><span class="nav-number">9.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">linzheng</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("E2NRFAQwyrEiYK2wzPMwCXOj-gzGzoHsz", "imqxxTrh0lXoz3FtACFo1TIf");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

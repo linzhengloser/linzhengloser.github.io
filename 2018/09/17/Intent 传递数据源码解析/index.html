@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="源码解析," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="起因相信做过做过安卓 APP 开发的同学对 Intent 这个东西一定不会陌生，无论是打开 Activity，Service，还是唤醒系统的服务器都离不开它。当我们使用 Intent 打开组件(安卓中的四大组件)，我们可以先将数据设置给 Intent 然后在经过系统传递给目标组件，那么 Intent 是如何将数据传递的呢？为什么传递对象为什么要实现 Parcelable 接口呢？ 具体原因就需要通">
+<meta name="keywords" content="源码解析">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Intent 传递数据源码解析">
+<meta property="og:url" content="http://yoursite.com/2018/09/17/Intent 传递数据源码解析/index.html">
+<meta property="og:site_name" content="linzheng blog">
+<meta property="og:description" content="起因相信做过做过安卓 APP 开发的同学对 Intent 这个东西一定不会陌生，无论是打开 Activity，Service，还是唤醒系统的服务器都离不开它。当我们使用 Intent 打开组件(安卓中的四大组件)，我们可以先将数据设置给 Intent 然后在经过系统传递给目标组件，那么 Intent 是如何将数据传递的呢？为什么传递对象为什么要实现 Parcelable 接口呢？ 具体原因就需要通">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-02-25T11:46:25.467Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Intent 传递数据源码解析">
+<meta name="twitter:description" content="起因相信做过做过安卓 APP 开发的同学对 Intent 这个东西一定不会陌生，无论是打开 Activity，Service，还是唤醒系统的服务器都离不开它。当我们使用 Intent 打开组件(安卓中的四大组件)，我们可以先将数据设置给 Intent 然后在经过系统传递给目标组件，那么 Intent 是如何将数据传递的呢？为什么传递对象为什么要实现 Parcelable 接口呢？ 具体原因就需要通">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/09/17/Intent 传递数据源码解析/"/>
+
+
+
+
+
+  <title>Intent 传递数据源码解析 | linzheng blog</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?a47d4a5123200d8170cd198104ba9e50";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">linzheng blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">linzheng blog</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/09/17/Intent 传递数据源码解析/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="linzheng">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://s2.ax1x.com/2019/02/28/k70pNt.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="linzheng blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Intent 传递数据源码解析</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-09-17T20:17:13+08:00">
+                2018-09-17
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2018/09/17/Intent 传递数据源码解析/" class="leancloud_visitors" data-flag-title="Intent 传递数据源码解析">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="起因"><a href="#起因" class="headerlink" title="起因"></a>起因</h1><p>相信做过做过安卓 APP 开发的同学对 Intent 这个东西一定不会陌生，无论是打开 Activity，Service，还是唤醒系统的服务器都离不开它。当我们使用 Intent 打开组件(安卓中的四大组件)，我们可以先将数据设置给 Intent 然后在经过系统传递给目标组件，那么 Intent 是如何将数据传递的呢？为什么传递对象为什么要实现 Parcelable 接口呢？</p>
+<p>具体原因就需要通过源码来寻找答案了。</p>
+<a id="more"></a>
+<h1 id="Intent"><a href="#Intent" class="headerlink" title="Intent"></a>Intent</h1><p>Intent 中文意识为<strong>意图</strong>，基本如果说学安卓认识的第一个类叫 Activity 那么认识的第二类就一定是 Intent 了，比如打开一个新的 Activity 就离不开 Intent。先看看使用 Intent 打开一个 Activity 的步骤，代码如下：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MainActivity</span> : <span class="type">AppCompatActivity</span></span>() &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//单击事件</span></span><br><span class="line">    <span class="function"><span class="keyword">fun</span> <span class="title">toMain2Activity</span><span class="params">(view: <span class="type">View</span>)</span></span> &#123;</span><br><span class="line">        <span class="keyword">val</span> intent = Intent(<span class="keyword">this</span>,Main2Activity::<span class="class"><span class="keyword">class</span>.<span class="title">java</span>)</span></span><br><span class="line">        <span class="comment">//等价于</span></span><br><span class="line">        <span class="keyword">val</span> intent = Intent().apply&#123;</span><br><span class="line">            compent = CompentName(<span class="keyword">this</span>,Main2Activity::<span class="class"><span class="keyword">class</span>.<span class="title">java</span>)</span></span><br><span class="line">        &#125;</span><br><span class="line">        startActivity(intent)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>可以看到，如果我们想打开一个新的 Activity 只需要两个参数，分别是</p>
+<ol>
+<li>Context 对象</li>
+<li>目标 Activity 的 class 对象</li>
+</ol>
+<p>而如果我们想传递一些数据给新 Activity，那么我们就要使用 Intent 的 一些方法，而且对传递数据的类型也是有限制的。具体如下：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">val</span> intent = Intent().apply&#123;</span><br><span class="line">    putExtra(<span class="string">"key"</span>, <span class="string">"value"</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Intent 的 putExtra() 方法的 key 只能是 String 类型，value 支持 Java 中的基本数据类型，和基本数据的数组类型，但是有几个类型是比较特殊的，比如：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">val</span> intent = Intent().apply&#123;</span><br><span class="line">    putIntegerArrayListExtra()</span><br><span class="line">    putStringArrayListExtra()</span><br><span class="line">    putCharSequenceArrayListExtra()</span><br><span class="line">    putParcelableArrayListExtra()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>可以看到，Intent 只提供了上面 4 种类型的 ArrayList 传递的方法，这里有一点要注意一下，这里 Intent 使用的是 ArrayList 而不是 List，这就表明了我们只能传递 ArrayList 类型的对象，不能传 LinkedList 等等之类的，这一点和 Java 的集合框架有点冲突。</p>
+<p>而且在 Kotlin 中如果我们使用 listOf() 或者 mutableListOf() 方法创建的集合是无法在上面 4 个方法中使用的，必须要使用 arrayListOf() 创建的集合才能传递。不知道是不是 Kotlin 故意正针对 Android XD。</p>
+<h1 id="Parcelable"><a href="#Parcelable" class="headerlink" title="Parcelable"></a>Parcelable</h1><p>Intent 的 putExtra(String, Parcelable) 这个方法应该是用的最多的了，其主要作用就是将一个对象添加到 Intent 里面，方便在 Activity 之间传递，这个对象必须要实现 Parcelable 接口。</p>
+<p>Parcelable 接口是 Android 提供的一种机制，用于将一个类的对象的数据写入到 Parcel 中或者从 Parcel 读取出来。其实现方式稍微有一点复杂，切 Kotlin 的实现方式和 Java 有一点不一样，所有下面就用 Kotlin 为例来看看怎么实现 Parcelable 接口，代码如下：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">data</span> <span class="class"><span class="keyword">class</span> <span class="title">User</span></span>(</span><br><span class="line">        <span class="keyword">val</span> id: <span class="built_in">Long</span>,</span><br><span class="line">        <span class="keyword">var</span> name: String</span><br><span class="line">) : Parcelable &#123;</span><br><span class="line">    <span class="keyword">constructor</span>(source: Parcel) : <span class="keyword">this</span>(</span><br><span class="line">            source.readLong(),</span><br><span class="line">            source.readString()</span><br><span class="line">    )</span><br><span class="line"></span><br><span class="line">    <span class="comment">//此方法基本上只用返回 0</span></span><br><span class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">describeContents</span><span class="params">()</span></span> = <span class="number">0</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">writeToParcel</span><span class="params">(dest: <span class="type">Parcel</span>, flags: <span class="type">Int</span>)</span></span> = with(dest) &#123;</span><br><span class="line">        writeLong(id)</span><br><span class="line">        writeString(name)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">companion</span> <span class="keyword">object</span> &#123;</span><br><span class="line">        <span class="meta">@JvmField</span></span><br><span class="line">        <span class="keyword">val</span> CREATOR: Parcelable.Creator&lt;User&gt; = <span class="keyword">object</span> : Parcelable.Creator&lt;User&gt; &#123;</span><br><span class="line">            <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">createFromParcel</span><span class="params">(source: <span class="type">Parcel</span>)</span></span>: User = User(source)</span><br><span class="line">            <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">newArray</span><span class="params">(size: <span class="type">Int</span>)</span></span>: Array&lt;User?&gt; = arrayOfNulls(size)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>如上，Parcelable 是 Android 中序列化对象的方式，和 Java 中 Serializable 作用是一样的，不过和 Serializable 不一样的是 Android 中的 Parcelable 实现起来比较麻烦，需要实现几个方法，如上面的 writeToParcel() 方法，通名字可以推断出这个方法的作用就是将我们的对象<strong>写入</strong>到 Parcel 对象中。除了要实现 writeToParcel() 方法以外，还需要提供一个参数类型为 Parcel 的构造函数，很显然我们c除了要将对象写入带 Parcel 对象中，还要讲 Parcel 中的值读出来，最后我们还要提供一个静态 CREATOR 其类型为 Parcelable.Creator，需要注意的是在 Kotlin 中要给 CREATOR 设置一个 @JvmFiel 的注解，否则出现下面这个错误。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">android.os.BadParcelableException: Parcelable protocol <span class="keyword">requires</span> a Parcelable.Creator object called CREATOR on <span class="class"><span class="keyword">class</span> <span class="title">com</span>.<span class="title">lz</span>.<span class="title">demo1</span>.<span class="title">User</span></span></span><br></pre></td></tr></table></figure>
+<p>原因在于，Kotlin 默认生成的属性是提供了 Getter/Setter 方法的，而我们在实现 Parcelable 接口的时候，IDE 只认识名为 CREATOR 的静态公共对象，这个时候 @JvmField 注解就派上用处了，其作用主要是告诉 Kotlin 的编译器，不要为被标识的对象生成 Getter/Setter 方法，并且将其设置成 public 的。</p>
+<p>还有一点需要说明的是写入数据的顺序必须要和读取数据的顺序保持一致，这个有点像一个队列，比如写入的顺序为：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">//写</span></span><br><span class="line">parcel.writeString(<span class="string">"1"</span>);</span><br><span class="line">parcel.writeInt(<span class="number">1</span>);</span><br><span class="line">parcel.writeBoolean(<span class="keyword">true</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">//读</span></span><br><span class="line">parcel.readString();</span><br><span class="line">parcel.readInt();</span><br><span class="line">parcel.readBoolean();</span><br><span class="line"></span><br><span class="line"><span class="comment">//错误的读</span></span><br><span class="line">parcel.readInt(); <span class="comment">//直接报错</span></span><br><span class="line">parcel.readString();</span><br><span class="line">parcel.readBoolean();</span><br></pre></td></tr></table></figure>
+<p>下面我们来看看怎么在 Activity 之间传递对象，代码如下：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MainActivity</span> : <span class="type">AppCompatActivity</span></span>() &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">val</span> user = User(<span class="number">1</span>, <span class="string">"张三"</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">onCreate</span><span class="params">(savedInstanceState: <span class="type">Bundle</span>?)</span></span> &#123;</span><br><span class="line">        <span class="keyword">super</span>.onCreate(savedInstanceState)</span><br><span class="line">        setContentView(R.layout.activity_main)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">fun</span> <span class="title">toSecondActivity</span><span class="params">(v: <span class="type">View</span>)</span></span> &#123;</span><br><span class="line">        <span class="keyword">val</span> intent = Intent(<span class="keyword">this</span>,Main2Activity::<span class="class"><span class="keyword">class</span>.<span class="title">java</span>)</span></span><br><span class="line">        intent.putExtra(<span class="string">"user"</span>, user)</span><br><span class="line">        startActivity(intent)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">SecondActivity</span> : <span class="type">AppCompatActivity</span></span>() &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">lateinit</span> <span class="keyword">var</span> user: User</span><br><span class="line"></span><br><span class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">onCreate</span><span class="params">(savedInstanceState: <span class="type">Bundle</span>?)</span></span> &#123;</span><br><span class="line">        <span class="keyword">super</span>.onCreate(savedInstanceState)</span><br><span class="line">        setContentView(R.layout.activity_main2)</span><br><span class="line">        user = intent.getParcelableExtra(<span class="string">"user"</span>)</span><br><span class="line">        print(user.name)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>上面就是在 Activity 之间传递对象的代码，很简单但是其被的工作原理是怎么样的呢？</p>
+<h1 id="Binder"><a href="#Binder" class="headerlink" title="Binder"></a>Binder</h1><p>想要知道背后的原理，需要从 Android 的 Binder 机制入手，因为在 Android 系统中无论是 startActivity() 还是 startService() 都是需要借助 Binder 机制来实现的，Intent 说到底还是 Java 中的一个类而已，最终都需要通过 Binder 来进行传递，首先我们来看一个简单的例子，代码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">//Book.java 实现了 Parcelable 接口</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//Book.aidl</span></span><br><span class="line"><span class="keyword">package</span> com.lz.demo1;</span><br><span class="line"></span><br><span class="line">parcelable Book;</span><br><span class="line"></span><br><span class="line"><span class="comment">//IBookManager.aidl</span></span><br><span class="line"><span class="keyword">package</span> com.lz.demo1;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> com.lz.demo1.Book;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">interface</span> <span class="title">IBookManager</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//添加一本书</span></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">addBook</span><span class="params">(in Book book)</span></span>;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>如上，Android 为了让我们方便的使用 Binder 提供了 AIDL 机制，简单来说 AIDL 就是一种对 Binder 实现的抽象，将 Binder 中的重复代码自动生成，开发者只需要提供少量的 AIDL 文件即可。</p>
+<p>生成的代码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">package</span> com.lz.demo1;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">IBookManager</span>  <span class="keyword">extends</span> <span class="title">android</span>.<span class="title">os</span>.<span class="title">IInterface</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">Stub</span> <span class="keyword">extends</span> <span class="title">android</span>.<span class="title">os</span>.<span class="title">Binder</span> <span class="keyword">implements</span> <span class="title">com</span>.<span class="title">lz</span>.<span class="title">demo1</span>.<span class="title">IBookManager</span> </span>&#123;</span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> java.lang.String DESCRIPTOR = <span class="string">"com.lz.demo1.IBookManager"</span></span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="title">Stub</span><span class="params">()</span></span>&#123; <span class="keyword">this</span>.attachInterface(<span class="keyword">this</span>,DESCRIPTOR) &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">static</span> com.lz.demo1.<span class="function">IBookManager <span class="title">asInterface</span><span class="params">(android.os.IBinder obj)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">if</span>((obj == <span class="keyword">null</span>))&#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            android.os.IInterface iin = obj.queryLocalInterface(DESCRIPTOR);</span><br><span class="line">            <span class="comment">//不是跨进程调用</span></span><br><span class="line">            <span class="keyword">if</span>(((iin != <span class="keyword">null</span>) &amp;&amp; (iin <span class="keyword">instanceof</span> com.lz.demo1.IBookManager)))&#123;</span><br><span class="line">                <span class="keyword">return</span> ((com.lz.demo1.IBookManager) iin);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">//是跨进程调用</span></span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">new</span> com.lz.demo1.IBookManager.Stub.Proxy(obj)</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">onTransact</span><span class="params">(<span class="keyword">int</span> code, android.os.Parcel data, android.os.Parcel reply, <span class="keyword">int</span> flags)</span> <span class="keyword">throws</span> android.os.RemoteException </span>&#123;</span><br><span class="line">            java.lang.String descriptor = DESCRIPTOR;</span><br><span class="line">            <span class="keyword">switch</span> (code) &#123;</span><br><span class="line">                <span class="keyword">case</span> INTERFACE_TRANSACTION: &#123;</span><br><span class="line">                    reply.writeString(descriptor);</span><br><span class="line">                    <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">case</span> TRANSACTION_addBook: &#123;</span><br><span class="line">                    data.enforceInterface(descriptor);</span><br><span class="line">                    com.lz.demo1.Book _arg0;</span><br><span class="line">                    <span class="keyword">if</span> ((<span class="number">0</span> != data.readInt())) &#123;</span><br><span class="line">                        <span class="comment">//重点在这行</span></span><br><span class="line">                        _arg0 = com.lz.demo1.Book.CREATOR.createFromParcel(data);</span><br><span class="line">                    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                        _arg0 = <span class="keyword">null</span>;</span><br><span class="line">                    &#125;</span><br><span class="line">                    <span class="keyword">this</span>.addBook(_arg0);</span><br><span class="line">                    reply.writeNoException();</span><br><span class="line">                    <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">default</span>: &#123;</span><br><span class="line">                    <span class="keyword">return</span> <span class="keyword">super</span>.onTransact(code, data, reply, flags);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//省略部分代码...</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">Proxy</span> <span class="keyword">implements</span> <span class="title">com</span>.<span class="title">lz</span>.<span class="title">demo1</span>.<span class="title">IBookManager</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> TRANSACTION_addBook = (android.os.IBinder.FIRST_CALL_TRANSACTION + <span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">            <span class="keyword">private</span> android.os.IBinder mRemote;</span><br><span class="line"></span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="title">Proxy</span><span class="params">(android.os.IBinder remote)</span> </span>&#123; mRemote = remote &#125;</span><br><span class="line"></span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="keyword">public</span> android.os.<span class="function">IBinder <span class="title">asBinder</span><span class="params">()</span> </span>&#123;</span><br><span class="line">                <span class="keyword">return</span> mRemote;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">public</span> java.lang.<span class="function">String <span class="title">getInterfaceDescriptor</span><span class="params">()</span> </span>&#123;</span><br><span class="line">                <span class="keyword">return</span> DESCRIPTOR;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">addBook</span><span class="params">(com.lz..demo1.Book book)</span> <span class="keyword">throws</span> android.os.RemoteException </span>&#123;</span><br><span class="line">                android.os.Parcel _data = android.os.Parcel.obtain();</span><br><span class="line">                android.os.Parcel _reply = android.os.Parcel.obtain();</span><br><span class="line">                <span class="keyword">try</span> &#123;</span><br><span class="line">                    _data.writeInterfaceToken(DESCRIPTOR);</span><br><span class="line">                    <span class="keyword">if</span> ((book != <span class="keyword">null</span>)) &#123;</span><br><span class="line">                        _data.writeInt(<span class="number">1</span>);</span><br><span class="line">                         <span class="comment">//重点在这行</span></span><br><span class="line">                        book.writeToParcel(_data, <span class="number">0</span>)</span><br><span class="line">                    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                        _data.writeInt(<span class="number">0</span>);</span><br><span class="line">                    &#125;</span><br><span class="line">                    mRemote.transact(Stub.TRANSACTION_addBook, _data, _reply, <span class="number">0</span>);</span><br><span class="line">                    _reply.readException();</span><br><span class="line">                &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">                    _reply.recycle();</span><br><span class="line">                    _data.recycle();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">addBook</span><span class="params">(com.lz.demo1.Book book)</span> <span class="keyword">throws</span> android.os.RemoteException</span>;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>上面的代码都是 IDE 帮我们自动生成的，可以看到在内部类 Stub 中的 onTransact() 方法中，会先调用 Book.CREATOR.createFromParcel() 方法，因为这个方法是 static 的，所以不需要实例化对象也能调用。</p>
+<p>我们前面说过如果像让一个对象在 Activitiy 之间传递，就必须要实现 Parcelable 接口，原因就在上面的代码中，在一般的情况下我们调用自己写的 Activity 都不会涉及到跨进程所以上面的 asInterface() 都会直接返回接口的实现类，但是如果我们调用系统的 Activity，比如启动个相机，打开浏览器等等都是涉及到跨进程，这个时候调用方法就会进入代理类 Proxy 里面。</p>
+<p>Proxy 既然是个代理类，那么就有它代理的原因，原因是因为我们如果是跨进程调用，那么所有的数据都需要吸写入到 Parcel 中，这一过程是发生在真正调用之前，并且在真正调用之后我们还需处理异常额释放资源，很明显这两个操作都是重复发生的，这个时候就需要使用设计模式中的代理模式。</p>
+<p>在 Porxy 的 addBook() 方法中，调用了 Book 对象的 writeToParcel() 方法，将 Book 对象写入到 Parcel 中，然后在调用 mRemote.transact()，在这个方法内部会在调用上面 Stub 类的 onTransact() 方法。</p>
+<p>自此一个简单的 Binder 机制就分析完了，但是这个 Intent 有什么关系呢？不急，慢慢往下看。</p>
+<h1 id="ActivityManagerNative"><a href="#ActivityManagerNative" class="headerlink" title="ActivityManagerNative"></a>ActivityManagerNative</h1><p>在 Android 7.1.1 之前（API level &lt;= 25），在源码中 ActivityManagerNative.java 的实现如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">//android.app.ActivityManagerNative.java</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">ActivityManagerNative</span> <span class="keyword">extends</span> <span class="title">Binder</span> <span class="keyword">implements</span> <span class="title">IActivityManager</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//省略部分代码...</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">onTransact</span><span class="params">(<span class="keyword">int</span> code, Parcel data, Parcel reply, <span class="keyword">int</span> flags)</span></span>&#123; </span><br><span class="line">        <span class="keyword">switch</span>(code) &#123;</span><br><span class="line">            <span class="keyword">case</span> START_ACTIVITY_TRANSACTION:</span><br><span class="line">            &#123;</span><br><span class="line">                data.enforceInterface(IActivityManager.descriptor);</span><br><span class="line">                IBinder b = data.readStrongBinder();</span><br><span class="line">                IApplicationThread app = ApplicationThreadNative.asInterface(b);</span><br><span class="line">                String callingPackage = data.readString();</span><br><span class="line">                <span class="comment">//重点在这</span></span><br><span class="line">                Intent intent = Intent.CREATOR.createFromParcel(data);</span><br><span class="line">                String resolvedType = data.readString();</span><br><span class="line">                IBinder resultTo = data.readStrongBinder();</span><br><span class="line">                String resultWho = data.readString();</span><br><span class="line">                <span class="keyword">int</span> requestCode = data.readInt();</span><br><span class="line">                <span class="keyword">int</span> startFlags = data.readInt();</span><br><span class="line">                ProfilerInfo profilerInfo = data.readInt() != <span class="number">0</span></span><br><span class="line">                        ? ProfilerInfo.CREATOR.createFromParcel(data) : <span class="keyword">null</span>;</span><br><span class="line">                Bundle options = data.readInt() != <span class="number">0</span></span><br><span class="line">                        ? Bundle.CREATOR.createFromParcel(data) : <span class="keyword">null</span>;</span><br><span class="line">                <span class="keyword">int</span> result = startActivity(app, callingPackage, intent, resolvedType,</span><br><span class="line">                        resultTo, resultWho, requestCode, startFlags, profilerInfo, options);</span><br><span class="line">                reply.writeNoException();</span><br><span class="line">                reply.writeInt(result);</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">         <span class="comment">//省略部分代码...</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//省略部分代码...</span></span><br><span class="line"></span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">ActivityManagerProxy</span> <span class="keyword">implements</span> <span class="title">IActivityManager</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="title">ActivityManagerProxy</span><span class="params">(IBinder remote)</span></span></span><br><span class="line"><span class="function">        </span>&#123;</span><br><span class="line">            mRemote = remote;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">startActivity</span><span class="params">(IApplicationThread caller, String callingPackage, Intent intent,</span></span></span><br><span class="line"><span class="function"><span class="params">            String resolvedType, IBinder resultTo, String resultWho, <span class="keyword">int</span> requestCode,</span></span></span><br><span class="line"><span class="function"><span class="params">            <span class="keyword">int</span> startFlags, ProfilerInfo profilerInfo, Bundle options)</span> <span class="keyword">throws</span> RemoteException </span>&#123;</span><br><span class="line">            Parcel data = Parcel.obtain();</span><br><span class="line">            Parcel reply = Parcel.obtain();</span><br><span class="line">            data.writeInterfaceToken(IActivityManager.descriptor);</span><br><span class="line">            data.writeStrongBinder(caller != <span class="keyword">null</span> ? caller.asBinder() : <span class="keyword">null</span>);</span><br><span class="line">            data.writeString(callingPackage);</span><br><span class="line">            <span class="comment">//重点在这</span></span><br><span class="line">            intent.writeToParcel(data, <span class="number">0</span>);</span><br><span class="line">            data.writeString(resolvedType);</span><br><span class="line">            data.writeStrongBinder(resultTo);</span><br><span class="line">            data.writeString(resultWho);</span><br><span class="line">            data.writeInt(requestCode);</span><br><span class="line">            data.writeInt(startFlags);</span><br><span class="line">            <span class="keyword">if</span> (profilerInfo != <span class="keyword">null</span>) &#123;</span><br><span class="line">                data.writeInt(<span class="number">1</span>);</span><br><span class="line">                profilerInfo.writeToParcel(data, Parcelable.PARCELABLE_WRITE_RETURN_VALUE);</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                data.writeInt(<span class="number">0</span>);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> (options != <span class="keyword">null</span>) &#123;</span><br><span class="line">                data.writeInt(<span class="number">1</span>);</span><br><span class="line">                options.writeToParcel(data, <span class="number">0</span>);</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                data.writeInt(<span class="number">0</span>);</span><br><span class="line">            &#125;</span><br><span class="line">            mRemote.transact(START_ACTIVITY_TRANSACTION, data, reply, <span class="number">0</span>);</span><br><span class="line">            reply.readException();</span><br><span class="line">            <span class="keyword">int</span> result = reply.readInt();</span><br><span class="line">            reply.recycle();</span><br><span class="line">            data.recycle();</span><br><span class="line">            <span class="keyword">return</span> result;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>看看上面的源码，和我们之前的 IDE 通过 AIDL 帮我们生成的代码几乎一样，唯一不同的就是源码比我们复杂很多，虽然代码多了不少，但是和 Intent 有关的也就两行，分别是调用 Intent.CREATOR 的 createFromParcel() 方法和调用 Intent 的 writeToParcel() 方法。</p>
+<p>然而在 Android 7.1.1 之后（API level &gt; 25）的源码中 ActivityManagerNative.java 被表示为 Deprecated，其内部也就只有几个简单的方法，源码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">//android.app.ActivityManagerNative.java</span></span><br><span class="line"><span class="meta">@Deprecated</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">ActivityManagerNative</span> </span>&#123;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Cast a Binder object into an activity manager interface, generating</span></span><br><span class="line"><span class="comment">     * a proxy if needed.</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@deprecated</span> use IActivityManager.Stub.asInterface instead.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">static</span> <span class="keyword">public</span> IActivityManager <span class="title">asInterface</span><span class="params">(IBinder obj)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> IActivityManager.Stub.asInterface(obj);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Retrieve the system's default/global activity manager.</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@deprecated</span> use ActivityManager.getService instead.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">static</span> <span class="keyword">public</span> IActivityManager <span class="title">getDefault</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> ActivityManager.getService();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//省略部分代码</span></span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>可以看到在 Android 7.1.1 之后， ActivityManagerNative.java 变成了一个简简单单的工具了，原因其实很简单，在 Android 7.1.1 之前的 ActivityManagerNative.java 中的代码基本上是没有意义的，完全可以使用 AIDL 让 IDE 来生成出来，可能在 Android 初期生成出来的代码达不到预期，或者说需要在生成的代码上进行修改和添加，所以 Android 就打算手搓这段代码，随着版本的演变，Android 的源码也在不但的优化，最终在 Android 7.1.1 之后就可以完全依赖 AIDL 来生成而不需要在手搓这段代码了(纯属我个人猜想)。</p>
+<h1 id="write-and-read"><a href="#write-and-read" class="headerlink" title="write and read"></a>write and read</h1><p>我们在回到 Intent 的源码中，分别是 Intent.CREATOR.createFromParcel() 方法和 Intent 的 readFromParcel() 方法，源码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">//Intent.java</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> Parcelable.Creator&lt;Intent&gt; CREATOR = <span class="keyword">new</span> Parcelable.Creator&lt;Intent&gt;() &#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> Intent <span class="title">createFromParcel</span><span class="params">(Parcel in)</span> </span>&#123; <span class="keyword">return</span> <span class="keyword">new</span> Intent(in) &#125;</span><br><span class="line">    <span class="keyword">public</span> Intent[] newArray(<span class="keyword">int</span> size) &#123; <span class="keyword">return</span> <span class="keyword">new</span> Intent[size] &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/** <span class="doctag">@hide</span> */</span></span><br><span class="line"><span class="function"><span class="keyword">protected</span> <span class="title">Intent</span><span class="params">(Parcel in)</span> </span>&#123;</span><br><span class="line">    readFromParcel(in);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">readFromParcel</span><span class="params">(Parcel in)</span> </span>&#123;</span><br><span class="line">    <span class="comment">//省略部分代码...</span></span><br><span class="line">    mExtras = in.readBundle();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>从上面源码我们可以看出，Intent 和我们上面实现 Parcel 接口的了一样，提供了一个名为 CREATOR 的静态对象，该对象有两个方法，分别是 createFromParcel() 和 newArray()，在 createFromParcel() 中调用了 Intent(Parcel in) 这个构造函数，紧接着在构造函数中有调用了 Parcel 的 readBundle() 方法。</p>
+<p>这个时候就来到了 Parcel 的 readBundle() 方法，源码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">//Parcel.java</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">final</span> Bundle <span class="title">readBundle</span><span class="params">(ClassLoader loader)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> length = readInt();</span><br><span class="line">    <span class="keyword">if</span> (length &lt; <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (Bundle.DEBUG) Log.d(TAG, <span class="string">"null bundle: length="</span> + length);</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">final</span> Bundle bundle = <span class="keyword">new</span> Bundle(<span class="keyword">this</span>, length);</span><br><span class="line">    <span class="keyword">if</span> (loader != <span class="keyword">null</span>) &#123;</span><br><span class="line">        bundle.setClassLoader(loader);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> bundle;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在 Parcel 的 readBundle() 方法中，直接 new 了一个 Bundle 对象并返回，这里需要注意的是，传入了一个类型为 ClassLoader 的对象，其主要用途是用来实例化类的。紧接着又来到了 Bundle 的构造函数，这里既然提到了 Bundle 就有必要说说它了。</p>
+<p>顾名思义，Bundle 是用来存储数据用的，我们通过 Intent 传递的数据，无论是基本类型还是 Parcel 类型的数据，都是存储在 Bundle 中的，并且这些数据都是以 K-V 的方式存储的，Key 是 String 类型，Bundle 继承自 BaseBundle，其核心代码都是 BaseBundle 中，源码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">//Bundle.java</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">Bundle</span><span class="params">(Parcel parcelledData, <span class="keyword">int</span> length)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">super</span>(parcelledData, length);</span><br><span class="line">    <span class="comment">//省略部分代码...</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//BaseBundle.java</span></span><br><span class="line">ArrayMap&lt;String, Object&gt; mMap = <span class="keyword">null</span>;</span><br><span class="line"></span><br><span class="line">Parcel mParcelledData = <span class="keyword">null</span>;</span><br><span class="line"></span><br><span class="line">BaseBundle(Parcel parcelledData, <span class="keyword">int</span> length) &#123;</span><br><span class="line">    readFromParcelInner(parcelledData, length);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">readFromParcelInner</span><span class="params">(Parcel parcel, <span class="keyword">int</span> length)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (length &lt; <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> RuntimeException(<span class="string">"Bad length in parcel: "</span> + length);</span><br><span class="line"></span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (length == <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="comment">//没有数据 直接 return</span></span><br><span class="line">        mParcelledData = NoImagePreloadHolder.EMPTY_PARCEL;</span><br><span class="line">        mParcelledByNative = <span class="keyword">false</span>;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">final</span> <span class="keyword">int</span> magic = parcel.readInt();</span><br><span class="line">    <span class="keyword">final</span> <span class="keyword">boolean</span> isJavaBundle = magic == BUNDLE_MAGIC;</span><br><span class="line">    <span class="keyword">final</span> <span class="keyword">boolean</span> isNativeBundle = magic == BUNDLE_MAGIC_NATIVE;</span><br><span class="line">    <span class="keyword">if</span> (!isJavaBundle &amp;&amp; !isNativeBundle) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IllegalStateException(<span class="string">"Bad magic number for Bundle: 0x"</span></span><br><span class="line">                + Integer.toHexString(magic));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (parcel.hasReadWriteHelper()) &#123;</span><br><span class="line">        <span class="comment">// If the parcel has a read-write helper, then we can't lazily-unparcel it, so just</span></span><br><span class="line">        <span class="comment">// unparcel right away.</span></span><br><span class="line">        <span class="comment">//大致意思为，如果 hasRedWriteHelper() 为 true，就不会使用懒加载，而是立即加载数据</span></span><br><span class="line">        <span class="keyword">synchronized</span> (<span class="keyword">this</span>) &#123;</span><br><span class="line">            initializeFromParcelLocked(parcel, <span class="comment">/*recycleParcel=*/</span> <span class="keyword">false</span>, isNativeBundle);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Advance within this Parcel</span></span><br><span class="line">    <span class="keyword">int</span> offset = parcel.dataPosition();</span><br><span class="line">    parcel.setDataPosition(MathUtils.addOrThrow(offset, length));</span><br><span class="line"></span><br><span class="line">    <span class="comment">//创建一个新的 Parcel 对象</span></span><br><span class="line">    Parcel p = Parcel.obtain();</span><br><span class="line">    p.setDataPosition(<span class="number">0</span>);</span><br><span class="line">    <span class="comment">//将 parcel 中的数据添加到 p 中</span></span><br><span class="line">    p.appendFrom(parcel, offset, length);</span><br><span class="line">    p.adoptClassCookies(parcel);</span><br><span class="line">    <span class="keyword">if</span> (DEBUG) Log.d(TAG, <span class="string">"Retrieving "</span>  + Integer.toHexString(System.identityHashCode(<span class="keyword">this</span>))</span><br><span class="line">            + <span class="string">": "</span> + length + <span class="string">" bundle bytes starting at "</span> + offset);</span><br><span class="line">    p.setDataPosition(<span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">    mParcelledData = p;</span><br><span class="line">    mParcelledByNative = isNativeBundle;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>从上面的代码我们可以得知，BaseBundle 在默认情况下采用的是懒加载，当 Bundle 对象刚创建的时候 mMap 中是没有数据的，数据都在 mParcelledData 对象中。当我们尝试获取数据的时候，就会调用 BaseBundle 的 unparcle() 方法，源码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">//BaseBundle.java</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//所有的  putXXX() 和 getXXX() 方法都会调用 unparcel() 方法</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> Object <span class="title">get</span><span class="params">(String key)</span> </span>&#123;</span><br><span class="line">    unparcel();</span><br><span class="line">    <span class="keyword">return</span> mMap.get(key);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">unparcel</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">synchronized</span> (<span class="keyword">this</span>) &#123;</span><br><span class="line">        <span class="keyword">final</span> Parcel source = mParcelledData;</span><br><span class="line">        <span class="keyword">if</span> (source != <span class="keyword">null</span>) &#123;</span><br><span class="line">            initializeFromParcelLocked(source, <span class="comment">/*recycleParcel=*/</span> <span class="keyword">true</span>, mParcelledByNative);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">initializeFromParcelLocked</span><span class="params">(@NonNull Parcel parcelledData, <span class="keyword">boolean</span> recycleParcel,</span></span></span><br><span class="line"><span class="function"><span class="params">        <span class="keyword">boolean</span> parcelledByNative)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//判断 parcelledData 有没有数据</span></span><br><span class="line">    <span class="keyword">if</span> (isEmptyParcel(parcelledData)) &#123;</span><br><span class="line">        <span class="keyword">if</span> (mMap == <span class="keyword">null</span>) &#123;</span><br><span class="line">            mMap = <span class="keyword">new</span> ArrayMap&lt;&gt;(<span class="number">1</span>);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            mMap.erase();</span><br><span class="line">        &#125;</span><br><span class="line">        mParcelledData = <span class="keyword">null</span>;</span><br><span class="line">        mParcelledByNative = <span class="keyword">false</span>;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">final</span> <span class="keyword">int</span> count = parcelledData.readInt();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (count &lt; <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    ArrayMap&lt;String, Object&gt; map = mMap;</span><br><span class="line">    <span class="keyword">if</span> (map == <span class="keyword">null</span>) &#123;</span><br><span class="line">        map = <span class="keyword">new</span> ArrayMap&lt;&gt;(count);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        map.erase();</span><br><span class="line">        map.ensureCapacity(count);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (parcelledByNative) &#123;</span><br><span class="line">            parcelledData.readArrayMapSafelyInternal(map, count, mClassLoader);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="comment">//一般执行这里</span></span><br><span class="line">            parcelledData.readArrayMapInternal(map, count, mClassLoader);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; <span class="keyword">catch</span> (BadParcelableException e) &#123;</span><br><span class="line">        <span class="keyword">if</span> (sShouldDefuse) &#123;</span><br><span class="line">            Log.w(TAG, <span class="string">"Failed to parse Bundle, but defusing quietly"</span>, e);</span><br><span class="line">            map.erase();</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">throw</span> e;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">        mMap = map;</span><br><span class="line">        <span class="keyword">if</span> (recycleParcel) &#123;</span><br><span class="line">            recycleParcel(parcelledData);</span><br><span class="line">        &#125;</span><br><span class="line">        mParcelledData = <span class="keyword">null</span>;</span><br><span class="line">        mParcelledByNative = <span class="keyword">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在 BaseBundle 中的所有 getXXX() 和 putXXX() 方法中，都会调用 unparcel()，这个方法的作用有点像拆包，我们可以把 Parcel 理解为它将数据都包在了一起，而这个 unparcel 就是把包在一起的数据拆开。</p>
+<p>拆的具体构成在 Parcel 的 readArrayMapInternal() 方法中，在看这个方法之前我们先看看 initializeFromParcelLocked() 的最后，它将 mParcelledData 设置成了 null，这个时候 ParcelledData 这个包里面的数据就被转换成了 mMap，所以后面在调用 unparcel() 就不会在拆了。</p>
+<p>接着进入到 Parcel 的 readArrayMapInternal() 方法，源码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">//Parcel.java</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">readArrayMapInternal</span><span class="params">(ArrayMap outVal, <span class="keyword">int</span> N,</span></span></span><br><span class="line"><span class="function"><span class="params">        ClassLoader loader)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">while</span> (N &gt; <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (DEBUG_ARRAY_MAP) startPos = dataPosition();</span><br><span class="line">        String key = readString();</span><br><span class="line">        Object value = readValue(loader);</span><br><span class="line">        outVal.append(key, value);</span><br><span class="line">        N--;</span><br><span class="line">    &#125;</span><br><span class="line">    outVal.validate();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>可以看到，在 Parcel 的 readArraymapInternal() 方法中，循环读取 Key 和 Value 并添加 outVal 中，具体读取值的方法是 native 的这里我们不深入研究，这里有一个比较有趣的地方，就是上面调用的是 ArrayMap 的 append() 方法而不是 put()，而在方法的最后调用了 ArrayMap 的 validate() 方法，很显然这里的 append() + validate() 的方式肯定要比 put() 效率高，可惜这两个方法是 @hide 的，开发者无法调用，估计是 Google 程序员为了偷懒写的，但是又不想让开发者用XD。</p>
+<p>到这里，Intent.CREATE.createFromParcel() 就分析完了，下一个轮到 Intent 的 writeToParcel()，这个方法的主要作用就是将 Intent 的数据写入到 Parcel 对象中，源码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">//Intent.java</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">writeToParcel</span><span class="params">(Parcel out, <span class="keyword">int</span> flags)</span> </span>&#123;</span><br><span class="line">    <span class="comment">//省略部分代码</span></span><br><span class="line">    out.writeBundle(mExtras);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//Parcel.java</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">void</span> <span class="title">writeBundle</span><span class="params">(Bundle val)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (val == <span class="keyword">null</span>) &#123;</span><br><span class="line">        writeInt(-<span class="number">1</span>);</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    val.writeToParcel(<span class="keyword">this</span>, <span class="number">0</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//Bundle.java</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">writeToParcel</span><span class="params">(Parcel parcel, <span class="keyword">int</span> flags)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">final</span> <span class="keyword">boolean</span> oldAllowFds = parcel.pushAllowFds((mFlags &amp; FLAG_ALLOW_FDS) != <span class="number">0</span>);</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="keyword">super</span>.writeToParcelInner(parcel, flags);</span><br><span class="line">    &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">        parcel.restoreAllowFds(oldAllowFds);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//BaseBundle.java</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">writeToParcelInner</span><span class="params">(Parcel parcel, <span class="keyword">int</span> flags)</span> </span>&#123;</span><br><span class="line">    <span class="comment">//省了部分代码...</span></span><br><span class="line">    <span class="keyword">int</span> startPos = parcel.dataPosition();</span><br><span class="line">    <span class="comment">//重点在这</span></span><br><span class="line">    parcel.writeArrayMapInternal(map);</span><br><span class="line">    <span class="keyword">int</span> endPos = parcel.dataPosition();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Backpatch length</span></span><br><span class="line">    parcel.setDataPosition(lengthPos);</span><br><span class="line">    <span class="keyword">int</span> length = endPos - startPos;</span><br><span class="line">    parcel.writeInt(length);</span><br><span class="line">    parcel.setDataPosition(endPos);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//Parcel.java</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">writeArrayMapInternal</span><span class="params">(ArrayMap&lt;String, Object&gt; val)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (val == <span class="keyword">null</span>) &#123;</span><br><span class="line">        writeInt(-<span class="number">1</span>);</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">final</span> <span class="keyword">int</span> N = val.size();</span><br><span class="line">    writeInt(N);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">0</span>; i&lt;N; i++) &#123;</span><br><span class="line">        writeString(val.keyAt(i));</span><br><span class="line">        writeValue(val.valueAt(i));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>如上，就是 Intent 的 writeToParcel() 的流程，总体上来看和 Intent.CREATOR 的 createFromParcel() 的流程差不太多。自此，Intent 的数据写入和读取的流程就分析完了。</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>总结一下，如果想让一个类在 Activity 之间传递，那么一定要实现 Parcelable 接口，实现方式分为两个步骤，第一步是需要实现 Parcelable 接口的方法，第二步是在类中声明一个公共的静态对象，对象名称必须叫做 CREATOR，对象需要实现 Parcelable.Creator 接口。</p>
+<p>在使用 Parcel 读取数据的时候，读取的顺序要和存储的顺序保持一致，从这一点我们可以大概的猜出 Parcel 的底层机制就是将 Java 中的数据按照顺序写入到一个值里面，然后在接收的时候在按照顺序从这个值中读出数据。</p>
+<p>AIDL 文件本质其实就是告诉 IDE 帮我们生成生成什么样的 Binder 实现类，就算没有 AIDL 我们完全可以自己写一个 Binder 的实现类。</p>
+<p>Bundle 的本质其实就是一个 ArrayMap，只不过前者可以跨进程使用。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/源码解析/" rel="tag"># 源码解析</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/08/26/Retrofit源码解析/" rel="next" title="Retrofit源码解析">
+                <i class="fa fa-chevron-left"></i> Retrofit源码解析
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/02/28/编码-二进制/" rel="prev" title="编码-二进制">
+                编码-二进制 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="https://s2.ax1x.com/2019/02/28/k70pNt.jpg"
+                alt="linzheng" />
+            
+              <p class="site-author-name" itemprop="name">linzheng</p>
+              <p class="site-description motion-element" itemprop="description">一枚苦逼的 Android 程序员</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">33</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                
+                  <span class="site-state-item-count">1</span>
+                  <span class="site-state-item-name">分类</span>
+                
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">16</span>
+                  <span class="site-state-item-name">标签</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/linzhengloser" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-globe"></i>GitHub</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                Links
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://www.wanandroid.com" title="玩Android" target="_blank">玩Android</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#起因"><span class="nav-number">1.</span> <span class="nav-text">起因</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Intent"><span class="nav-number">2.</span> <span class="nav-text">Intent</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Parcelable"><span class="nav-number">3.</span> <span class="nav-text">Parcelable</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Binder"><span class="nav-number">4.</span> <span class="nav-text">Binder</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#ActivityManagerNative"><span class="nav-number">5.</span> <span class="nav-text">ActivityManagerNative</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#write-and-read"><span class="nav-number">6.</span> <span class="nav-text">write and read</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#总结"><span class="nav-number">7.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">linzheng</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("E2NRFAQwyrEiYK2wzPMwCXOj-gzGzoHsz", "imqxxTrh0lXoz3FtACFo1TIf");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
